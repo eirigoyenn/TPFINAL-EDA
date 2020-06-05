@@ -5,7 +5,7 @@
 Calls waitForConnection to accept connections.*/
 
 NodeServer::NodeServer(boost::asio::io_context& io_context_, std::string IP, pcallback pcback_, unsigned int port_) :
-	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::tcp::v4(), 1234)), socket(io_context_), nodeIP(IP), pcback(pcback_), port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
+	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::tcp::v4(), port_)), socket(io_context_), nodeIP(IP), pcback(pcback_), port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
 {
 	if (socket.is_open()) {
 		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
