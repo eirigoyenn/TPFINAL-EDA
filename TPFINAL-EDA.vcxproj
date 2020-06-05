@@ -71,9 +71,31 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonPhysfs>true</Allegro_AddonPhysfs>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_AddonVideo>true</Allegro_AddonVideo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonPhysfs>true</Allegro_AddonPhysfs>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_AddonVideo>true</Allegro_AddonVideo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,6 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,8 +162,70 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ALLEventsGenerator.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Blockchain.cpp" />
+    <ClCompile Include="EventHandling.cpp" />
+    <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="FullNode.cpp" />
+    <ClCompile Include="GenericFSM.cpp" />
+    <ClCompile Include="GraphicF2.cpp" />
+    <ClCompile Include="GUIEventGenerator.cpp" />
+    <ClCompile Include="Imgui_files\imgui.cpp" />
+    <ClCompile Include="Imgui_files\imgui_demo.cpp" />
+    <ClCompile Include="Imgui_files\imgui_draw.cpp" />
+    <ClCompile Include="Imgui_files\imgui_impl_allegro5.cpp" />
+    <ClCompile Include="Imgui_files\imgui_widgets.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeClient.cpp" />
+    <ClCompile Include="NodeServer.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="SPVNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="blockChain32.json" />
+    <None Include="blockChain4.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="MisNoticias.txt" />
+    <Text Include="MyBulletinfile.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ALLEventGenerator.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Blockchain.h" />
+    <ClInclude Include="EventHandling.h" />
+    <ClInclude Include="FSM.h" />
+    <ClInclude Include="FullNode.h" />
+    <ClInclude Include="GenericFSM.h" />
+    <ClInclude Include="GraphicF2.h" />
+    <ClInclude Include="GUIEventGenerator.h" />
+    <ClInclude Include="Imgui_files\imconfig.h" />
+    <ClInclude Include="Imgui_files\imgui.h" />
+    <ClInclude Include="Imgui_files\imgui_impl_allegro5.h" />
+    <ClInclude Include="Imgui_files\imgui_internal.h" />
+    <ClInclude Include="Imgui_files\imstb_rectpack.h" />
+    <ClInclude Include="Imgui_files\imstb_textedit.h" />
+    <ClInclude Include="Imgui_files\imstb_truetype.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeClient.h" />
+    <ClInclude Include="NodeServer.h" />
+    <ClInclude Include="SPVNode.h" />
+    <ClInclude Include="Structs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets" Condition="Exists('packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets')" />
+    <Import Project="packages\Allegro.5.2.6\build\native\Allegro.targets" Condition="Exists('packages\Allegro.5.2.6\build\native\Allegro.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\AllegroDeps.1.11.0\build\native\AllegroDeps.targets'))" />
+    <Error Condition="!Exists('packages\Allegro.5.2.6\build\native\Allegro.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Allegro.5.2.6\build\native\Allegro.targets'))" />
+  </Target>
 </Project>

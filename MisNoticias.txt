@@ -1,0 +1,9 @@
+Se creo un nodo
+IP:localhost - ID: 0 - TYPE: FULL
+PUERTO:1234
+
+Se creo un nodo
+IP:localhost - ID: 1 - TYPE: FULL
+PUERTO:800
+
+
