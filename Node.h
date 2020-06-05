@@ -62,7 +62,6 @@ public:
 protected:
 
 	//void TxCallback(string respuesta);
-	boost::asio::io_context io_context;
 	std::string IP;
 	unsigned int port;
 	unsigned int ID;

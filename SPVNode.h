@@ -15,14 +15,13 @@ class SPVNode :
 	public Node
 {
 public:
-	SPVNode();
-	SPVNode(unsigned int ID_, std::string IP_, unsigned int port_);
+	SPVNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_);
 	~SPVNode();
 
 	std::string getKey(void);
 	void setKey(std::string Key_);
 
-
+	void listen1sec(void);
 	json SpvCallback(std::string message);
 	//Funciones para mensajes
 	bool POSTFilter(unsigned int neighbourID, std::string key);
@@ -37,6 +36,7 @@ public:
 
 
 private:
+	boost::asio::io_context& io_context;
 	json findMBlockJSON(std::string message);
 	std::string publickey;
 	json jsonheaders;

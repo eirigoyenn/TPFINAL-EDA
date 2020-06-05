@@ -15,12 +15,12 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		SPVArrayPTR = SPVArrayPTR_;
 		FULLArrayPTR = FULLArrayPTR_;
 
-		BulletinFileName = "C:/Users/ique_/source/repos/TPFINAL-EDA/MisNoticias.txt";
+		BulletinFileName = "C:/Users/manuc/source/repos/TPFINAL-EDA/MisNoticias.txt";
 		MyHamachiIP = "";
 		//ESTO ES UNA TRUCHADA 
 		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
 
-		fs::path bPath("C:/Users/ique_/source/repos/TPFINAL-EDA");
+		fs::path bPath("C:/Users/manuc/source/repos/TPFINAL-EDA");
 		if (exists(bPath) && is_directory(bPath))
 		{
 			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)

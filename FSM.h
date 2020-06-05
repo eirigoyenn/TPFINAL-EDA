@@ -46,7 +46,7 @@ private:
 	/* FUNCIONES */
 
 	std::ofstream BulletinFileR_ACC;
-
+	boost::asio::io_context io_context;
 	void RutaDefault(genericEvent* ev);
 	void BuscarVecinos_r_acc(genericEvent* ev);
 	void EnviarMensaje_r_acc(genericEvent* ev);

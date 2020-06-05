@@ -10,13 +10,7 @@ Node::~Node()
 {
 }
 
-void Node::listen1sec(void) {
 
-	using namespace std::chrono_literals;
-	auto sec = 20ms;
-	io_context.run_for(sec);
-
-}
 
 bool Node::performRequest(void)
 {

@@ -1,15 +1,14 @@
 #include "FullNode.h"
 
 
-FullNode::FullNode(FullNode&){}
 
-FullNode::FullNode(unsigned int ID_, std::string IP_, unsigned int port_)
+FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_): io_context(io_context_)
 {
 	ID = ID_;
 	IP = IP_;
 	port = port_;
 	client = new NodeClient(IP, port +1);
-	server = new NodeServer(io_context , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
+	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
 
@@ -21,7 +20,13 @@ FullNode::~FullNode()
 		delete server;
 }
 
+void FullNode::listen1sec(void) {
 
+	using namespace std::chrono_literals;
+	auto sec = 20ms;
+	io_context.run_one_for(sec);
+
+}
 
 /************************************************************************************************
 *					                          MENSAJES											*

@@ -4,6 +4,6 @@ PUERTO:1234
 
 Se creo un nodo
 IP:localhost - ID: 1 - TYPE: FULL
-PUERTO:800
+PUERTO:1230
 
 

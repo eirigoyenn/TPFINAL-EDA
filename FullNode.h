@@ -8,12 +8,11 @@ class FullNode :
 {
 public:
 
-	FullNode(FullNode& );
-	FullNode(unsigned int ID_, std::string IP_ ,unsigned int port_);
+	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_);
 	~FullNode();
 
 	json fullCallback(std::string msg);
-
+	void listen1sec(void);
 	//Funciones para enviar mensajes.
 	bool POSTBlock(unsigned int neighbourID, std::string& BlockID);
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
@@ -38,6 +37,7 @@ public:
 	json findFilterJSON(std::string message);
 
 private:
+	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
 };

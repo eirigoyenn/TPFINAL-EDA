@@ -2,17 +2,14 @@
 
 
 
-SPVNode::SPVNode()
-{
-}
 
-SPVNode::SPVNode(unsigned int ID_, std::string IP_, unsigned int port_)
+SPVNode::SPVNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_) : io_context(io_context_)
 {
 	ID = ID_;
 	IP = IP_;
 	port = port_;
 	client = new NodeClient(IP, port);
-	server = new NodeServer(io_context,IP,boost::bind(&SPVNode::SpvCallback,this,_1),port);
+	server = new NodeServer(io_context_,IP,boost::bind(&SPVNode::SpvCallback,this,_1),port);
 }
 
 
@@ -21,6 +18,13 @@ SPVNode::~SPVNode()
 	delete client;
 }
 
+void SPVNode::listen1sec(void) {
+
+	using namespace std::chrono_literals;
+	auto sec = 20ms;
+	io_context.run_for(sec);
+
+}
 std::string SPVNode::getKey(void)
 {
 	return publickey;

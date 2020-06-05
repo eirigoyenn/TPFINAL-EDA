@@ -53,14 +53,14 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 
 		if (static_cast<evCrearNodo*>(ev)->TYPE == SPV)
 		{
-			SPVNode * TempSPVNode = new SPVNode(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			SPVNode * TempSPVNode = new SPVNode(io_context,static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
 			
 			spvArray.push_back(TempSPVNode);
 			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: SPV \nPUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
-			FullNode * tempFullNode = new FullNode(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			FullNode * tempFullNode = new FullNode(io_context,static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
 			
 			fullArray.push_back(tempFullNode);
 
@@ -85,6 +85,7 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 
 void FSM::MultiiPerform(genericEvent* ev)
 {
+
 	for (const auto& spvnode : spvArray) {
 		spvnode->listen1sec();
 		spvnode->performRequest();
@@ -102,7 +103,7 @@ unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
 
 	if (nodeType == FULL)
 	{
-		for (int i = 0; i < spvArray.size() && index == -1; i++)
+		for (int i = 0; i < fullArray.size() && index == -1; i++)
 		{
 			if (fullArray[i]->getID() == senderID)
 				index = i;
