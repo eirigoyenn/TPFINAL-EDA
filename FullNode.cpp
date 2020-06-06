@@ -24,7 +24,7 @@ FullNode::~FullNode()
 void FullNode::listen1sec(void) {
 
 	using namespace std::chrono_literals;
-	auto sec = 20ms;
+	auto sec = 60ms;
 	io_context.run_one_for(sec);
 
 }
@@ -284,40 +284,61 @@ json FullNode::fullCallback(string message) {
 		}
 		else {
 			result["status"] = false;
-			return result;
 		}
 
+		
 		if (message.find("get_blocks") != std::string::npos)
 		{
 			result["result"] = find_array(ID_ , count_);
+			if (result["result"] == "NULL") {
+				result["status"] = false;
+			}
 		}
-		if ( (message.find("get_block_header")) != std::string::npos)
+		else if ( (message.find("get_block_header")) != std::string::npos)
 		{
 
 			result["result"] = find_headers(ID_,count_);
+			if (result["result"] == "NULL") {
+				result["status"] = false;
+			}
 		}
-	}
-
-	//Si se trata de un POSTblock guarda el block enviado
-	if (message.find("send_block") != std::string::npos )
-	{
-		result["result"] = findBlockJSON(message);
-		if (result["result"] == "NULL") {
-			result["state"] = false;
+		else {
+			result["status"] = false;
 		}
+
 	}
-	//Si se trata de un POSTtransaction
-	else if (message.find("send_tx") != std::string::npos)
-	{
-		result["result"] = findTxJSON(message);
-	}
-	//Si se trata de un POSTfilter
-	else if (message.find("send_filter") != std::string::npos)
-	{
-		result["result"] = findFilterJSON(message);// guardar los datos
-	}
+	else if ((message.find("send_block") != std::string::npos) || (message.find("send_tx") != std::string::npos) || (message.find("send_filter") != std::string::npos)) {
 
 
+		//Si se trata de un POSTblock guarda el block enviado
+		if (message.find("send_block") != std::string::npos)
+		{
+			result["result"] = findBlockJSON(message);
+			if (result["result"] == "NULL") {
+				result["status"] = false;
+			}
+		}
+		//Si se trata de un POSTtransaction
+		else if (message.find("send_tx") != std::string::npos)
+		{
+			result["result"] = findTxJSON(message);
+
+		}
+		//Si se trata de un POSTfilter
+		else if (message.find("send_filter") != std::string::npos)
+		{
+			result["result"] = findFilterJSON(message);// guardar los datos
+
+		}
+		else {
+			result["status"] = false;
+		}
+
+
+	}
+	else {
+		result["status"] = false;
+	}
 	return result;
 
 
@@ -344,8 +365,13 @@ json FullNode::find_array(std::string blockID, int count) {
 		numBlocks = NodeBlockchain.getBlocksSize() - block.getHeight();
 	}
 
-	for (int i = 0;i < numBlocks;i++,pointer++) {
-		jsonarray.push_back(createJSONBlock(NodeBlockchain.getBlocksArr()[pointer].getBlockID()));
+	if (pointer != NOTFOUND) {
+		for (int i = 0;i < numBlocks;i++, pointer++) {
+			jsonarray.push_back(createJSONBlock(NodeBlockchain.getBlocksArr()[pointer].getBlockID()));
+		}
+	}
+	else {
+		jsonarray = "NULL";
 	}
 	return jsonarray;
 }
