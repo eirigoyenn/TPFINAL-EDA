@@ -119,11 +119,11 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 		std::string message(ClientInput);
 
 
-		//Validator has the http protocol form.
+		//Validator has the da coin form.
 		std::string validator = "/eda_coin/";
 
 
-		//If there's been a match at the beggining of the request...\
+		//If there's been a match ...\
 
 
 		auto it = message.find(validator);
@@ -149,7 +149,7 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 		else
 		{
 			//Error de formato
-			result["result"] = false;
+			result["status"] = false;
 			result["result"] = 1;
 			std::cout << "Client sent wrong input.\n";
 

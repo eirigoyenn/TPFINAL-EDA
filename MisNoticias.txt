@@ -1,9 +1,5 @@
 Se creo un nodo
 IP:localhost - ID: 0 - TYPE: FULL
-PUERTO:4321
-
-Se creo un nodo
-IP:localhost - ID: 1 - TYPE: FULL
-PUERTO:3321
+PUERTO:1234
 
 

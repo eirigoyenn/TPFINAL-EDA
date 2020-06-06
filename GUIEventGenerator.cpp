@@ -4,9 +4,9 @@
 
 using namespace std;
 
-GUIEventGenerator::GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_)
+GUIEventGenerator::GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_,Blockchain& bchain)
 {
-	GUI = new GraphicF3(SPVArrayPTR_,FULLArrayPTR_);
+	GUI = new GraphicF3(SPVArrayPTR_,FULLArrayPTR_,bchain);
 
 	nodeID = 0;
 }

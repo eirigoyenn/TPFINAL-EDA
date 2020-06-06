@@ -34,7 +34,7 @@ public:
 	bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
 
 	virtual std::string makeDaytimeString(int secs);
-
+	std::string parseResponse(std::string message);
 	void setIP(std::string IP_);
 	void setPort(unsigned int port_);
 	void setID(unsigned int ID_);

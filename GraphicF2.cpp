@@ -2,7 +2,7 @@
 #include "GraphicF2.h"
 
 
-GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_)
+GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_, Blockchain& bchain_) : Bchain(bchain_)
 {
 	if (AllegroInit() && ImguiInit())
 	{
@@ -17,8 +17,6 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 
 		BulletinFileName = "C:/Users/manuc/source/repos/TPFINAL-EDA/MisNoticias.txt";
 		MyHamachiIP = "";
-		//ESTO ES UNA TRUCHADA 
-		//PERO ES POR AHORA, DESPS CUANDO CONECTEMOS OBTENEMOS BLOCKCHAIN DE CUALQUIER NODO FULL
 
 		fs::path bPath("C:/Users/manuc/source/repos/TPFINAL-EDA");
 		if (exists(bPath) && is_directory(bPath))
@@ -27,7 +25,7 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 			{
 				if (iterator->path().filename().string() == "blockChain32.json")
 				{
-					if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+					if (!Bchain.saveBlockInfo(iterator->path().filename().string())) {
 						Error = false;
 					}
 					else
@@ -41,6 +39,8 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		{
 			Error = true;
 		}
+
+
 	}
 	else
 	{
@@ -332,12 +332,12 @@ void GraphicF3::print_Dashboard()
 	int i;
 	//Checkbox con imgui
 	static bool checks[MAX_BLOCKS] = { false };
-	unsigned char box = clickedBlock(checks, (pBchain.getBlocksArr()).size());
-	for (i = 0; i < pBchain.getBlocksSize(); i++)
+	unsigned char box = clickedBlock(checks, (Bchain.getBlocksArr()).size());
+	for (i = 0; i < Bchain.getBlocksSize(); i++)
 	{
 
-		ImGui::Checkbox((pBchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
-		if (numSelectedBlocks(checks, (pBchain.getBlocksArr()).size()) > 1)
+		ImGui::Checkbox((Bchain.getBlocksArr())[i].getBlockID().c_str(), &checks[i]);
+		if (numSelectedBlocks(checks, (Bchain.getBlocksArr()).size()) > 1)
 			checks[box] = false;
 	}
 	ImGui::Text("");
@@ -364,11 +364,11 @@ void GraphicF3::print_Dashboard()
 	{
 
 		bool AlgunoSelected = false;
-		for (i = 0; i < (pBchain.getBlocksArr()).size(); i++) {
+		for (i = 0; i < (Bchain.getBlocksArr()).size(); i++) {
 			if (checks[i] == true)
 			{
-				selectedBlock.push_back((pBchain.getBlocksArr())[i]);
-				i = pBchain.getBlocksArr().size();		//Solo selecciono uno
+				selectedBlock.push_back((Bchain.getBlocksArr())[i]);
+				i = Bchain.getBlocksArr().size();		//Solo selecciono uno
 				AlgunoSelected = true;
 			}
 		}
@@ -418,7 +418,7 @@ bool GraphicF3::look4BlocksPath(string ChosenFile)
 			if (iterator->path().filename().string() == ChosenFile.c_str())
 			{
 				std::cout << iterator->path().string() << std::endl;
-				if (!pBchain.saveBlockInfo(iterator->path().filename().string())) {
+				if (!Bchain.saveBlockInfo(iterator->path().filename().string())) {
 					return true;
 				}
 				else {

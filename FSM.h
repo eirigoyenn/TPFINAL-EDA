@@ -12,13 +12,13 @@ using namespace std;
 class FSM : public genericFSM
 {
 public:
-	FSM() : genericFSM(&fsmTable[0][0], 6, 9, InitState), state4Graphic(INITSTATE_G) {}
+	FSM() : genericFSM(&fsmTable[0][0], 6, 9, InitState), state4Graphic(INITSTATE_G) {};
 	~FSM();
 
 	unsigned int state4Graphic;
 	std::vector<SPVNode*>* getSPVArrayPTR(void);
 	std::vector<FullNode*>* getFULLArrayPTR(void);
-
+	Blockchain& getBchain(void);
 
 private:
 	const fsmCell fsmTable[6][9] = {
@@ -65,6 +65,9 @@ private:
 	std::vector<SPVNode*> spvArray;
 	std::vector<FullNode*> fullArray;
 
+
+
+	Blockchain Bchain;
 //	void SaveNode(SPVNode& spvNode);
 //	void SaveNode(FullNode& fullNode);
 

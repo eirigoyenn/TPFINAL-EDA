@@ -6,9 +6,7 @@
 
 
 #include "Structs.h"
-
 #include "GraphicF2.h"
-
 #include "eventHandling.h"
 
 #include <array>
@@ -120,7 +118,7 @@ public:
 class GUIEventGenerator : public eventGenerator
 {
 public:
-	GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_);
+	GUIEventGenerator(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>* FULLArrayPTR_,Blockchain& bchain);
 
 	std::vector<RegistroNodo_t>* getNodosArr(void);
 	genericEvent* getEvent(unsigned int estadoactualdeFSM);

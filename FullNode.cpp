@@ -2,11 +2,12 @@
 
 
 
-FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_): io_context(io_context_)
+FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_,Blockchain& bchain): io_context(io_context_) 
 {
 	ID = ID_;
 	IP = IP_;
 	port = port_;
+	NodeBlockchain = bchain;
 	client = new NodeClient(IP, port +1);
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
@@ -182,7 +183,7 @@ json FullNode::createJSONBlock(std::string BlockId)
 	auto tx = json::array();
 	for (auto tx_ = 0; tx_ < block.getNtx(); tx_++)
 	{
-		tx += createJSONTx(block.getTxVector()[tx_]);
+		tx.push_back(createJSONTx(block.getTxVector()[tx_]));
 	}
 	jsonblock["tx"] = tx;
 	return jsonblock;
@@ -260,14 +261,17 @@ json FullNode::createJSONheader(std::string BlockID_)
 
 json FullNode::fullCallback(string message) {
 
-	string ID_;
-	int count_;
 	json result;
+	std::string ID_;
+	unsigned int count_;
+
+	result["status"] = true;
+
+
 	if ((message.find("get_blocks") != std::string::npos) || (message.find("get_block_header") != std::string::npos))
 	{
-
-		size_t idPosition = message.find("block_id=");
-		size_t countPosition = message.find("count=");
+		unsigned int idPosition = message.find("block_id=");
+		unsigned int countPosition = message.find("count=");
 		string block_id("block_id=");
 		string count("count=");
 
@@ -277,85 +281,44 @@ json FullNode::fullCallback(string message) {
 			ID_ = message.substr(idPosition + block_id.size(), message.find_last_of("&") - idPosition - block_id.size());
 			std::string tempcount = message.substr(countPosition + count.size(), message.size() - countPosition - count.size());
 			count_ = std::stoi(tempcount);
-			result["status"] = true;
 		}
 		else {
 			result["status"] = false;
 			return result;
 		}
 
-		if (message.find("get_blocks"))
+		if (message.find("get_blocks") != std::string::npos)
 		{
-			result["result"] = "GET1";
+			result["result"] = find_array(ID_ , count_);
 		}
-		else if (message.find("get_block_header"))
+		if ( (message.find("get_block_header")) != std::string::npos)
 		{
 
-			result["result"] = "GET2";
+			result["result"] = find_headers(ID_,count_);
 		}
 	}
+
+	//Si se trata de un POSTblock guarda el block enviado
+	if (message.find("send_block") != std::string::npos )
+	{
+		result["result"] = findBlockJSON(message);
+		if (result["result"] == "NULL") {
+			result["state"] = false;
+		}
+	}
+	//Si se trata de un POSTtransaction
+	else if (message.find("send_tx") != std::string::npos)
+	{
+		result["result"] = findTxJSON(message);
+	}
+	//Si se trata de un POSTfilter
+	else if (message.find("send_filter") != std::string::npos)
+	{
+		result["result"] = findFilterJSON(message);// guardar los datos
+	}
+
+
 	return result;
-	//json result;
-	//std::string ID_;
-	//unsigned int count_;
-
-	//result["state"] = true;
-
-
-	//if ((message.find("get_blocks") != std::string::npos) || (message.find("get_block_header") != std::string::npos))
-	//{
-	//	unsigned int idPosition = message.find("block_id=");
-	//	unsigned int countPosition = message.find("count=");
-	//	string block_id("block_id=");
-	//	string count("count=");
-
-	//	if (idPosition != std::string::npos && countPosition != std::string::npos)
-	//	{
-
-	//		ID_ = message.substr(idPosition + block_id.size(), message.find_last_of("&") - idPosition - block_id.size());
-	//		std::string tempcount = message.substr(countPosition + count.size(), message.size() - countPosition - count.size());
-	//		count_ = std::stoi(tempcount);
-	//	}
-	//	else {
-	//		result["state"] = false;
-	//		return result;
-	//	}
-
-	//	if (message.find("get_blocks"))
-	//	{
-	//		result["result"] = find_array(ID_ , count_);
-	//	}
-	//	if (message.find("get_block_header"))
-	//	{
-
-	//		result["result"] = find_headers(ID_,count_);
-	//	}
-	//}
-
-	////Si se trata de un POSTblock guarda el block enviado
-	//if (message.find("send_block"))
-	//{
-	//	result["result"] = findBlockJSON(message);
-	//	if (result["result"] == "NULL") {
-	//		result["state"] = false;
-	//	}
-	//}
-	////Si se trata de un POSTtransaction
-	//else if (message.find("send_tx"))
-	//{
-	//	result["result"] = findTxJSON(message);
-	//}
-	////Si se trata de un POSTfilter
-	//else if (message.find("send_filter"))
-	//{
-	//	result["result"] = findFilterJSON(message);// guardar los datos
-	//}
-	//else {
-	//	result["state"] = false;
-	//	return result;
-	//}
-
-	//return result;
 
 
 }
@@ -366,7 +329,7 @@ json FullNode::find_array(std::string blockID, int count) {
 
 	auto jsonarray = json::array();
 	Block block;
-	int pointer;
+	int pointer =  NOTFOUND;
 	int numBlocks = count;
 	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
 	{
@@ -393,8 +356,9 @@ json FullNode::find_headers(std::string blockID, int count) {
 	auto jsonarray = json::array();
 	json jsonblock;
 	Block block;
-	int pointer;
+	int pointer = NOTFOUND;
 	int numBlocks = count;
+	cout << blockID << endl;
 
 	for (int i = 0; i < NodeBlockchain.getBlocksSize(); i++)
 	{
@@ -403,24 +367,29 @@ json FullNode::find_headers(std::string blockID, int count) {
 			pointer = i;
 			break;
 		}
+
 	}
 
 	if ((NodeBlockchain.getBlocksSize() - block.getHeight()) < count) {
 		numBlocks = NodeBlockchain.getBlocksSize() - block.getHeight();
 	}
 
-	for (int i = 0;i < numBlocks;i++, pointer++) {
+	if (pointer != NOTFOUND) {
+		for (int i = 0;i < numBlocks;i++, pointer++) {
 
-		jsonblock["blockid"] = NodeBlockchain.getBlocksArr()[pointer].getBlockID();
-		jsonblock["height"] = NodeBlockchain.getBlocksArr()[pointer].getHeight();
-		jsonblock["merkleroot"] = NodeBlockchain.getBlocksArr()[pointer].getMerkleRoot();
-		jsonblock["nTx"] = NodeBlockchain.getBlocksArr()[pointer].getNtx();
-		jsonblock["nonce"] = NodeBlockchain.getBlocksArr()[pointer].getNonce();
-		jsonblock["previousblockid"] = NodeBlockchain.getBlocksArr()[pointer].getPrevBlovkID();
-		
-		jsonarray.push_back(jsonblock);
+			jsonblock["blockid"] = NodeBlockchain.getBlocksArr()[pointer].getBlockID();
+			jsonblock["height"] = NodeBlockchain.getBlocksArr()[pointer].getHeight();
+			jsonblock["merkleroot"] = NodeBlockchain.getBlocksArr()[pointer].getMerkleRoot();
+			jsonblock["nTx"] = NodeBlockchain.getBlocksArr()[pointer].getNtx();
+			jsonblock["nonce"] = NodeBlockchain.getBlocksArr()[pointer].getNonce();
+			jsonblock["previousblockid"] = NodeBlockchain.getBlocksArr()[pointer].getPrevBlovkID();
 
+			jsonarray.push_back(jsonblock);
 
+		}
+	}
+	else {
+		return "NULL";
 	}
 	return jsonarray;
 
@@ -433,7 +402,7 @@ json FullNode::findBlockJSON(std::string message) {
 
 	
 
-	json blockJSON = json::parse(message); // esto es si el parser hace sobrevivir solo los datros json del string 
+	json blockJSON = json::parse(parseResponse(message)); 
 	Block block(blockJSON);
 	if (block.createMerkleTree()) {
 		return blockJSON;
@@ -447,7 +416,7 @@ json FullNode::findBlockJSON(std::string message) {
 json FullNode::findTxJSON(std::string message) {
 
 
-	json TxJSON = json::parse(message);
+	json TxJSON = json::parse(parseResponse(message));
 
 	return "NULL";
 }
@@ -456,7 +425,7 @@ json FullNode::findTxJSON(std::string message) {
 json FullNode::findFilterJSON(std::string message) {
 
 
-	json filterJSON = json::parse(message);
+	json filterJSON = json::parse(parseResponse(message));
 
 	return "NULL";
 }

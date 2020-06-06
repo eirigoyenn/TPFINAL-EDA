@@ -1,14 +1,14 @@
 #pragma once
 #include "Node.h"
 
-
+#define NOTFOUND -1
 
 class FullNode :
 	public Node
 {
 public:
 
-	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_);
+	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_,Blockchain& bchain);
 	~FullNode();
 
 	json fullCallback(std::string msg);

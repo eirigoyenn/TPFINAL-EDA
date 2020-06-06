@@ -74,7 +74,7 @@ class GraphicF3
 {
 public:
 
-	GraphicF3(std::vector<SPVNode*>* SPVArrayPTR, std::vector<FullNode*>* FULLArrayPTR);
+	GraphicF3(std::vector<SPVNode*>* SPVArrayPTR, std::vector<FullNode*>* FULLArrayPTR,Blockchain& bchain);
 	~GraphicF3();
 	bool GetError();
 	bool hayEvento(unsigned int estadoActualdeFSM); //Devuelve si durante una de las impresiones de displays hubo un evento (botones y cerrar pesataña)
@@ -168,7 +168,7 @@ private:
 
 	/*Puntero a BlockChain*/
 
-	Blockchain pBchain;				//TRUCHADA AHORA NO ES UN PUNTERO ES LA BLOCKCHAIN ENTERA
+	Blockchain& Bchain;				//TRUCHADA AHORA NO ES UN PUNTERO ES LA BLOCKCHAIN ENTERA
 
 };
 

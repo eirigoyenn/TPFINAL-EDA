@@ -1,6 +1,10 @@
 
 #include "FSM.h"
 
+
+
+
+
 FSM::~FSM()
 {
 	for (auto& node : spvArray) {
@@ -60,7 +64,7 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
-			FullNode * tempFullNode = new FullNode(io_context,static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO);
+			FullNode * tempFullNode = new FullNode(io_context,static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO,Bchain);
 			
 			fullArray.push_back(tempFullNode);
 
@@ -345,4 +349,8 @@ void FSM::Start_app_r_acc(genericEvent* ev)
 
 		this->state4Graphic = DASHBOARD_G;
 	}
+}
+
+Blockchain& FSM::getBchain() {
+	return Bchain;
 }
