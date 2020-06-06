@@ -1,13 +1,30 @@
 Se creo un nodo
 IP:localhost - ID: 0 - TYPE: FULL
-PUERTO:123
+PUERTO:12
 
 Se creo un nodo
 IP:localhost - ID: 1 - TYPE: FULL
-PUERTO:456
+PUERTO:14
 
 Se creo un nodo
 IP:localhost - ID: 2 - TYPE: FULL
-PUERTO:789
+PUERTO:16
+
+Conexion creada entre
+ Nodo con Puerto: 12
+ Nodo con Puerto:14
+
+Conexion creada entre
+ Nodo con Puerto: 12
+ Nodo con Puerto:16
+
+Conexion creada entre
+ Nodo con Puerto: 12
+ Nodo con Puerto:18
+
+Se envió un mensaje
+ Emisor: 0
+ Receptor
+   IP:     PUERTO:0
 
 

@@ -21,7 +21,7 @@ class evCrearNodo : public genericEvent
 {
 public:
 
-	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr,unsigned int ID_, string* nameofFile_)
+	evCrearNodo(RegistroNodo_t registro_, std::vector<RegistroNodo_t>*vectorArrPtr, int ID_, string* nameofFile_)
 	{
 		PUERTO = registro_.PUERTO;
 		IP = registro_.IP;
@@ -36,7 +36,7 @@ public:
 	uint TYPE;
 	uint PUERTO;
 	string IP;
-	unsigned int ID;
+	int ID;
 	string* nameofFile;
 };
 
@@ -129,7 +129,7 @@ private:
 	GraphicF3* GUI;
 	implEvent getGUIevent(unsigned int estado);
 	implEvent TranslateGUIEvent(GUIEvent ev);
-	unsigned int nodeID;
+	int nodeID;
 };
 
 #endif //GUIEVGENE

@@ -140,10 +140,10 @@ unsigned int FSM::getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes n
 	}
 	else
 	{
-		for (int i = 0; i < fullArray.size() && neighbourID == -1; i++)
+		for (int i = 0; i < spvArray.size() && neighbourID == -1; i++)		//CAMBIE ESTO A SPV
 		{
-			if (fullArray[i]->getPort() == neighbourPORT)
-				neighbourID = fullArray[i]->getID();
+			if (spvArray[i]->getPort() == neighbourPORT)
+				neighbourID = spvArray[i]->getID();
 		}
 		return neighbourID;
 	}
@@ -289,11 +289,37 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 		string* nameofFile;		
 		*/
 
+		for (int i = 0; i < fullArray.size() ; i++)
+		{
+			if (fullArray[i]->getPort() == (static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO))
+			{
+				cout << to_string((static_cast<evCrearConexion*>(ev)->Nodo2.ID)) << endl;
+				fullArray[i]->addNeighbour((static_cast<evCrearConexion*>(ev)->Nodo2.ID), (static_cast<evCrearConexion*>(ev)->Nodo2.IP), (static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO));
+				std::map<unsigned int,Neighbour>  temp2print;
+				temp2print = fullArray[i]->getNeighbours();
+					cout << temp2print.size() << endl;
+			}
+		}
+		for (int i = 0; i < spvArray.size(); i++)
+		{
+			if (spvArray[i]->getPort() == (static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO))
+			{
+				cout << to_string((static_cast<evCrearConexion*>(ev)->Nodo2.ID)) << endl;
+				spvArray[i]->addNeighbour((static_cast<evCrearConexion*>(ev)->Nodo2.ID), (static_cast<evCrearConexion*>(ev)->Nodo2.IP), (static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO));
+				cout << to_string(sizeof(spvArray[i])) << endl;
+				std::map<unsigned int, Neighbour>  temp2print;
+				temp2print = spvArray[i]->getNeighbours();
+					cout << temp2print.size() << endl ;
+
+			}
+			
+		}
+		
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
 		cout << static_cast<evCrearConexion*>(ev)->Nodo1.IP << endl;
-		input2file = "Conexion creada entre\n Nodo: " + static_cast<evCrearConexion*>(ev)->Nodo1.IP + "\n Nodo: " + static_cast<evCrearConexion*>(ev)->Nodo2.IP + "\n\n";
+		input2file = "Conexion creada entre\n Nodo con Puerto: " + to_string(static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO) + "\n Nodo con Puerto:" + to_string(static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO) + "\n\n";
 		cout << input2file << endl;
 
 		*static_cast<evCrearConexion*>(ev)->nameofFile += input2file;

@@ -118,11 +118,14 @@ private:
 	unsigned char clickedBlock(bool* checks, size_t size);
 	unsigned char numSelectedBlocks(bool* checks, size_t size);
 
+	int look4IDFromPort(int port);
+
 	/* VERIFICACIONES */
 	bool verify(string, string);		//Veryfy para creacion de nodo. Si es SPV no puede conectarse a otro SPV. IP PUERTO no pueden ser campos vacios. 
 	bool verify(uint, bool esSPV);			//Verify para BUSCAR VECINOS rellena el objeto ParticipantesMsj con info de emisor y sus vecinos y lo guarda en la queue
 	bool verify(unsigned int, string, string, int);		//Verify para ENVIAR MENSAJE relllena los campos faltantes del objeto ParticipantesMsj con el mensaje (verificado) y el vecino receptor
 
+	bool verify(int);
 	bool look4BlocksPath(string ChosenFile);
 
 	/* COLA DE EVENTOS QUE LEVANTA EL GUI EVENT GENERATOR */
