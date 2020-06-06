@@ -22,6 +22,7 @@ public:
 	NodeServer(boost::asio::io_context& io_context_, std::string IP, pcallback p, unsigned int port_);
 	void waitForConnection(void);
 	~NodeServer();
+
 private:
 
 

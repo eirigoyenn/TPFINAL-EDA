@@ -3,8 +3,6 @@
 
 
 
-
-
 FSM::~FSM()
 {
 	for (auto& node : spvArray) {
@@ -88,16 +86,60 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 
 void FSM::MultiiPerform(genericEvent* ev)
 {
+	if (static_cast<evMulti*>(ev)->getType() == NoEvent)
+	{
+		if (this->state4Graphic == DASHBOARD_G)
+		{
+			for (const auto& spvnode : spvArray) {
+				spvnode->listen1sec();
+				spvnode->performRequest();
+			}
 
-	for (const auto& spvnode : spvArray) {
-		spvnode->listen1sec();
-		spvnode->performRequest();
+			for (const auto& fullnode : fullArray) {
+				fullnode->listen1sec();
+				fullnode->performRequest();
+			}
+
+		}
+
+		/** ESTAMOS IMPRIMIENDO GENESIS **/
+
+		else if (this->state4Graphic == GENESIS_G)
+		{
+			/*
+				unsigned long int timeoutVar;
+			*/
+			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
+			/* RECORRO ESTADOS DE NODOS FULL */
+			for (auto& node : fullArray)
+			{
+
+				switch (node->getGenesisState())
+				{
+				case GenesisStates::IDLE:
+					if (node->getRandomTime() == TIME)			// x = i* 10  --> i = x / 10
+						node->setGenesisState(GenesisStates::COLLECTING);
+					break;
+
+				case GenesisStates::WAITINGLAYOUT:
+					break;
+
+				case GenesisStates::COLLECTING:
+					break;
+
+				case GenesisStates::NETCREATED:
+					break;
+
+				default:
+					break;
+				}
+			}
+
+			if (isNetworkReady())
+				this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
+		}
 	}
 
-	for (const auto& fullnode : fullArray) {
-		fullnode->listen1sec();
-		fullnode->performRequest();
-	}
 }
 
 unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
@@ -389,7 +431,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
-		input2file = "Se envió un mensaje\n Emisor: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID) + "\n Receptor\n   IP: " + NodoReceptor.IP + "    PUERTO:" + to_string(NodoReceptor.port) + "\n\n";
+		input2file = "Se envio un mensaje\n Emisor\n    PUERTO:: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.PUERTO) + "\n Receptor\n    PUERTO: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino].port) + "\n\n";
 
 		*static_cast<evEnviarMsj*>(ev)->nameofFile += input2file;
 	}
@@ -461,14 +503,90 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 {
 	/*
 		string JSONPath;
+		int * node_id;   ---> PUNTERO AL ID DE LA CLASE GUIEVENTGENERATOR
 	*/
+
+	//Seed for random timeout
+	srand((unsigned)time(NULL));
+
+
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
 	{
-		this->state4Graphic = CREATING_CONNECTION_G;
-	}
+		//this->state4Graphic = GENESIS_G;
 
+		this->state4Graphic = DASHBOARD_G; 
+
+		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
+		fs::path bPath(GenesisPath.c_str());
+		if (exists(bPath) && is_directory(bPath))
+		{
+			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
+			{
+				if (iterator->path().filename().string() == "redOrigen.json")
+				{
+					std::ifstream RED(iterator->path().filename().string().c_str(), std::ifstream::binary);
+					if (RED)
+					{
+						json RED_JDATA = json::parse(RED);
+
+						/* CREATING FULL NODES */
+						auto FULLNODEPORT = RED_JDATA["full-nodes"];
+						int i = 0;
+						for (const auto& FULL : FULLNODEPORT)
+						{
+							auto FULLPORT = FULL["puerto"];
+							cout << "FULL NODE PORT: " << FULLPORT << endl;
+							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULLPORT, Bchain, makeRandomTime() );
+							fullArray.push_back(tempFullNode);
+						}
+
+						/* CREATING SPV NODES */
+						auto SPVNODEPORT = RED_JDATA["spv-nodes"];
+						for (const auto& SPV : SPVNODEPORT)
+						{
+							auto SPVPORT = SPV["puerto"];
+							cout << "SPV NODE PORT: " << SPVPORT << endl;
+							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPVPORT);
+							spvArray.push_back(tempSpvNode);
+						}
+
+						//Asi cuando se creen nodos en modo apendice se empiezan a crear a partir de los ya existentes
+						*(static_cast<evBuscarVecinos*>(ev)->nodeIDPTR) = i;
+					}
+				}
+			}
+		}
+	}
 }
 
+unsigned int FSM::makeRandomTime(void)
+{
+	return ((rand() % 10000) + 10);
+}
+
+void FSM::RutaDefaultInitState(genericEvent* ev)
+{
+	/*
+		unsigned long int timeoutVar;
+	*/
+
+	if (static_cast<evMulti*>(ev)->getType() == NoEvent)			//Usamos evento mostrar nodos para no tener q crear evento nuevo 
+	{
+	
+	}
+}
+
+bool FSM::isNetworkReady(void)
+{
+	bool itsReady;
+	for (auto& node : fullArray) 
+	{
+		if (node->getGenesisState() != GenesisStates::NETCREATED)
+			itsReady = false;
+	}
+
+	return itsReady;
+}
 
 void FSM::Start_app_r_acc(genericEvent* ev)
 {

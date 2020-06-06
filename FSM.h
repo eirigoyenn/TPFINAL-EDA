@@ -2,6 +2,8 @@
 #include "GenericFSM.h"
 #include "GUIEventGenerator.h"
 #include <vector>
+#include <time.h>
+#include <stdlib.h>
 
 #define TX(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&FSM::x)) //casteo a funcion, por visual
 
@@ -24,19 +26,19 @@ private:
 	const fsmCell fsmTable[6][9] = {
 		//enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error,Back2Dashboard,  NoEvent, Quit };
 
-				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										Back2Dashboard										No event							BlockSelected
+				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										Back2Dashboard											No event								BlockSelected
 		//ESTADOS																										/*Start app mode en init state*/		/*SAtart genesis mode en init state*/
-		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	{InitState,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefault)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
+		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	  {ShwDashboard,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
 
-		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},			{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
+		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},			{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,		{ShwSelBlock,TX(BlockSelected_r_acc) }},
 
 		/*  Look4Veci  */		{{Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},					{Look4Veci,TX(RutaDefault)},			{Look4Veci,TX(RutaDefault)},				{ShwDashboard,TX(EnviarMensaje_r_acc)},     {ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{Look4Veci, TX(MultiiPerform) } ,		{ShwDashboard,TX(RutaDefault) }},
 
-		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},				{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwNodos, TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }},
+		/*  ShwNodos   */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},				{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwNodos, TX(MultiiPerform)} ,			{ShwDashboard,TX(RutaDefault) }},
 
 	/*  ShwSelectedBlock */		{{ShwNodos,TX(RutaDefault)},			{ShwNodos,TX(RutaDefault)},						{ShwNodos,TX(RutaDefault)},				{ShwNodos,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)}	,		{ShwSelBlock, TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }},
 		
-	/*   ShwError  */			{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},				{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} , 		{ShwError,TX(MultiiPerform)} ,		{ShwDashboard,TX(RutaDefault) }}
+	/*   ShwError  */			{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},				{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} , 		{ShwError,TX(MultiiPerform)} ,			{ShwDashboard,TX(RutaDefault) }}
 
 	};
 
@@ -47,28 +49,47 @@ private:
 
 	std::ofstream BulletinFileR_ACC;
 	boost::asio::io_context io_context;
-	void RutaDefault(genericEvent* ev);
-	void BuscarVecinos_r_acc(genericEvent* ev);
-	void EnviarMensaje_r_acc(genericEvent* ev);
-	void CrearNodo_r_acc(genericEvent* ev);
-	void CrearConexion_r_acc(genericEvent* ev);
-	void VolverADashboard_r_acc(genericEvent* ev);
-	void ErrorEncontrado_r_acc(genericEvent* ev);
-	void ShwNodos_r_acc(genericEvent* ev);
-	void BlockSelected_r_acc(genericEvent* ev);
-	void MultiiPerform(genericEvent* ev);
-	void Start_genesis_r_acc(genericEvent* ev);
-	void Start_app_r_acc(genericEvent* ev);
-	unsigned int getIndex(unsigned int senderID, nodeTypes nodeType);
-	unsigned int getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes nodetype);
 
+	void RutaDefault(genericEvent* ev);
+
+	void RutaDefaultInitState(genericEvent* ev);
+
+	void BuscarVecinos_r_acc(genericEvent* ev);
+
+	void EnviarMensaje_r_acc(genericEvent* ev);
+
+	void CrearNodo_r_acc(genericEvent* ev);
+
+	void CrearConexion_r_acc(genericEvent* ev);
+	
+	void VolverADashboard_r_acc(genericEvent* ev);
+	
+	void ErrorEncontrado_r_acc(genericEvent* ev);
+	
+	void ShwNodos_r_acc(genericEvent* ev);
+	
+	void BlockSelected_r_acc(genericEvent* ev);
+	
+	void MultiiPerform(genericEvent* ev);
+	
+	void Start_genesis_r_acc(genericEvent* ev);
+	
+	void Start_app_r_acc(genericEvent* ev);
+	
+	unsigned int getIndex(unsigned int senderID, nodeTypes nodeType);
+	
+	unsigned int getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes nodetype);
+	
+	void parsingRED(json);
+	
 	std::vector<SPVNode*> spvArray;
+	
 	std::vector<FullNode*> fullArray;
 
+	unsigned int makeRandomTime(void);
 
+	bool isNetworkReady();
 
 	Blockchain Bchain;
-//	void SaveNode(SPVNode& spvNode);
-//	void SaveNode(FullNode& fullNode);
 
 };

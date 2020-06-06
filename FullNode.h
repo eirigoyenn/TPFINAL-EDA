@@ -3,12 +3,17 @@
 
 #define NOTFOUND -1
 
+enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, NETCREATED};
+
 class FullNode :
 	public Node
 {
 public:
 
 	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_,Blockchain& bchain);
+	
+	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
+
 	~FullNode();
 
 	json fullCallback(std::string msg);
@@ -18,6 +23,11 @@ public:
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
+	
+	//Genesis
+	GenesisStates getGenesisState(void);
+	void setGenesisState(GenesisStates new_state);
+	unsigned long int getRandomTime(void);
 
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string BlockId);
@@ -40,5 +50,7 @@ private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
+	GenesisStates GenesisState;
+	unsigned long int RandomTime; 
 };
 

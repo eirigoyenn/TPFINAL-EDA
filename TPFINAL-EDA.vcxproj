@@ -189,6 +189,7 @@
     <None Include="blockChain32.json" />
     <None Include="blockChain4.json" />
     <None Include="packages.config" />
+    <None Include="redOrigen.json" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="MisNoticias.txt" />

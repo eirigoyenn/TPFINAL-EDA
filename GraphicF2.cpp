@@ -15,10 +15,11 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		SPVArrayPTR = SPVArrayPTR_;
 		FULLArrayPTR = FULLArrayPTR_;
 
-		BulletinFileName = "C:/Users/ique_/source/repos/TPFINAL-EDA/MisNoticias.txt";
-		MyHamachiIP = "";
+		BulletinFileName = "MisNoticias.txt";
+		MyHamachiIP = "localhost";
+		timeout = 0;
 
-		fs::path bPath("C:/Users/ique_/source/repos/TPFINAL-EDA");
+		fs::path bPath("C:/Users/inequ/source/repos/TPFINAL-EDA");
 		if (exists(bPath) && is_directory(bPath))
 		{
 			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)
@@ -77,6 +78,11 @@ bool GraphicF3::hayEvento(unsigned int EstadoActual)
 		ImGui_ImplAllegro5_ProcessEvent(&ev);
 	}
 
+	if (ev.type == ALLEGRO_EVENT_TIMER)
+	{
+		timeout += 1; 
+	}
+
 	if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
 	{
 		GUIQueue.push(GUIEvent::Quit);
@@ -123,6 +129,10 @@ void GraphicF3::print_current_state(unsigned int CurrentState)
 		print_Init_State();
 		break;
 
+	case GENESIS_G:
+		//print_Genesis_stages();				//GENESIS PRINTING FUNCTION ACA !!!!!
+		break;
+
 	default:
 		break;
 	}
@@ -141,19 +151,21 @@ void GraphicF3::print_Init_State()
 	ImGui::Begin(">> MODO 1 <<", 0, window_flags);
 
 
-	static char	PATH[MAX_PUERTO];
+	static char	PATH[400];
 	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "           GENESIS");
 
-	ImGui::InputText("PATH A ARCHIVO JSON CON NODOS:", PATH, sizeof(char) * MAX_PUERTO);
+	ImGui::InputText("PATH A ARCHIVO JSON CON NODOS:", PATH, sizeof(char) * 400);
 
 	if (ImGui::Button(" >> INICIAR PROGRAMA << ") && (sizeof(PATH) != 0))
 	{
+		string PATHH = PATH;
+		BlockJSONFile = PATHH;
 		MyHamachiIP = "localhost";				
 		GUIQueue.push(GUIEvent::BuscarVecinos);	
+		//timer4Genesis = al_create_timer(1 / 1000);		//Cada un milisegundo hay evento timer Esto se usara para calcular el timeout
 	}
 
 	ImGui::End();
-
 
 	ImGui::SetNextWindowPos(ImVec2(800, 50));
 	ImGui::SetNextWindowSize(ImVec2(450, 300));

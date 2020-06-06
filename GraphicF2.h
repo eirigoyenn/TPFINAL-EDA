@@ -62,7 +62,7 @@
 
 #define COLOR al_map_rgb(20,240,230)
 
-enum STATES { INITSTATE_G, CREATING_CONNECTION_G, DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWSELB_G, SHWERROR_G  };
+enum STATES { INITSTATE_G, GENESIS_G, DASHBOARD_G, LOOK4VECI_G, SHWNODOS_G, SHWSELB_G, SHWERROR_G  };
 
 enum { SHOWINFO, CALCULATEMERKLE, VALIDATEMERKLE, SHOWMERKLE };
 
@@ -85,6 +85,8 @@ public:
 	RegistroNodo_t getRegistro(void);
 	ParticipantesMsj_t getComunicacion(void);
 
+
+	//Cosas q son publicas pq fiaca DESPS PODEMOS ARREGLARLO pero meh 
 	std::ofstream BulletinFile;
 
 	std::string BulletinFileName;
@@ -94,6 +96,7 @@ public:
 
 	std::string MyHamachiIP;
 
+	unsigned long int timeout;
 
 
 private:
@@ -136,6 +139,7 @@ private:
 	ALLEGRO_EVENT_QUEUE* queue;
 	ALLEGRO_EVENT ev;
 	ALLEGRO_DISPLAY* display;
+	ALLEGRO_TIMER* timer4Genesis;
 
 	/* VARIABLES DE IMGUI */
 	ImGuiWindowFlags window_flags;

@@ -70,8 +70,9 @@ public:
 	eventTypes getType(void) { return BuscarVecinos; }
 
 	string JSONPath;
+	int* nodeIDPTR;
 	evBuscarVecinos(void) {}
-	evBuscarVecinos(string JPATH_) : JSONPath(JPATH_){}
+	evBuscarVecinos(string JPATH_, int* nodeID_) : JSONPath(JPATH_), nodeIDPTR(nodeID_){}
 };
 
 class evEnviarMsj : public genericEvent
@@ -112,6 +113,9 @@ class evMulti : public genericEvent
 {
 public:
 	eventTypes getType(void) { return NoEvent; }
+	evMulti(unsigned long int timeoutVar_) : timeoutVar(timeoutVar_) {}
+
+	unsigned long int timeoutVar;
 };
 
 //Hereda de clase eventGenerator (EventHandling.h)

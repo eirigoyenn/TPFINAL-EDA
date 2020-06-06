@@ -1,0 +1,26 @@
+﻿{
+
+  "full-nodes": [
+    {
+      "puerto": 2
+    },
+    {
+      "puerto": 4
+    },
+    {
+      "puerto": 6
+    }
+  ],
+  "spv-nodes": [
+    {
+      "puerto": 8
+    },
+    {
+      "puerto": 10
+    },
+    {
+      "puerto": 12
+    }
+  ]
+
+}

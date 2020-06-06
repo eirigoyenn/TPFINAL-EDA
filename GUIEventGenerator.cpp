@@ -31,7 +31,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::BuscarVecinos:
-		ret = new evBuscarVecinos(this->GUI->BlockJSONFile);
+		ret = new evBuscarVecinos(this->GUI->BlockJSONFile, &(this->nodeID));
 		break;
 
 	case implEvent::EnviarMsj:
@@ -55,7 +55,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::NoEvent:
-		ret = new evMulti;
+		ret = new evMulti(this->GUI->timeout);
 		break;
 	}
 
