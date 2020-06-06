@@ -659,7 +659,7 @@ void GraphicF3::print_look4Veci(void)
 	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected, CantCoins, PKey, selectedN))
 	{
 		Comunicaciones.front().MENSAJE = selected;
-		Comunicaciones.front().selectedVecino = selected;
+		Comunicaciones.front().selectedVecino = selectedN;
 		if (selected == TRANSACTION_Genv)
 		{
 			Comunicaciones.front().COINS_G = atoi(CantCoins);
@@ -992,6 +992,11 @@ bool GraphicF3::verify(int  ExisteEstePuerto)
 			ret = false;
 		}
 	}
+	if (ExisteEstePuerto % 2 != 0)
+	{
+		ret = false;
+	}
+
 	if (ret == false)
 	{
 		GUIQueue.push(GUIEvent::Error);

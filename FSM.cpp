@@ -27,7 +27,6 @@ void FSM::BuscarVecinos_r_acc(genericEvent* ev)
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)
 	{
 		this->state4Graphic = LOOK4VECI_G;
-		cout << "LOOK 4 VECINOS " << endl;
 	}
 }
 
@@ -180,6 +179,9 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		*****************/
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino];
+		/*******************
+		*  enviar filter  *
+		********************/
 		if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == FILTER_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
@@ -193,6 +195,29 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
 		}
 
+		/*******************
+		*  recibir filter  *
+		********************/
+		if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == FILTER_Grec)
+		{
+			//Recupero el ID del vecino y el del sender
+				//Ahora sender es vecino y el que recibe es el sender
+			
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+		
+			//Busco el índice en el arreglo de nodos FULL (sólo FULL pueden recibir mensajes tipo Filter).
+				//Aca cambio ahora es get index del neighbour pues el RECIBE 
+			unsigned int senderIndex = getIndex(neighbourID, FULL);
+			//Recupero la publickey del nodo y configuro para enviar el mensaje.
+			spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
+			//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
+		}
+
+
+		/************************
+		*  enviar get blocks   *
+		************************/
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKS_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
@@ -207,6 +232,29 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			fullArray[senderIndex]->GETBlocks(neighbourID, (string&) "75FF25E0", 1);
 		}
 
+
+		/************************
+		*  recibir get blocks   *
+		************************/
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKS_Grec)
+		{
+			//Recupero el ID del vecino y el del sender
+				//Ahora vecino es el que manda y sender recibe 
+
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			//Busco el índice del nodo en el arreglo (sólo nodos full usan envían este mensaje)
+			unsigned int senderIndex = getIndex(neighbourID, FULL);
+			//Recupero valores de count y blockID (en esta fase no importan)
+			//unsigned int count = 1;
+			//std::string blockID = "75FF25E0";
+			//Configuro el mensaje
+			fullArray[senderIndex]->GETBlocks(neighbourID, (string&)"75FF25E0", 1);
+		}
+
+		/*****************************
+		* get blocks headers enviar  *
+		******************************/
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKHEADERS_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
@@ -221,6 +269,28 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string&) "75FF25E0", 1);
 		}
 
+		/******************************
+		* get blocks headers recibir  *
+		*******************************/
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKHEADERS_Grec)
+		{
+			//Recupero el ID del vecino y el del sender
+				//Ahora vecino es el que manda y sender recibe 
+
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
+			unsigned int senderIndex = getIndex(neighbourID, FULL);
+			//Recupero valores de count y blockID (en esta fase no importan)
+			//unsigned int count = 1;
+			//std::string blockID = "75FF25E0";
+			//Configuro el mensaje
+			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string&)"75FF25E0", 1);
+		}
+
+		/******************************
+		*  get merekle block enviar   *
+		*******************************/
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == MERKLEBLOCK_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
@@ -235,6 +305,29 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "75FF25E0", (string) "7B857A14");
 		}
 
+		/******************************
+		*  get merekle block recibir  *
+		*******************************/
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == MERKLEBLOCK_Grec)
+		{
+		//Recupero el ID del vecino y el del sender
+			//Ahora vecino es el que manda y sender recibe 
+
+		int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+		unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+		//Busco el índice del nodo en el arreglo (sólo nodos spv envían este mensaje)
+		
+		unsigned int senderIndex = getIndex(neighbourID, SPV);
+		//Recupero valores de BlockID y TxId (en esta fase no importan)
+		//std::string TxID_="7B857A14"
+		//std::string blockID = "75FF25E0";
+		//Configuro el mensaje
+		fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string)"75FF25E0", (string)"7B857A14");
+		}
+
+		/*********************
+		*    block enviar    *
+		**********************/
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
@@ -247,6 +340,24 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			fullArray[senderIndex]->POSTBlock(neighbourID, (string&) "75FF25E0");
 		}
 
+		/*********************
+		*    block recibir    *
+		**********************/
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Grec)
+		{
+		//Recupero el ID del vecino y el del sender
+		int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+		unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+		//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
+		unsigned int senderIndex = getIndex(neighbourID, FULL);
+		//Recupero valor de BlockID (en esta fase no importa)
+		//std::string BlockID="75FF25E0";
+		fullArray[senderIndex]->POSTBlock(neighbourID, (string&)"75FF25E0");
+		}
+
+		/******************************
+		*    transaction enviar       *
+		*******************************/
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == TRANSACTION_Genv)
 		{
 			//Recupero el tipo de nodo
@@ -266,10 +377,19 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 				spvArray[getIndex(senderID, SPV)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
 		}
 
+
+		/******************************
+		*    transaction recibir       *
+		*******************************/
+		// ?????????????????????
+		// ?????????????????????
+		// ?????????????????????
+		// ?????????????????????
+
+
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
 		input2file = "Se envió un mensaje\n Emisor: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID) + "\n Receptor\n   IP: " + NodoReceptor.IP + "    PUERTO:" + to_string(NodoReceptor.port) + "\n\n";
-		cout << input2file << endl;
 
 		*static_cast<evEnviarMsj*>(ev)->nameofFile += input2file;
 	}
@@ -280,8 +400,6 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 
 	if (static_cast<evCrearConexion*>(ev)->getType() == CrearConexion)
 	{
-		cout << " CREAMOS CONEXION " << endl;
-
 		/*			
 		RegistroNodo_t Nodo1;
 		RegistroNodo_t Nodo2;
@@ -293,35 +411,22 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 		{
 			if (fullArray[i]->getPort() == (static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO))
 			{
-				cout << to_string((static_cast<evCrearConexion*>(ev)->Nodo2.ID)) << endl;
 				fullArray[i]->addNeighbour((static_cast<evCrearConexion*>(ev)->Nodo2.ID), (static_cast<evCrearConexion*>(ev)->Nodo2.IP), (static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO));
-				std::map<unsigned int,Neighbour>  temp2print;
-				temp2print = fullArray[i]->getNeighbours();
-					cout << temp2print.size() << endl;
 			}
 		}
 		for (int i = 0; i < spvArray.size(); i++)
 		{
 			if (spvArray[i]->getPort() == (static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO))
 			{
-				cout << to_string((static_cast<evCrearConexion*>(ev)->Nodo2.ID)) << endl;
 				spvArray[i]->addNeighbour((static_cast<evCrearConexion*>(ev)->Nodo2.ID), (static_cast<evCrearConexion*>(ev)->Nodo2.IP), (static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO));
-				cout << to_string(sizeof(spvArray[i])) << endl;
-				std::map<unsigned int, Neighbour>  temp2print;
-				temp2print = spvArray[i]->getNeighbours();
-					cout << temp2print.size() << endl ;
 
 			}
-			
 		}
 		
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
-		cout << static_cast<evCrearConexion*>(ev)->Nodo1.IP << endl;
 		input2file = "Conexion creada entre\n Nodo con Puerto: " + to_string(static_cast<evCrearConexion*>(ev)->Nodo1.PUERTO) + "\n Nodo con Puerto:" + to_string(static_cast<evCrearConexion*>(ev)->Nodo2.PUERTO) + "\n\n";
-		cout << input2file << endl;
-
 		*static_cast<evCrearConexion*>(ev)->nameofFile += input2file;
 
 	}
@@ -331,7 +436,6 @@ void FSM::ShwNodos_r_acc(genericEvent* ev)
 {
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == MostrarNodos)
 	{
-		cout << " MUESTRO NODOS " << endl;
 		this->state4Graphic = SHWNODOS_G;
 	}
 }
@@ -360,7 +464,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 	*/
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
 	{
-		cout << " START MODO GENESIS  " << static_cast<evBuscarVecinos*>(ev)->JSONPath << endl;
 		this->state4Graphic = CREATING_CONNECTION_G;
 	}
 
@@ -371,8 +474,6 @@ void FSM::Start_app_r_acc(genericEvent* ev)
 {
 	if (static_cast<evMostrarNodos*>(ev)->getType() == MostrarNodos)			//Usamos evento mostrar nodos para no tener q crear evento nuevo 
 	{
-		cout << " START MODO appendice  " << static_cast<evMostrarNodos*>(ev)->IP2Connect << endl;
-
 		this->state4Graphic = DASHBOARD_G;
 	}
 }
