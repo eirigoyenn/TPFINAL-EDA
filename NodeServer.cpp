@@ -111,7 +111,7 @@ void NodeServer::generateTextResponse(void) {
 /*Validates input given in GET request.*/
 void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent) {
 
-	if (!error) {
+	if (!error || error==boost::asio::error::eof) {
 
 		bool isInputOk = false;
 
