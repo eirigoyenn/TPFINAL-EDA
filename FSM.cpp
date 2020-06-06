@@ -219,6 +219,8 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		
 		std::vector<RegistroNodo_t>* NodoArray;
 		*****************/
+		cout << " Veamos si la info que le llega a r_acc esta bien:\n NUMERO DE VECINO SELECCIONADO:   " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino) << endl;
+		cout << "\nSU PUERTO:  " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino].port) << endl;
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino];
 		/*******************
@@ -359,7 +361,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 		//Busco el índice del nodo en el arreglo (sólo nodos spv envían este mensaje)
 		
-		unsigned int senderIndex = getIndex(neighbourID, SPV);
+		unsigned int senderIndex = getIndex(senderID, SPV);
 		//Recupero valores de BlockID y TxId (en esta fase no importan)
 		//std::string TxID_="7B857A14"
 		//std::string blockID = "75FF25E0";
@@ -391,7 +393,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 		unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
 		//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
-		unsigned int senderIndex = getIndex(neighbourID, FULL);
+		unsigned int senderIndex = getIndex(senderID, FULL);
 		//Recupero valor de BlockID (en esta fase no importa)
 		//std::string BlockID="75FF25E0";
 		fullArray[senderIndex]->POSTBlock(neighbourID, (string&)"75FF25E0");
@@ -535,7 +537,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						for (const auto& FULL : FULLNODEPORT)
 						{
 							auto FULLPORT = FULL["puerto"];
-							cout << "FULL NODE PORT: " << FULLPORT << endl;
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULLPORT, Bchain, makeRandomTime() );
 							fullArray.push_back(tempFullNode);
 						}
@@ -545,7 +546,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						for (const auto& SPV : SPVNODEPORT)
 						{
 							auto SPVPORT = SPV["puerto"];
-							cout << "SPV NODE PORT: " << SPVPORT << endl;
 							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPVPORT);
 							spvArray.push_back(tempSpvNode);
 						}

@@ -672,13 +672,15 @@ void GraphicF3::print_look4Veci(void)
 	{
 		Comunicaciones.front().MENSAJE = selected;
 		Comunicaciones.front().selectedVecino = selectedN;
+
+		cout << "ENVIO DE MSJ" << selectedN << endl; 
+		cout << selected << endl;
 		if (selected == TRANSACTION_Genv)
 		{
 			Comunicaciones.front().COINS_G = atoi(CantCoins);
 			Comunicaciones.front().PublicKey_G = PKey;
 		}
 		GUIQueue.push(GUIEvent::EnviarMsj);
-
 	}
 
 	ImGui::End();
