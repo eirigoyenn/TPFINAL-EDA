@@ -28,6 +28,12 @@ public:
 	GenesisStates getGenesisState(void);
 	void setGenesisState(GenesisStates new_state);
 	unsigned long int getRandomTime(void);
+	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
+	bool esteIndiceNOT_OK(int randID);
+	vector<int> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
+
+	//Funciones de genesis
+	bool POSTPing(unsigned int neighbourID);
 
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string BlockId);
@@ -46,11 +52,14 @@ public:
 	json findTxJSON(std::string message);
 	json findFilterJSON(std::string message);
 
+	
+
 private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
 	GenesisStates GenesisState;
 	unsigned long int RandomTime; 
+
 };
 

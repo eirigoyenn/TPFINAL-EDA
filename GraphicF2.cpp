@@ -642,10 +642,6 @@ void GraphicF3::print_look4Veci(void)
 				}
 				ImGui::TreePop();
 			}
-			else
-			{
-				selected = -1;
-			}
 
 			sprintf(bufSPV, "Get block headers");
 			{
@@ -670,10 +666,14 @@ void GraphicF3::print_look4Veci(void)
 	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected, CantCoins, PKey, selectedN))
 	{
 		Comunicaciones.front().MENSAJE = selected;
-		Comunicaciones.front().selectedVecino = selectedN;
+		Comunicaciones.front().VECINO.port = Comunicaciones.front().vecinosVector[selectedN].port;
+		Comunicaciones.front().VECINO.IP = Comunicaciones.front().vecinosVector[selectedN].IP;
+		Comunicaciones.front().VECINO.ID = Comunicaciones.front().vecinosVector[selectedN].ID;
 
-		cout << "ENVIO DE MSJ" << selectedN << endl; 
-		cout << selected << endl;
+		cout << Comunicaciones.front().VECINO.ID << endl;
+		cout << Comunicaciones.front().VECINO.IP << endl;
+		cout << Comunicaciones.front().VECINO.port << endl;
+
 		if (selected == TRANSACTION_Genv)
 		{
 			Comunicaciones.front().COINS_G = atoi(CantCoins);
@@ -1047,9 +1047,16 @@ bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 
 				tempParticipantes.NodosVecinosPT = itnodo->getNeighbours();
 				string tempIDVecino;
-
+				
 				for (auto vecinosAuto : tempParticipantes.NodosVecinosPT)
 				{
+					Neighbour tempNei;
+					tempNei.IP = vecinosAuto.second.IP;
+					tempNei.port = vecinosAuto.second.port;
+					tempNei.ID = vecinosAuto.first;
+					tempParticipantes.vecinosVector.push_back(tempNei);
+
+					tempParticipantes.vecinosVector.push_back(tempNei);
 					tempParticipantes.vecinos.push_back("IP: " + vecinosAuto.second.IP + " - PORT: " + to_string(vecinosAuto.second.port));
 				}
 
@@ -1077,6 +1084,12 @@ bool GraphicF3::verify(uint ExisteEsteNodo, bool esUnNodoSPV)
 
 				for (auto vecinos : tempParticipantes.NodosVecinosPT)
 				{
+					Neighbour tempNei;
+					tempNei.IP = vecinos.second.IP;
+					tempNei.port = vecinos.second.port;
+					tempNei.ID = vecinos.first;
+					tempParticipantes.vecinosVector.push_back(tempNei);
+
 					tempParticipantes.vecinos.push_back("IP: " + vecinos.second.IP + " - PORT: " + to_string(vecinos.second.port));
 				}
 

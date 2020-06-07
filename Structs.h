@@ -12,6 +12,7 @@ enum MSJESRec { BLOCK_Grec, TRANSACTION_Grec, MERKLEBLOCK_Grec, FILTER_Grec, GET
 struct Neighbour {
 	std::string IP;
 	int port;
+	int ID;
 };
 
 typedef struct RegistroNodo_t
@@ -37,8 +38,9 @@ typedef struct
 	std::string mensaje;
 	std::vector<std::string> vecinos;	//Esto se usa para la funcion combo de ImGui
 	int selectedVecino;
+	std::vector<Neighbour> vecinosVector;
 
-
+	Neighbour VECINO;
 	unsigned int MENSAJE;		//Tipo de mensaje 
 	unsigned int COINS_G;
 	std::string PublicKey_G;

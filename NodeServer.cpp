@@ -124,8 +124,7 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 
 
 		//If there's been a match ...\
-
-
+		
 		auto it = message.find(validator);
 
 		if (it != std::string::npos) {
