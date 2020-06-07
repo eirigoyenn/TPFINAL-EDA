@@ -1,5 +1,21 @@
-Se creo un nodo
-IP:localhost - ID: 9 - TYPE: SPV 
-PUERTO:346
+Conexion creada entre
+ Nodo con Puerto: 2
+ Nodo con Puerto:4
+
+Conexion creada entre
+ Nodo con Puerto: 2
+ Nodo con Puerto:6
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 2
+ Receptor
+    PUERTO: 4
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 2
+ Receptor
+    PUERTO: 6
 
 

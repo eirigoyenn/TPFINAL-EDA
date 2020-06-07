@@ -141,10 +141,6 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 		curl_multi_add_handle(multiHandle, easyHandler);
 		//Configuro el header
 
-
-
-		//Cofiguro el header
-
 	}
 }
 

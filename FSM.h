@@ -47,8 +47,11 @@ private:
 
 	/* FUNCIONES */
 	void Add2JSONfile(bool isFullNode, int puerto);
-			
+
+	void selectRandomFullNode(int i);
+
 	std::ofstream BulletinFileR_ACC;
+
 	boost::asio::io_context io_context;
 
 	void RutaDefault(genericEvent* ev);

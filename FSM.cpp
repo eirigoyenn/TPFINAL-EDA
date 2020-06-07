@@ -32,6 +32,7 @@ std::vector<SPVNode*>* FSM::getSPVArrayPTR(void)
 {
 	return &spvArray;
 }
+
 std::vector<FullNode*>* FSM::getFULLArrayPTR(void)
 {
 	return &fullArray;
@@ -126,6 +127,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 			*/
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
 			/* RECORRO ESTADOS DE NODOS FULL */
+			int ID2Ping;
 			for (auto& node : fullArray)
 			{
 
@@ -133,16 +135,39 @@ void FSM::MultiiPerform(genericEvent* ev)
 				{
 				case GenesisStates::IDLE:
 					if (node->getRandomTime() == TIME)			// x = i* 10  --> i = x / 10
-						node->setGenesisState(GenesisStates::COLLECTING);
+						node->setGenesisState(GenesisStates::COLLECTING);					
 					break;
 
 				case GenesisStates::WAITINGLAYOUT:
+					/*
+					* SI RECIBE NetworkLayout -> responde 200 OK + guarda info
+					* SI RECIBE Ping -> responde NetworkReady agrega a nodo emisor como vecino
+					*/
 					break;
 
 				case GenesisStates::COLLECTING:
+					
+					ID2Ping = node->selectRandomNode2Add(fullArray);
+					/*
+					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
+					//fullArray[node->getID]->POSTPing(ID2Ping);
+
+
+
+					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
+					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
+					*		SI RESPONDE NetworkReady -> algoritmo particular
+					*								 -> se agrega al que respondio como vecino
+					*								 -> cambio estado de nodo emisor a NETWORKCREATED
+					* SI RECIBE PING -> responde con NetworkReady y arma conexiones
+					*/
 					break;
 
 				case GenesisStates::NETCREATED:
+					/*
+					*
+					*
+					*/
 					break;
 
 				default:
@@ -234,17 +259,17 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		
 		std::vector<RegistroNodo_t>* NodoArray;
 		*****************/
-		cout << " Veamos si la info que le llega a r_acc esta bien:\n NUMERO DE VECINO SELECCIONADO:   " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino) << endl;
-		cout << "\nSU PUERTO:  " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino].port) << endl;
+		cout << " Veamos si la info que le llega a r_acc esta bien:\n "<< endl;
+		cout << "\nSU PUERTO:  " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.port) << endl;
 
-		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino];
+		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO;
 		/*******************
 		*  enviar filter  *
 		********************/
 		if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == FILTER_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			//Si se tiene el puerto del vecino pero no su ID puede hacerse int neighbourID=getneighbourIDfromPort(unsigned int neighbourPORT, nodeTypes neighbourType);
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice en el arreglo de nodos SPV (sólo SPV pueden enviar mensajes tipo Filter).
@@ -282,7 +307,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKS_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full usan envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -320,7 +345,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKHEADERS_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos spv envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, SPV);
@@ -357,7 +382,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == MERKLEBLOCK_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -396,7 +421,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Genv)
 		{
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
 			unsigned int senderIndex = getIndex(senderID, FULL);
@@ -469,7 +494,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
 		string input2file;
-		input2file = "Se envio un mensaje\n Emisor\n    PUERTO:: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.PUERTO) + "\n Receptor\n    PUERTO: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodosVecinosPT[static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino].port) + "\n\n";
+		input2file = "Se envio un mensaje\n Emisor\n    PUERTO:: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.PUERTO) + "\n Receptor\n    PUERTO: " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.port) + "\n\n";
 
 		*static_cast<evEnviarMsj*>(ev)->nameofFile += input2file;
 	}
@@ -590,8 +615,16 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 					}
 				}
 			}
+				selectRandomFullNode(fullArray.size() - 1);
 		}
 	}
+}
+
+void FSM::selectRandomFullNode(int i)
+{
+	int selectedNode = rand() % (i-1);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
+	fullArray[i]->setGenesisState(GenesisStates::COLLECTING);
+	
 }
 
 unsigned int FSM::makeRandomTime(void)
@@ -614,6 +647,8 @@ void FSM::RutaDefaultInitState(genericEvent* ev)
 bool FSM::isNetworkReady(void)
 {
 	bool itsReady;
+	itsReady = true;
+	
 	for (auto& node : fullArray) 
 	{
 		if (node->getGenesisState() != GenesisStates::NETCREATED)

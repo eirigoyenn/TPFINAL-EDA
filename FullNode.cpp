@@ -93,6 +93,36 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 	}
 }
 
+bool FullNode::POSTPing(unsigned int neighbourID)
+{
+	{
+		if (neighbours.find(neighbourID) != neighbours.end())
+		{
+			if (state == FREE)
+			{
+				state = CLIENT;
+				json noInfo = "";		//NO LE MANDO INFORMACION?
+				client->setIP(neighbours[neighbourID].IP);
+				client->setPort(neighbours[neighbourID].port);
+				client->usePOSTmethod("/eda_coin/PING", noInfo);
+				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+				return true;
+			}
+			else {
+				errorType = BUSY_NODE;
+				errorMessage = "Node is not available to perform as client";
+				return false;
+			}
+		}
+		else {
+			errorType = NOT_NEIGHBOUR;
+			errorMessage = "Requested server is not a Neighbour of current Node";
+			return false;
+		}
+	}
+}
+
+
 
 
 //POST Merkleblock
@@ -480,4 +510,33 @@ json FullNode::findFilterJSON(std::string message) {
 	json filterJSON = json::parse(parseResponse(message));
 
 	return "NULL";
+}
+
+
+int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
+{
+	int randomNum = rand() % fullarrayy.size();
+
+	for (; esteIndiceNOT_OK(randomNum); )		//Si esteIndiceOK devuelve true hay que buscar otro
+		randomNum = rand() % fullarrayy.size();
+
+	//Salimos del for cuando ya tenemos el random indice
+	this->subconjuntoNodosRED.push_back(randomNum);		//Lo guardamos en arreglo de indices
+	return randomNum;
+}
+
+bool FullNode::esteIndiceNOT_OK(int randID)
+{
+	bool result = false;
+	int i = 0;
+	while (i < (int)subconjuntoNodosRED.size())		//Si no hay Indices en vector entonces vale cualquier numero
+	{
+		if (subconjuntoNodosRED[i] == randID)		//Si ese randIndice esta el la lista de indices entonces no lo podemos usar
+			result = true;
+	}
+	if (i == this->getID())		//ID es igual al indice
+		result = true;
+
+	return result;
+
 }
