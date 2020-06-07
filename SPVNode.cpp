@@ -49,8 +49,10 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 		{
 			state = CLIENT;
 			json jsonFilter = createJSONFilter(key);
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
+			/*client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);*/
+			client->setIP(neighbours.find(neighbourID)->second.IP);
+			client->setPort(neighbours.find(neighbourID)->second.port);
 			client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
 			return true;
 		}
@@ -67,8 +69,10 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, u
 		if (state == FREE)
 		{
 			state = CLIENT;
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
+			/*client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);*/
+			client->setIP(neighbours.find(neighbourID)->second.IP);
+			client->setPort(neighbours.find(neighbourID)->second.port);
 			client->useGETmethod("/eda_coin/get_block_header?block_id=" + blockID_ + "&count=" + to_string(count));
 			return true;
 		}

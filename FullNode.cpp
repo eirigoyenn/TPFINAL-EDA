@@ -73,8 +73,10 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 			{
 				state = CLIENT;
 				json block = createJSONBlock(blockId);
-				client->setIP(neighbours[neighbourID].IP);
-				client->setPort(neighbours[neighbourID].port);
+				/*client->setIP(neighbours[neighbourID].IP);
+				client->setPort(neighbours[neighbourID].port);*/
+				client->setIP(neighbours.find(neighbourID)->second.IP);
+				client->setPort(neighbours.find(neighbourID)->second.port);
 				client->usePOSTmethod("/eda_coin/send_block", block);
 				//client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 				return true;
@@ -106,8 +108,10 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 		{
 			state = CLIENT;
 			json jsonMerkleBlock = createJSONMerkleBlock(BlockID_, TxID);
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
+			/*client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);*/
+			client->setIP(neighbours.find(neighbourID)->second.IP);
+			client->setPort(neighbours.find(neighbourID)->second.port);
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
 			//client->performRequest();
 			return true;
@@ -132,8 +136,10 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 		if (state == FREE)
 		{
 			state = CLIENT;
-			client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);
+			/*client->setIP(neighbours[neighbourID].IP);
+			client->setPort(neighbours[neighbourID].port);*/
+			client->setIP(neighbours.find(neighbourID)->second.IP);
+			client->setPort(neighbours.find(neighbourID)->second.port);
 			client->useGETmethod("/eda_coin/get_blocks?block_id=" + blockID_ + "&count=" + to_string(count));
 		}
 		else return false;
