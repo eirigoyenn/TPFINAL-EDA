@@ -1,31 +1,19 @@
-Conexion creada entre
- Nodo con Puerto: 8
- Nodo con Puerto:2
+Se creo un nodo
+IP:localhost - ID: 0 - TYPE: FULL
+PUERTO:60
+
+Se creo un nodo
+IP:localhost - ID: 1 - TYPE: SPV 
+PUERTO:80
 
 Conexion creada entre
- Nodo con Puerto: 8
- Nodo con Puerto:4
-
-Conexion creada entre
- Nodo con Puerto: 8
- Nodo con Puerto:6
+ Nodo con Puerto: 60
+ Nodo con Puerto:80
 
 Se envio un mensaje
  Emisor
-    PUERTO:: 8
+    PUERTO:: 60
  Receptor
-    PUERTO: 4
-
-Se envio un mensaje
- Emisor
-    PUERTO:: 8
- Receptor
-    PUERTO: 4
-
-Se envio un mensaje
- Emisor
-    PUERTO:: 8
- Receptor
-    PUERTO: 4
+    PUERTO: 0
 
 

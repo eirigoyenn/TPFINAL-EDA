@@ -18,7 +18,6 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		BulletinFileName = "MisNoticias.txt";
 		MyHamachiIP = "localhost";
 		timeout = 0;
-
 		fs::path bPath("C:/Users/inequ/source/repos/TPFINAL-EDA");
 		if (exists(bPath) && is_directory(bPath))
 		{
@@ -540,7 +539,7 @@ void GraphicF3::print_look4Veci(void)
 	{
 	case FULL:
 		char buf[32];
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
+		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
 
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
@@ -565,7 +564,7 @@ void GraphicF3::print_look4Veci(void)
 					selected = FILTER_Grec;
 			}
 			ImGui::TreePop();
-		}
+		}*/
 
 		ImGui::Text(" ");
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
@@ -611,7 +610,7 @@ void GraphicF3::print_look4Veci(void)
 	case SPV:
 
 		char bufSPV[32];
-		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
+		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
 
 		if (ImGui::TreeNode("Operaciones para recibir:"))
 		{
@@ -621,7 +620,7 @@ void GraphicF3::print_look4Veci(void)
 					selected = MERKLEBLOCK_Grec;
 			}
 			ImGui::TreePop();
-		}
+		}*/
 
 		ImGui::Text(" ");
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
