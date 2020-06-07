@@ -642,10 +642,6 @@ void GraphicF3::print_look4Veci(void)
 				}
 				ImGui::TreePop();
 			}
-			else
-			{
-				selected = -1;
-			}
 
 			sprintf(bufSPV, "Get block headers");
 			{

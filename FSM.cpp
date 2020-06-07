@@ -276,6 +276,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero la publickey del nodo y configuro para enviar el mensaje.
 			spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
+
 			//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
 		}
 
@@ -316,6 +317,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
 			fullArray[senderIndex]->GETBlocks(neighbourID, (string&) "75FF25E0", 1);
+
 		}
 
 
@@ -391,7 +393,8 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
 			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "75FF25E0", (string) "7B857A14");
-		}
+
+}
 
 		/******************************
 		*  POST merekle block recibir  *
@@ -463,9 +466,13 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 				unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero el monto a enviar y la wallet a donde enviar y configuro el mensaje
 			if (type == FULL)
+			{
 				fullArray[getIndex(senderID, FULL)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
+			}
 			else
+			{
 				spvArray[getIndex(senderID, SPV)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
+			}
 		}
 
 
