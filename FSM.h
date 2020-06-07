@@ -46,7 +46,8 @@ private:
 	//These actions should not generate fsmEvents
 
 	/* FUNCIONES */
-
+	void Add2JSONfile(bool isFullNode, int puerto);
+			
 	std::ofstream BulletinFileR_ACC;
 	boost::asio::io_context io_context;
 
@@ -90,6 +91,7 @@ private:
 
 	bool isNetworkReady();
 
+	json InputRED;
 	Blockchain Bchain;
 
 };

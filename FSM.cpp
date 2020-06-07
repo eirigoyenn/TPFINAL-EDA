@@ -58,6 +58,8 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			
 			spvArray.push_back(TempSPVNode);
 			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: SPV \nPUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
+			Add2JSONfile(false, static_cast<evCrearNodo*>(ev)->PUERTO);
+
 		}
 		if (static_cast<evCrearNodo*>(ev)->TYPE == FULL)
 		{
@@ -66,6 +68,7 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 			fullArray.push_back(tempFullNode);
 
 			input2file = "Se creo un nodo\nIP:" + static_cast<evCrearNodo*>(ev)->IP + " - ID: " + to_string(static_cast<evCrearNodo*>(ev)->ID) + " - TYPE: FULL\n" + "PUERTO:" + to_string(static_cast<evCrearNodo*>(ev)->PUERTO) + "\n\n";
+			Add2JSONfile(true, static_cast<evCrearNodo*>(ev)->PUERTO);
 		}
 
 		RegistroNodo_t tempReg(static_cast<evCrearNodo*>(ev)->ID, static_cast<evCrearNodo*>(ev)->IP, static_cast<evCrearNodo*>(ev)->PUERTO, static_cast<evCrearNodo*>(ev)->TYPE);
@@ -82,6 +85,18 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 		static_cast<evCrearNodo*>(ev)->NodoArray->push_back(tempNewNodo);
 
 	}
+}
+
+void FSM::Add2JSONfile(bool isFullNode, int puerto_)
+{
+	//En InputRed tengo el json ya parsead
+	if(isFullNode)
+		InputRED["full-nodes"] += puerto_;
+	else
+		InputRED["spv-nodes"] += puerto_;
+
+	std::ofstream input_file("redOrigen.json");
+	input_file << InputRED;
 }
 
 void FSM::MultiiPerform(genericEvent* ev)
@@ -551,14 +566,14 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 					if (RED)
 					{
 						json RED_JDATA = json::parse(RED);
+						this->InputRED = RED_JDATA; 
 
 						/* CREATING FULL NODES */
 						auto FULLNODEPORT = RED_JDATA["full-nodes"];
 						int i = 0;
 						for (const auto& FULL : FULLNODEPORT)
 						{
-							auto FULLPORT = FULL["puerto"];
-							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULLPORT, Bchain, makeRandomTime() );
+							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain, makeRandomTime() );
 							fullArray.push_back(tempFullNode);
 						}
 
@@ -566,8 +581,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						auto SPVNODEPORT = RED_JDATA["spv-nodes"];
 						for (const auto& SPV : SPVNODEPORT)
 						{
-							auto SPVPORT = SPV["puerto"];
-							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPVPORT);
+							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPV);
 							spvArray.push_back(tempSpvNode);
 						}
 
