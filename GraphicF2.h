@@ -105,6 +105,7 @@ private:
 	bool ImguiInit();
 
 	/* FUNCIONES DE IMPRESION */
+	void print_Genesis_stages();
 	void print_current_state(unsigned int CurrentState);
 	void print_Init_State();
 	void print_Dashboard();//Imprime el menu principal al comienzo del programa

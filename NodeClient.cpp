@@ -81,6 +81,12 @@ bool NodeClient::performRequest(void)
 			if (sizeof(reply) != 0){
 				std::cout << "Reply before parsing: " << reply << std::endl;
 				parsedReply = json::parse(reply);
+
+				std::cout << std::endl << "PARSED REPLY " << parsedReply << std::endl;
+
+				///////
+				//////
+				/////////// HACER ALGO CHE
 			}
 			res = false;
 		}
@@ -136,7 +142,6 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	struct curl_slist* list = nullptr;
 	reply.clear();
 	myjson = data.dump();
-	struct curl_slist* chunk = NULL;
 
 	std::string line("Content-Type: application/json;charset=UTF-8");
 
@@ -145,15 +150,13 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	{
 
 		list = curl_slist_append(list, line.c_str());
+		list = curl_slist_append(list, "Expect:");
+
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
 
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, myjson.c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, myjson.size());
 		curl_easy_setopt(easyHandler, CURLOPT_POST, 1);
-
-		chunk = curl_slist_append(chunk, "Expect:");
-		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, chunk);
-
 
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());

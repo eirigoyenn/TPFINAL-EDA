@@ -129,12 +129,45 @@ void GraphicF3::print_current_state(unsigned int CurrentState)
 		break;
 
 	case GENESIS_G:
-		//print_Genesis_stages();				//GENESIS PRINTING FUNCTION ACA !!!!!
+		print_Genesis_stages();				
 		break;
 
 	default:
 		break;
 	}
+}
+
+void GraphicF3::print_Genesis_stages()
+{
+	ImGui_ImplAllegro5_NewFrame();
+	ImGui::NewFrame();
+
+	/***********************************
+		VENTANA: ESTAMOS EN MODO GENESIS
+	************************************/
+	ImGui::SetNextWindowPos(ImVec2(200, 50));
+	ImGui::SetNextWindowSize(ImVec2(600, 600));
+	ImGui::Begin("GENESIS", 0, window_flags);
+
+	ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "GENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESISGENESIS");
+
+
+	ImGui::End();
+
+
+
+
+	/*************************************************************************************************
+			FIN IMPRESION VENTANAS
+	**************************************************************************************************/
+	//Rendering
+	ImGui::Render();
+
+	al_clear_to_color(COLOR);
+
+	ImGui_ImplAllegro5_RenderDrawData(ImGui::GetDrawData());
+	al_flip_display();
+
 }
 
 void GraphicF3::print_Init_State()
@@ -161,7 +194,7 @@ void GraphicF3::print_Init_State()
 		BlockJSONFile = PATHH;
 		MyHamachiIP = "localhost";				
 		GUIQueue.push(GUIEvent::BuscarVecinos);	
-		//timer4Genesis = al_create_timer(1 / 1000);		//Cada un milisegundo hay evento timer Esto se usara para calcular el timeout
+		al_start_timer(timer4Genesis);
 	}
 
 	ImGui::End();
@@ -1167,6 +1200,8 @@ bool GraphicF3::AllegroInit()
 					if (al_init_primitives_addon())
 					{
 						if (this->queue = al_create_event_queue()) {
+
+							timer4Genesis = al_create_timer(0.1);		//Cada un milisegundo hay evento timer Esto se usara para calcular el timeout
 
 							return true;
 						}

@@ -125,6 +125,12 @@ void FSM::MultiiPerform(genericEvent* ev)
 			/*
 				unsigned long int timeoutVar;
 			*/
+
+			for (const auto& fullnode : fullArray) {
+				fullnode->listen1sec();
+				fullnode->performRequest();
+			}
+
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
 			/* RECORRO ESTADOS DE NODOS FULL */
 			int ID2Ping;
@@ -146,11 +152,13 @@ void FSM::MultiiPerform(genericEvent* ev)
 					break;
 
 				case GenesisStates::COLLECTING:
-					
+				
 					ID2Ping = node->selectRandomNode2Add(fullArray);
+
+					
 					/*
 					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
-					//fullArray[node->getID]->POSTPing(ID2Ping);
+					fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
 
 					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
 					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
@@ -480,9 +488,9 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
 	{
-		//this->state4Graphic = GENESIS_G;
+		this->state4Graphic = GENESIS_G;
 
-		this->state4Graphic = DASHBOARD_G; 
+		//this->state4Graphic = DASHBOARD_G; 
 
 		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
 		fs::path bPath(GenesisPath.c_str());

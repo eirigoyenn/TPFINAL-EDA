@@ -202,41 +202,31 @@ bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, u
 /*********************************************************
 *             	MENSAJES PARA EL GENSIS
 *********************************************************/
-/*
-bool FullNode::POSTPing(unsigned int neighbourID)
+
+bool FullNode::POSTPing(int neighbourPORT)
 {
+	if (state == FREE)
 	{
-		if (neighbours.find(neighbourID) != neighbours.end())
-		{
-			if (state == FREE)
-			{
-				client = new NodeClient(IP, port + 1);
-				state = CLIENT;
-				json noInfo = "";		//NO LE MANDO INFORMACION?
-				unsigned int port_ = neighbours[neighbourID].port;
-				client->setPort(port_);
-				client->setIP(IP);
-				client->usePOSTmethod("/eda_coin/PING", noInfo);
+		client = new NodeClient(IP, port + 1);
+		state = CLIENT;
+		json noInfo = "";		//NO LE MANDO INFORMACION?
+		unsigned int port_ = neighbourPORT;
+		client->setPort(port_);
+		client->setIP(IP);
+		client->usePOSTmethod("/eda_coin/PING", noInfo);
 
-				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 
-				return true;
-			}
-			else {
-				errorType = BUSY_NODE;
-				errorMessage = "Node is not available to perform as client";
-				return false;
-			}
-		}
-		else {
-			errorType = NOT_NEIGHBOUR;
-			errorMessage = "Requested server is not a Neighbour of current Node";
-			return false;
-		}
+		return true;
+	}
+	else {
+		errorType = BUSY_NODE;
+		errorMessage = "Node is not available to perform as client";
+		return false;
 	}
 }
 
-bool FullNode::POSTNetworkLayout(unsigned int neighbourID)
+bool FullNode::POSTNetworkLayout(int neighbourID)
 {
 	if (state == FREE)
 	{
@@ -263,6 +253,7 @@ bool FullNode::POSTNetworkLayout(unsigned int neighbourID)
 
 }
 
+/*
 bool FullNode::POSTNetwork_NotReady(unsigned int neighbourID)
 {
 	if (state == FREE)
@@ -319,6 +310,8 @@ bool FullNode::POSTNetwork_Ready(unsigned int neighbourID)
 	}
 }
 */
+
+
 /************************************************************************************************
 *					               GENERADORES DE JSON											*
 *																								*

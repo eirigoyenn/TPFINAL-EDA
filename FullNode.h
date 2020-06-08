@@ -34,10 +34,10 @@ public:
 	vector<int> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
 
 	//MENSAJES de genesis
-	bool POSTPing(unsigned int neighbourID);
-	bool POSTNetworkLayout(unsigned int neighbourID);
-	bool POSTNetwork_NotReady(unsigned int neighbourID);
-	bool POSTNetwork_Ready(unsigned int neighbourID);
+	bool POSTPing(int neighbourPORT);
+	bool POSTNetworkLayout(int neighbourPORT);
+		//bool POSTNetwork_NotReady(unsigned int neighbourID);
+		//bool POSTNetwork_Ready(unsigned int neighbourID);
 
 
 	//Funciones para generar los JSON de los mensajes
