@@ -99,47 +99,6 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string blockId)
 }
 
 
-/*********************************************************
-*             	MENSAJES PARA EL GENSIS
-*********************************************************/
-
-bool FullNode::POSTPing(unsigned int neighbourID)
-{
-	{
-		if (neighbours.find(neighbourID) != neighbours.end())
-		{
-			if (state == FREE)
-			{
-				client = new NodeClient(IP, port+1);
-				state = CLIENT;
-				json noInfo = "";		//NO LE MANDO INFORMACION?
-				unsigned int port_ = neighbours[neighbourID].port;
-				client->setPort(port_);
-				client->setIP(IP);
-				client->usePOSTmethod("/eda_coin/PING", noInfo);
-
-				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-
-				return true;
-			}
-			else {
-				errorType = BUSY_NODE;
-				errorMessage = "Node is not available to perform as client";
-				return false;
-			}
-		}
-		else {
-			errorType = NOT_NEIGHBOUR;
-			errorMessage = "Requested server is not a Neighbour of current Node";
-			return false;
-		}
-	}
-}
-
-
-
-
-
 //POST Merkleblock
 //Recibe el ID del vecino
 //Para terminar de ejecutar usar performRequest del nodo (NO de client!!)
@@ -240,8 +199,126 @@ bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, u
 	}
 }
 
+/*********************************************************
+*             	MENSAJES PARA EL GENSIS
+*********************************************************/
+/*
+bool FullNode::POSTPing(unsigned int neighbourID)
+{
+	{
+		if (neighbours.find(neighbourID) != neighbours.end())
+		{
+			if (state == FREE)
+			{
+				client = new NodeClient(IP, port + 1);
+				state = CLIENT;
+				json noInfo = "";		//NO LE MANDO INFORMACION?
+				unsigned int port_ = neighbours[neighbourID].port;
+				client->setPort(port_);
+				client->setIP(IP);
+				client->usePOSTmethod("/eda_coin/PING", noInfo);
+
+				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+				return true;
+			}
+			else {
+				errorType = BUSY_NODE;
+				errorMessage = "Node is not available to perform as client";
+				return false;
+			}
+		}
+		else {
+			errorType = NOT_NEIGHBOUR;
+			errorMessage = "Requested server is not a Neighbour of current Node";
+			return false;
+		}
+	}
+}
+
+bool FullNode::POSTNetworkLayout(unsigned int neighbourID)
+{
+	if (state == FREE)
+	{
+		client = new NodeClient(IP, port + 1);
+		state = CLIENT;
+		json jsonLayout;
+		
+		jsonLayout["CAMPO"] = 0;
+
+		unsigned int port_ = neighbours[neighbourID].port;
+		client->setPort(port_);
+		client->setIP(IP);
+		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
+
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+		return true;
+	}
+	else {
+		errorType = BUSY_NODE;
+		errorMessage = "Node is not available to perform as client";
+		return false;
+	}
+
+}
+
+bool FullNode::POSTNetwork_NotReady(unsigned int neighbourID)
+{
+	if (state == FREE)
+	{
+		client = new NodeClient(IP, port + 1);
+		state = CLIENT;
 
 
+		unsigned int port_ = neighbours[neighbourID].port;
+		client->setPort(port_);
+		client->setIP(IP);
+		client->usePOSTmethod("/eda_coin/NETWORK_NOTREADY", noInfo);
+
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		return true;
+	}
+	else {
+		errorType = BUSY_NODE;
+		errorMessage = "Node is not available to perform as client";
+		return false;
+	}
+}
+
+bool FullNode::POSTNetwork_Ready(unsigned int neighbourID)
+{
+	{
+		if (neighbours.find(neighbourID) != neighbours.end())
+		{
+			if (state == FREE)
+			{
+				client = new NodeClient(IP, port + 1);
+				state = CLIENT;
+				json noInfo = "";		//NO LE MANDO INFORMACION?
+				unsigned int port_ = neighbours[neighbourID].port;
+				client->setPort(port_);
+				client->setIP(IP);
+				client->usePOSTmethod("/eda_coin/NETWORK_READY", noInfo);
+
+				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+				return true;
+			}
+			else {
+				errorType = BUSY_NODE;
+				errorMessage = "Node is not available to perform as client";
+				return false;
+			}
+		}
+		else {
+			errorType = NOT_NEIGHBOUR;
+			errorMessage = "Requested server is not a Neighbour of current Node";
+			return false;
+		}
+	}
+}
+*/
 /************************************************************************************************
 *					               GENERADORES DE JSON											*
 *																								*
@@ -308,16 +385,6 @@ json FullNode::createJSONMerkleBlock(std::string BlockID_, std::string TxID)
 	MerkleBlock["txPos"] = 1;
 	MerkleBlock["merklePath"] = block.getMerklePath(tx);
 	
-	/*json path = json::array();
-	MerkleBlock["blockid"] = NodeBlockchain.getBlocksArr()[0].getBlockID();
-	MerkleBlock["tx"] = createJSONTx(NodeBlockchain.getBlocksArr()[0].getTxVector()[0]);
-	MerkleBlock["txPos"] = 1;
-	for (int i = 0; i < NodeBlockchain.getBlocksArr()[0].getTxVector()[0].nTxin; i++)
-	{
-	path.push_back(json::object({ {"ID","1234"} }));
-	}
-	MerkleBlock["merklePath"] = path;
-	return MerkleBlock;*/
 	return MerkleBlock;
 }
 
@@ -393,6 +460,76 @@ json FullNode::fullCallback(string message) {
 				result["status"] = false;
 			}
 		}
+		/***********************
+			mensajes GENESIS
+		************************/
+		/**********
+		si me llega un ping
+		***********/
+		else if ((message.find("PING") != std::string::npos))
+		{
+			if (GenesisState == GenesisStates::IDLE) {
+
+				result["status"] = "NETWORK_NOTREADY";
+
+				//Cambio estado del nodo full
+				GenesisState = GenesisStates::WAITINGLAYOUT;
+
+			}
+			else if (GenesisState == GenesisStates::COLLECTING) {
+
+				//AlgoritmoParticular();
+				result["status"] = "NETWORK_READY";
+
+				//Cambio estado del nodo full
+				GenesisState = GenesisStates::NETCREATED;
+			}
+			else if (GenesisState == GenesisStates::WAITINGLAYOUT)
+			{
+				//AlgoritmoParticular();
+				result["status"] = "NETWORK_READY";
+
+				//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
+
+			}		
+		}
+
+		/**********
+		si me llega el network layout
+		***********/
+		else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
+		{
+				if (GenesisState == GenesisStates::WAITINGLAYOUT) {
+					result["status"] = "NETWORK_READY";
+
+					//Cambio estado del nodo full
+					GenesisState = GenesisStates::NETCREATED;
+
+					//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
+				}
+		}
+
+		/**********
+		si me llega el network ready
+		***********/
+		else if ((message.find("NETWORK_READY") != std::string::npos))
+		{		
+			if (GenesisState == GenesisStates::COLLECTING) {
+				result["status"] = "NETWORKREADY";
+
+				//Cambio estado del nodo full
+				GenesisState = GenesisStates::NETCREATED;
+
+				//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
+
+				//AlgoritmoParticular();
+			}
+		}
+		else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
+		{
+			//??? ACA NO HAGO NADA
+		}
+
 		else {
 			result["status"] = false;
 		}

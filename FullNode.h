@@ -4,6 +4,7 @@
 #define NOTFOUND -1
 
 enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, NETCREATED};
+enum class GenesisEvents{ PING, NETWORKLAYOUT,  NETWORKNOTREADY, NETWORKREADY};
 
 class FullNode :
 	public Node
@@ -32,8 +33,12 @@ public:
 	bool esteIndiceNOT_OK(int randID);
 	vector<int> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
 
-	//Funciones de genesis
+	//MENSAJES de genesis
 	bool POSTPing(unsigned int neighbourID);
+	bool POSTNetworkLayout(unsigned int neighbourID);
+	bool POSTNetwork_NotReady(unsigned int neighbourID);
+	bool POSTNetwork_Ready(unsigned int neighbourID);
+
 
 	//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string BlockId);
@@ -60,6 +65,7 @@ private:
 	std::vector <std::string> filters;
 	GenesisStates GenesisState;
 	unsigned long int RandomTime; 
+	std::queue<GenesisEvents> EventQueueGenesis;
 
 };
 

@@ -157,7 +157,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 					*		SI RESPONDE NetworkReady -> algoritmo particular
 					*								 -> se agrega al que respondio como vecino
 					*								 -> cambio estado de nodo emisor a NETWORKCREATED
-					* SI RECIBE PING -> responde con NetworkReady y arma conexiones
+				    * SI RECIBE PING -> responde con NetworkReady y arma conexiones
 					*/
 					break;
 

@@ -195,11 +195,6 @@ json Node::createJSONTx(Transaction Tx_)
 	jsonTx["vin"] = vin;
 
 	auto vout = json::array(); //Cargo el JSON de Vout dentro del JSON de transacciones.
-	//for (auto vout_ = 0; vout_ < Tx_.nTxout; vout_++)
-	//{
-	//	vout.push_back(json::object({ { "amount",Tx_.vOut[vout_].amount },{ "publicid", Tx_.vOut[vout_].publicID} }));
-	//}
-	//jsonTx["vout"] = vout;
 
 	return jsonTx;
 }

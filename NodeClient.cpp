@@ -148,7 +148,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
 
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, myjson.c_str());
-		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, -1);
+		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, myjson.size());
 		curl_easy_setopt(easyHandler, CURLOPT_POST, 1);
 
 		chunk = curl_slist_append(chunk, "Expect:");
