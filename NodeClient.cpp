@@ -3,7 +3,7 @@
 
 NodeClient::NodeClient(std::string IP_, int port_)
 {
-	IP = IP_;
+	IP = "127.0.0.1";
 	own_port = port_;
 	stillRunning = 1;
 	easyHandler = curl_easy_init();
@@ -56,6 +56,7 @@ bool NodeClient::performRequest(void)
 			curl_easy_cleanup(easyHandler);
 			curl_multi_cleanup(multiHandle);
 			stillRunning = 1;
+			std::cout << reply << std::endl;
 			parsedReply = json::parse(reply);
 			res = false;
 		}
@@ -229,12 +230,18 @@ std::string NodeClient::getErrorMsg(void)
 	return errorMsg;
 }
 
-size_t myCallback(void* contents, size_t size, size_t nmemb, void* userp)
+size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 {
-	size_t realsize = size * nmemb;
-	char* data = (char*)contents;
-	//fprintf(stdout, "%s",data);
-	std::string* s = (std::string*)userp;
-	s->append(data, realsize);
-	return realsize;						//recordar siempre devolver realsize
+	std::string* userDataPtr = (std::string*) userp;
+	userDataPtr->append(contents, size * nmemb);
+
+	return size * nmemb;
+
+
+	//size_t realsize = size * nmemb;
+	//char* data = (char*)contents;
+	////fprintf(stdout, "%s",data);
+	//std::string* s = (std::string*)userp;
+	//s->append(data, realsize);
+	//return realsize;						//recordar siempre devolver realsize
 }

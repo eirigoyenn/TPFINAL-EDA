@@ -581,8 +581,8 @@ void GraphicF3::print_look4Veci(void)
 
 				sprintf(buf, "Transaccion");
 				{
-					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
-						selected = GETBLOCKS_Genv;
+					if (ImGui::Selectable(buf, selected == TRANSACTION_Genv))
+						selected = TRANSACTION_Genv;
 				}
 				ImGui::TreePop();
 			}

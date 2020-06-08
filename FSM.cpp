@@ -457,7 +457,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//Recupero el tipo de nodo emsior
 			nodeTypes type = (nodeTypes)static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.TYPE;
 			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
 			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
 			//Busco el índice del nodo en el arreglo
 			if (type == FULL)

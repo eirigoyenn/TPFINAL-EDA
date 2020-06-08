@@ -14,7 +14,7 @@ Node::~Node()
 
 bool Node::performRequest(void)
 {
-	if (client)
+	if (client!=nullptr)
 	{
 		if (state == CLIENT)
 		{

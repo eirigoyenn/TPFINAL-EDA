@@ -1,11 +1,19 @@
+Se creo un nodo
+IP:localhost - ID: 0 - TYPE: FULL
+PUERTO:80
+
+Se creo un nodo
+IP:localhost - ID: 1 - TYPE: FULL
+PUERTO:50
+
 Conexion creada entre
- Nodo con Puerto: 2
- Nodo con Puerto:4
+ Nodo con Puerto: 80
+ Nodo con Puerto:50
 
 Se envio un mensaje
  Emisor
-    PUERTO:: 2
+    PUERTO:: 80
  Receptor
-    PUERTO: 4
+    PUERTO: 50
 
 
