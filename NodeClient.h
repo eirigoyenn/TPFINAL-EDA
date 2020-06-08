@@ -13,6 +13,7 @@ class NodeClient
 {
 public:
 	NodeClient(std::string IP_, int port_);
+	NodeClient(std::string IP, int own_port, int neighbour_port);
 	NodeClient();
 	~NodeClient();
 

@@ -8,7 +8,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	client = new NodeClient(IP, port +1);
+	//client = new NodeClient(IP, port +1);
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
@@ -18,7 +18,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	client = new NodeClient(IP, port + 1);
+	//client = new NodeClient(IP, port + 1);
 	GenesisState = GenesisStates::IDLE;
 	RandomTime = randomTime_;
 }
@@ -71,6 +71,7 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 		{
 			if (state == FREE)
 			{
+				client = new NodeClient(IP, port+1);
 				state = CLIENT;
 				json block = createJSONBlock(blockId);
 				unsigned int port_ = neighbours[neighbourID].port;
@@ -107,6 +108,7 @@ bool FullNode::POSTPing(unsigned int neighbourID)
 		{
 			if (state == FREE)
 			{
+				client = new NodeClient(IP, port+1);
 				state = CLIENT;
 				json noInfo = "";		//NO LE MANDO INFORMACION?
 				unsigned int port_ = neighbours[neighbourID].port;
@@ -148,6 +150,7 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			json jsonMerkleBlock = createJSONMerkleBlock(BlockID_, TxID);
 			unsigned int port_ = neighbours[neighbourID].port;
@@ -182,6 +185,7 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
@@ -206,6 +210,7 @@ bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, u
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			json jsonTx;
 
 			jsonTx["nTxin"] = 0;

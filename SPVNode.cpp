@@ -8,7 +8,7 @@ SPVNode::SPVNode(boost::asio::io_context& io_context_,unsigned int ID_, std::str
 	ID = ID_;
 	IP = IP_;
 	port = port_;
-	client = new NodeClient(IP, port);
+	//client = new NodeClient(IP, port);
 	server = new NodeServer(io_context_,IP,boost::bind(&SPVNode::SpvCallback,this,_1),port);
 }
 
@@ -47,6 +47,7 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			json jsonFilter = createJSONFilter(key);
 			unsigned int port_ = neighbours[neighbourID].port;
@@ -71,6 +72,7 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, u
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
@@ -93,6 +95,7 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 	{
 		if (state == FREE)
 		{
+			client = new NodeClient(IP, port+1);
 			json jsonTx;
 
 			jsonTx["nTxin"] = 0;

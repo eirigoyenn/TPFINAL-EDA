@@ -20,6 +20,26 @@ NodeClient::NodeClient(std::string IP_, int port_)
 	}
 }
 
+NodeClient::NodeClient(std::string IP, int own_port, int neighbour_port)
+{
+	IP = "127.0.0.1";
+	own_port = own_port;
+	port = neighbour_port;
+	stillRunning = 1;
+	easyHandler = curl_easy_init();
+	if (!easyHandler)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+	multiHandle = curl_multi_init();
+	if (!multiHandle)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+}
+
 NodeClient::NodeClient()
 {
 }

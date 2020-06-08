@@ -4,16 +4,34 @@ PUERTO:80
 
 Se creo un nodo
 IP:localhost - ID: 1 - TYPE: FULL
-PUERTO:50
+PUERTO:60
+
+Se creo un nodo
+IP:localhost - ID: 2 - TYPE: FULL
+PUERTO:10
+
+Se creo un nodo
+IP:localhost - ID: 3 - TYPE: SPV 
+PUERTO:90
+
+Se creo un nodo
+IP:localhost - ID: 4 - TYPE: SPV 
+PUERTO:40
 
 Conexion creada entre
- Nodo con Puerto: 80
- Nodo con Puerto:50
+ Nodo con Puerto: 90
+ Nodo con Puerto:10
 
 Se envio un mensaje
  Emisor
-    PUERTO:: 80
+    PUERTO:: 90
  Receptor
-    PUERTO: 50
+    PUERTO: 10
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 90
+ Receptor
+    PUERTO: 10
 
 
