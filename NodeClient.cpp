@@ -77,13 +77,13 @@ bool NodeClient::performRequest(void)
 			curl_multi_cleanup(multiHandle);
 			stillRunning = 1;
 
+			std::cout << std::endl << "PARSED REPLY " << reply << std::endl;
 
 			if (sizeof(reply) != 0){
 				std::cout << "Reply before parsing: " << reply << std::endl;
 				parsedReply = json::parse(reply);
 
-				std::cout << std::endl << "PARSED REPLY " << parsedReply << std::endl;
-
+			
 				///////
 				//////
 				/////////// HACER ALGO CHE

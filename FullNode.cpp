@@ -453,76 +453,6 @@ json FullNode::fullCallback(string message) {
 				result["status"] = false;
 			}
 		}
-		/***********************
-			mensajes GENESIS
-		************************/
-		/**********
-		si me llega un ping
-		***********/
-		else if ((message.find("PING") != std::string::npos))
-		{
-			if (GenesisState == GenesisStates::IDLE) {
-
-				result["status"] = "NETWORK_NOTREADY";
-
-				//Cambio estado del nodo full
-				GenesisState = GenesisStates::WAITINGLAYOUT;
-
-			}
-			else if (GenesisState == GenesisStates::COLLECTING) {
-
-				//AlgoritmoParticular();
-				result["status"] = "NETWORK_READY";
-
-				//Cambio estado del nodo full
-				GenesisState = GenesisStates::NETCREATED;
-			}
-			else if (GenesisState == GenesisStates::WAITINGLAYOUT)
-			{
-				//AlgoritmoParticular();
-				result["status"] = "NETWORK_READY";
-
-				//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
-
-			}		
-		}
-
-		/**********
-		si me llega el network layout
-		***********/
-		else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
-		{
-				if (GenesisState == GenesisStates::WAITINGLAYOUT) {
-					result["status"] = "NETWORK_READY";
-
-					//Cambio estado del nodo full
-					GenesisState = GenesisStates::NETCREATED;
-
-					//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-				}
-		}
-
-		/**********
-		si me llega el network ready
-		***********/
-		else if ((message.find("NETWORK_READY") != std::string::npos))
-		{		
-			if (GenesisState == GenesisStates::COLLECTING) {
-				result["status"] = "NETWORKREADY";
-
-				//Cambio estado del nodo full
-				GenesisState = GenesisStates::NETCREATED;
-
-				//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-
-				//AlgoritmoParticular();
-			}
-		}
-		else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
-		{
-			//??? ACA NO HAGO NADA
-		}
-
 		else {
 			result["status"] = false;
 		}
@@ -555,7 +485,76 @@ json FullNode::fullCallback(string message) {
 			result["status"] = false;
 		}
 	}
-	//else if((message.find("ing") != std::string::npos))
+	/***********************
+	mensajes GENESIS
+	************************/
+	/**********
+		si me llega un ping
+	***********/
+	else if ((message.find("PING") != std::string::npos))
+	{
+		if (GenesisState == GenesisStates::IDLE) {
+
+			result["result"] = "NETWORK_NOTREADY";
+
+			//Cambio estado del nodo full
+			GenesisState = GenesisStates::WAITINGLAYOUT;
+
+		}
+		else if (GenesisState == GenesisStates::COLLECTING) {
+
+			//AlgoritmoParticular();
+			result["result"] = "NETWORK_READY";
+
+			//Cambio estado del nodo full
+			GenesisState = GenesisStates::NETCREATED;
+		}
+		else if (GenesisState == GenesisStates::WAITINGLAYOUT)
+		{
+			//AlgoritmoParticular();
+			result["result"] = "NETWORK_READY";
+
+			//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
+
+		}
+	}
+
+	/**********
+	si me llega el network layout
+	***********/
+	else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
+	{
+		if (GenesisState == GenesisStates::WAITINGLAYOUT) {
+			result["result"] = "NETWORK_READY";
+
+			//Cambio estado del nodo full
+			GenesisState = GenesisStates::NETCREATED;
+
+			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
+		}
+	}
+
+	/**********
+	si me llega el network ready
+	***********/
+	else if ((message.find("NETWORK_READY") != std::string::npos))
+	{
+		if (GenesisState == GenesisStates::COLLECTING) {
+			result["result"] = "NETWORKREADY";
+
+			//Cambio estado del nodo full
+			GenesisState = GenesisStates::NETCREATED;
+
+			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
+
+			//AlgoritmoParticular();
+		}
+	}
+	else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
+	{
+		//??? ACA NO HAGO NADA
+	}
+
 	else {
 		result["status"] = false;
 	}
@@ -681,7 +680,7 @@ int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
 {
 	int randomNum = rand() % fullarrayy.size();
 
-	for (; esteIndiceNOT_OK(randomNum); )		//Si esteIndiceOK devuelve true hay que buscar otro
+	for (; esteIndiceNOT_OK(randomNum) ; )		//Si esteIndiceOK devuelve true hay que buscar otro
 		randomNum = rand() % fullarrayy.size();
 
 	//Salimos del for cuando ya tenemos el random indice
@@ -692,13 +691,7 @@ int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
 bool FullNode::esteIndiceNOT_OK(int randID)
 {
 	bool result = false;
-	int i = 0;
-	while (i < (int)subconjuntoNodosRED.size())		//Si no hay Indices en vector entonces vale cualquier numero
-	{
-		if (subconjuntoNodosRED[i] == randID)		//Si ese randIndice esta el la lista de indices entonces no lo podemos usar
-			result = true;
-	}
-	if (i == this->getID())		//ID es igual al indice
+	if (randID == this->getID())		//ID es igual al indice
 		result = true;
 
 	return result;

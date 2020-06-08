@@ -127,8 +127,11 @@ void FSM::MultiiPerform(genericEvent* ev)
 			*/
 
 			for (const auto& fullnode : fullArray) {
-				fullnode->listen1sec();
-				fullnode->performRequest();
+				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
+				{
+					fullnode->listen1sec();
+					fullnode->performRequest();
+				}
 			}
 
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
