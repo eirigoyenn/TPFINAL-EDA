@@ -77,10 +77,6 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, u
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
 			client->setIP(IP);
-			/*client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);*/
-			//client->setIP(neighbours.find(neighbourID)->second.IP);
-			//client->setPort(neighbours.find(neighbourID)->second.port);
 			client->useGETmethod("/eda_coin/get_block_header?block_id=" + blockID_ + "&count=" + to_string(count));
 			return true;
 		}

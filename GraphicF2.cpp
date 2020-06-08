@@ -18,7 +18,7 @@ GraphicF3::GraphicF3(std::vector<SPVNode*>* SPVArrayPTR_, std::vector<FullNode*>
 		BulletinFileName = "MisNoticias.txt";
 		MyHamachiIP = "localhost";
 		timeout = 0;
-		fs::path bPath("C:/Users/Dell/source/repos/TPFINAL-EDA");
+		fs::path bPath("C:/Users/inequ/source/repos/TPFINAL-EDA");
 		if (exists(bPath) && is_directory(bPath))
 		{
 			for (fs::directory_iterator iterator(bPath); iterator != fs::directory_iterator(); iterator++)

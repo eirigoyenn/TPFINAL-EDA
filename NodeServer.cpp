@@ -88,26 +88,6 @@ void NodeServer::messageCallback(const boost::system::error_code& error, size_t 
 }
 
 
-
-
-/*Generates http response, according to validity of input.*/
-void NodeServer::generateTextResponse(void) {
-
-	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + std::to_string(result.dump().size()) +
-		"\r\nContent-Type: application/json; charset=iso-8859-1\r\n\r\n";
-
-	msg = result.dump();
-	//std::string mensaje = "{\"name\":\"Lucas\"}";
-	ServerOutput += msg.substr(0, msg.size());
-
-	ServerOutput += "\r\n\r\n";
-	std::cout << ServerOutput;
-
-}
-
-
-
-
 /*Validates input given in GET request.*/
 void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent) {
 
@@ -118,25 +98,22 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 		//Creates string message from request.
 		std::string message(ClientInput);
 
-
 		//Validator has the da coin form.
 		std::string validator = "/eda_coin/";
-
 
 		//If there's been a match ...\
 		
 		auto it = message.find(validator);
 
-		if (it != std::string::npos) {
-
-
+		if (it != std::string::npos) 
+		{
 			result = pcback(message);
 
 
 			if (result["status"] == true) {
 
 				std::cout << "client sent correct input" << std::endl;
-
+				
 			}
 			else
 			{
@@ -153,6 +130,7 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 			std::cout << "Client sent wrong input.\n";
 
 		}
+
 		answer();
 		waitForConnection();
 	}
@@ -165,7 +143,6 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 
 /*Responds to input.*/
 void NodeServer::answer() {
-
 
 	generateTextResponse();
 
@@ -181,11 +158,25 @@ void NodeServer::answer() {
 	);
 
 
-
 	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
 	socket.close();
 
 }
+
+/*Generates http response, according to validity of input.*/
+void NodeServer::generateTextResponse(void) {
+
+	ServerOutput = "HTTP/1.1 200 OK\r\nDate:" + makeDaytimeString(0) + "Content-Length:" + std::to_string(result.dump().size()) +
+		"\r\nContent-Type: application/json; charset=iso-8859-1\r\n\r\n";
+
+	msg = result.dump();
+	ServerOutput += msg.substr(0, msg.size());
+
+	ServerOutput += "\r\n\r\n";
+	std::cout << ServerOutput;
+
+}
+
 
 void NodeServer::response_sent_cb(const boost::system::error_code& error,
 	size_t bytes_sent)

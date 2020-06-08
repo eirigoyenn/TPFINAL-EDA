@@ -8,12 +8,27 @@
 #include <boost/lexical_cast.hpp>
 #include <boost\asio\ip\address.hpp>
 #include <functional>
+#include <queue>
 
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
 #define MAXSIZE 1000
 typedef std::function<json(std::string)> pcallback;
+
+enum class CONNECTIONS {GET_BLOCK_HEADER, GETBLOCK, POST, NO};
+//Eventos son los mensajes que se envian o reciben
+enum class GENESIS_EVENTS {PING, NETWORK_LAYOUT, NETWORKRADY, NETWROTKNOTREADY};
+
+
+class Sockets {
+public:
+	Sockets(boost::asio::io_context& io_context) : socket(io_context) {}
+	boost::asio::ip::tcp::socket socket;
+	CONNECTIONS type;
+};
+
+
 
 class NodeServer {
 
@@ -55,5 +70,7 @@ private:
 	size_t FileLenght;
 
 	std::string ClientInputStr;
+
+	std::queue<Sockets> SocketQueue;
 
 };

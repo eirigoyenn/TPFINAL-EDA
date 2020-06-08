@@ -8,7 +8,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	//client = new NodeClient(IP, port +1);
+//	client = new NodeClient(IP, port +1);
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
@@ -18,8 +18,10 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	//client = new NodeClient(IP, port + 1);
+//	client = new NodeClient(IP, port + 1);
 	GenesisState = GenesisStates::IDLE;
+	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
+
 	RandomTime = randomTime_;
 }
 
@@ -77,14 +79,10 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 				unsigned int port_ = neighbours[neighbourID].port;
 				client->setPort(port_);
 				client->setIP(IP);
-				//client->setIP(neighbours[neighbourID].IP);
-				//client->setPort(neighbours[neighbourID].port);
-				//client->setIP(neighbours.find(neighbourID)->second.IP);
-				//client->setPort(neighbours.find(neighbourID)->second.port);
 				client->usePOSTmethod("/eda_coin/send_block", block);
 
 				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-			
+
 				return true;
 			}
 			else {
@@ -100,6 +98,11 @@ bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
 		}
 	}
 }
+
+
+/*********************************************************
+*             	MENSAJES PARA EL GENSIS
+*********************************************************/
 
 bool FullNode::POSTPing(unsigned int neighbourID)
 {
@@ -114,14 +117,10 @@ bool FullNode::POSTPing(unsigned int neighbourID)
 				unsigned int port_ = neighbours[neighbourID].port;
 				client->setPort(port_);
 				client->setIP(IP);
-				//client->setIP(neighbours[neighbourID].IP);
-				//client->setPort(neighbours[neighbourID].port);
-				//client->setIP(neighbours.find(neighbourID)->second.IP);
-				//client->setPort(neighbours.find(neighbourID)->second.port);
 				client->usePOSTmethod("/eda_coin/PING", noInfo);
 
 				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-				
+
 				return true;
 			}
 			else {
@@ -137,6 +136,7 @@ bool FullNode::POSTPing(unsigned int neighbourID)
 		}
 	}
 }
+
 
 
 
@@ -156,13 +156,9 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
 			client->setIP(IP);
-			//client->setIP(neighbours[neighbourID].IP);
-			//client->setPort(neighbours[neighbourID].port);
-			//client->setIP(neighbours.find(neighbourID)->second.IP);
-			//client->setPort(neighbours.find(neighbourID)->second.port);
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
 
-			client->performRequest();
+			this->performRequest();
 
 			return true;
 		}
@@ -190,12 +186,9 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsign
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
 			client->setIP(IP);
-			//client->setIP(neighbours[neighbourID].IP);
-			//client->setPort(neighbours[neighbourID].port);
-			//client->setIP(neighbours.find(neighbourID)->second.IP);
-			//client->setPort(neighbours.find(neighbourID)->second.port);
 			client->useGETmethod("/eda_coin/get_blocks?block_id=" + blockID_ + "&count=" + to_string(count));
 			client->performRequest();
+
 			return true;
 
 		}

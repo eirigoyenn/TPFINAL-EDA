@@ -119,7 +119,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 		}
 
 		/** ESTAMOS IMPRIMIENDO GENESIS **/
-
+		
 		else if (this->state4Graphic == GENESIS_G)
 		{
 			/*
@@ -151,8 +151,6 @@ void FSM::MultiiPerform(genericEvent* ev)
 					/*
 					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
 					//fullArray[node->getID]->POSTPing(ID2Ping);
-
-
 
 					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
 					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
@@ -605,6 +603,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						int i = 0;
 						for (const auto& FULL : FULLNODEPORT)
 						{
+							cout << FULL << endl;
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain, makeRandomTime() );
 							fullArray.push_back(tempFullNode);
 						}
@@ -613,6 +612,8 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						auto SPVNODEPORT = RED_JDATA["spv-nodes"];
 						for (const auto& SPV : SPVNODEPORT)
 						{
+							cout << SPV << endl;
+
 							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPV);
 							spvArray.push_back(tempSpvNode);
 						}

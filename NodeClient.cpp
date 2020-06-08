@@ -3,7 +3,7 @@
 
 NodeClient::NodeClient(std::string IP_, int port_)
 {
-	IP = "127.0.0.1";
+	IP = "localhost";
 	own_port = port_;
 	stillRunning = 1;
 	easyHandler = curl_easy_init();
@@ -22,7 +22,7 @@ NodeClient::NodeClient(std::string IP_, int port_)
 
 NodeClient::NodeClient(std::string IP, int own_port, int neighbour_port)
 {
-	IP = "127.0.0.1";
+	IP = "localhost";
 	own_port = own_port;
 	port = neighbour_port;
 	stillRunning = 1;
@@ -49,7 +49,6 @@ NodeClient::~NodeClient()
 {
 	curl_easy_cleanup(easyHandler);
 	curl_multi_cleanup(multiHandle);
-
 	curl_multi_remove_handle(multiHandle, easyHandler);
 }
 
@@ -58,7 +57,6 @@ bool NodeClient::performRequest(void)
 	if (IP.length() && port)
 	{
 		/*static bool isFinished = false;*/
-
 		bool res = true;
 		if (stillRunning)
 		{
@@ -67,6 +65,8 @@ bool NodeClient::performRequest(void)
 			{
 				errorCode = CURLPERFORM_ERROR;
 				errorMsg = "Could not perform curl.";
+				curl_easy_cleanup(easyHandler);
+				curl_multi_cleanup(multiHandle);
 			}
 
 		}
@@ -76,8 +76,19 @@ bool NodeClient::performRequest(void)
 			curl_easy_cleanup(easyHandler);
 			curl_multi_cleanup(multiHandle);
 			stillRunning = 1;
-			std::cout << reply << std::endl;
-			parsedReply = json::parse(reply);
+
+			try {
+				parsedReply = json::parse(reply);
+			}
+			catch (std::exception&) {
+				json excpt;
+				excpt["status"] = false;
+				excpt["result"] = 1;
+			}
+		/*	if (sizeof(reply) != 0){
+				std::cout << "Reply before parsing: " << reply << std::endl;
+				parsedReply = json::parse(reply);
+			}*/
 			res = false;
 		}
 
@@ -95,7 +106,7 @@ void NodeClient::useGETmethod(std::string path_)
 {
 	method = GET;
 	host = IP + ":" + std::to_string(port);
-	url = "http://" + host + path_;
+	url = "http://" + host + '/' + path_;
 	//struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
@@ -128,7 +139,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 {
 	method = POST;
 	host = IP + ":" + std::to_string(port);
-	url = "http://" + host + path_;
+	url = "http://" + host + '/' +  path_;
 	struct curl_slist* list = nullptr;
 	reply.clear();
 	myjson = data.dump();
