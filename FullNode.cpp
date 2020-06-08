@@ -159,6 +159,7 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
 
 			this->performRequest();
+			delete client;
 
 			return true;
 		}

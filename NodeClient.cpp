@@ -139,7 +139,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 {
 	method = POST;
 	host = IP + ":" + std::to_string(port);
-	url = "http://" + host + '/' +  path_;
+	url = "http://" + host + path_;
 	struct curl_slist* list = nullptr;
 	reply.clear();
 	myjson = data.dump();
