@@ -26,7 +26,7 @@ public:
 	//Funciones para mensajes
 	bool POSTFilter(unsigned int neighbourID, std::string key);
 	
-	bool GETBlockHeader(unsigned int neighbourID, std::string& blockID_, unsigned int count);
+	bool GETBlockHeader(unsigned int neighbourID, std::string blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
 	//Funciones para generar los JSON de los mensajes

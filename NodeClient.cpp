@@ -77,18 +77,11 @@ bool NodeClient::performRequest(void)
 			curl_multi_cleanup(multiHandle);
 			stillRunning = 1;
 
-			try {
-				parsedReply = json::parse(reply);
-			}
-			catch (std::exception&) {
-				json excpt;
-				excpt["status"] = false;
-				excpt["result"] = 1;
-			}
-		/*	if (sizeof(reply) != 0){
+
+			if (sizeof(reply) != 0){
 				std::cout << "Reply before parsing: " << reply << std::endl;
 				parsedReply = json::parse(reply);
-			}*/
+			}
 			res = false;
 		}
 
@@ -106,7 +99,7 @@ void NodeClient::useGETmethod(std::string path_)
 {
 	method = GET;
 	host = IP + ":" + std::to_string(port);
-	url = "http://" + host + '/' + path_;
+	url = "http://" + host + path_;
 	//struct curl_slist* list = nullptr;
 
 	/*Prosigo a configurar CURL para usar con el método GET*/
@@ -135,7 +128,7 @@ void NodeClient::useGETmethod(std::string path_)
 	}
 }
 
-void NodeClient::usePOSTmethod(std::string path_, const json& data)
+void NodeClient::usePOSTmethod(std::string path_, const json data)
 {
 	method = POST;
 	host = IP + ":" + std::to_string(port);
@@ -143,17 +136,25 @@ void NodeClient::usePOSTmethod(std::string path_, const json& data)
 	struct curl_slist* list = nullptr;
 	reply.clear();
 	myjson = data.dump();
+	struct curl_slist* chunk = NULL;
 
 	std::string line("Content-Type: application/json;charset=UTF-8");
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
 	if (errorCode == ERROR_FREE2)
 	{
+
 		list = curl_slist_append(list, line.c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, myjson.c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, -1);
 		curl_easy_setopt(easyHandler, CURLOPT_POST, 1);
+
+		chunk = curl_slist_append(chunk, "Expect:");
+		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, chunk);
+
+
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
 		//Configuro el propio puerto

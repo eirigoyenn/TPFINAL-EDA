@@ -275,30 +275,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//Recupero la publickey del nodo y configuro para enviar el mensaje.
 			spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
 
-			//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
 		}
-
-		/*******************
-		*  recibir filter  *
-		********************/
-		//En este caso el "emisor" (en realidad no es emisor, sino nodo seleccionado)
-		//es un nodo full, no obstante el mensaje sigue siendo uno de post (en este caso por parte del vecino que es un nodo SPV)
-		//if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == FILTER_Grec)
-		//{
-		//	//Recupero el ID del vecino y el del sender
-		//		//Ahora sender es vecino y el que recibe es el sender
-		//	
-		//	int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//	unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		//
-		//	//Busco el índice en el arreglo de nodos SPV (sólo FULL pueden recibir mensajes tipo Filter).
-		//		//senderID ya contiene el ID del SPV (que vino como vecino pero se recuperó antes).
-		//	unsigned int senderIndex = getIndex(senderID, SPV);
-		//	//Recupero la publickey del nodo y configuro para enviar el mensaje.
-		//	spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
-		//	//¿Se puede forzar a que ocurra una vez el estado NOTHING acá? sino igual creo que no importa
-		//}
-
 
 		/************************
 		*  enviar get blocks   *
@@ -314,30 +291,9 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			fullArray[senderIndex]->GETBlocks(neighbourID, (string&) "75FF25E0", 1);
+			fullArray[senderIndex]->GETBlocks(neighbourID, (string) "84CB2573", 1);
 
 		}
-
-
-		/************************
-		*  recibir get blocks   *
-		************************/
-		//Nuevamente, recibir un pedido de getblocks es que el vecino haga el pedido. Entonces senderID es del vecino.
-		//else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKS_Grec)
-		//{
-		//	//Recupero el ID del vecino y el del sender
-		//		//Ahora vecino es el que manda y sender recibe 
-
-		//	int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//	unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		//	//Busco el índice del nodo en el arreglo (sólo nodos full usan envían este mensaje)
-		//	unsigned int senderIndex = getIndex(senderID, FULL);
-		//	//Recupero valores de count y blockID (en esta fase no importan)
-		//	//unsigned int count = 1;
-		//	//std::string blockID = "75FF25E0";
-		//	//Configuro el mensaje
-		//	fullArray[senderIndex]->GETBlocks(neighbourID, (string&)"75FF25E0", 1);
-		//}
 
 		/*****************************
 		* get blocks headers enviar  *
@@ -353,28 +309,23 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string&) "75FF25E0", 1);
+			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string) "84CB2573", 1);
 		}
 
-		/******************************
-		* get blocks headers recibir  *
-		*******************************/
-		//El nodo FULL espera recibir un pedido de block headers del SPV vecino. Luego sender es el vecino
-		//else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == GETBLOCKHEADERS_Grec)
-		//{
-		//	//Recupero el ID del vecino y el del sender
-		//		//Ahora vecino es el que manda y sender recibe 
-
-		//	int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//	unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		//	//Busco el índice del nodo en el arreglo (sólo nodos spv envían este mensaje)
-		//	unsigned int senderIndex = getIndex(senderID, SPV);
-		//	//Recupero valores de count y blockID (en esta fase no importan)
-		//	//unsigned int count = 1;
-		//	//std::string blockID = "75FF25E0";
-		//	//Configuro el mensaje
-		//	spvArray[senderIndex]->GETBlockHeader(neighbourID, (string&)"75FF25E0", 1);
-		//}
+		/*********************
+		*    POST Block enviar    *
+		**********************/
+		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Genv)
+		{
+			//Recupero el ID del vecino y el del sender
+			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
+			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
+			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
+			unsigned int senderIndex = getIndex(senderID, FULL);
+			//Recupero valor de BlockID (en esta fase no importa)
+			//std::string BlockID="75FF25E0";
+			fullArray[senderIndex]->POSTBlock(neighbourID, (string)"84CB2573");
+		}
 
 		/******************************
 		*  POST merekle block enviar   *
@@ -390,62 +341,11 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string TxID_="7B857A14"
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "75FF25E0", (string) "7B857A14");
+			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "84CB2573", (string) "7B857A14");
 
-}
-
-		/******************************
-		*  POST merekle block recibir  *
-		*******************************/
-		//Aquí el nodo seleccionado, un SPV, espera recibir lo pedido del vecino. Luego senderID es el vecino (Full), 
-		//quien hace el POST
-		//else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == MERKLEBLOCK_Grec)
-		//{
-		////Recupero el ID del vecino y el del sender
-		//	//Ahora vecino es el que manda y sender recibe 
-
-		//int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		////Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
-		//
-		//unsigned int senderIndex = getIndex(senderID, FULL);
-		////Recupero valores de BlockID y TxId (en esta fase no importan)
-		////std::string TxID_="7B857A14"
-		////std::string blockID = "75FF25E0";
-		////Configuro el mensaje
-		//fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string)"75FF25E0", (string)"7B857A14");
-		//}
-
-		/*********************
-		*    POST Block enviar    *
-		**********************/
-		else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Genv)
-		{
-			//Recupero el ID del vecino y el del sender
-			int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.ID;
-			unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-			//Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
-			unsigned int senderIndex = getIndex(senderID, FULL);
-			//Recupero valor de BlockID (en esta fase no importa)
-			//std::string BlockID="75FF25E0";
-			fullArray[senderIndex]->POSTBlock(neighbourID, (string&) "75FF25E0");
 		}
 
-		/*********************
-		*    block recibir    *
-		**********************/
-		//El vecino es quien envía el bloque (Post) para que el nodo seleccionado lo reciba.
-		//else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == BLOCK_Grec)
-		//{
-		////Recupero el ID del vecino y el del sender
-		//int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		////Busco el índice del nodo en el arreglo (sólo nodos full envían este mensaje)
-		//unsigned int senderIndex = getIndex(senderID, FULL);
-		////Recupero valor de BlockID (en esta fase no importa)
-		////std::string BlockID="75FF25E0";
-		//fullArray[senderIndex]->POSTBlock(neighbourID, (string&)"75FF25E0");
-		//}
+
 
 		/******************************
 		*    transaction enviar       *

@@ -66,7 +66,7 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 }
 
 
-bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string & blockID_, unsigned int count) //Falta terminar
+bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string  blockID_, unsigned int count) //Falta terminar
 {
 	if (neighbours.find(neighbourID) != neighbours.end())
 	{

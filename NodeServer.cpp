@@ -54,7 +54,7 @@ void NodeServer::closeConnection() {
 
 /*Called when there's been a connection.*/
 void NodeServer::connectionCallback(const boost::system::error_code& error) {
-	if (!error) {
+	if ((!error) || (error == boost::asio::error::eof)) {
 		//Sets socket to read request.
 		socket.async_read_some
 		(
@@ -107,6 +107,13 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 
 		if (it != std::string::npos) 
 		{
+			/* LETS CHECK FOR FILTERS */
+			//Validator has the filter.
+			std::string validator = "/eda_coin/";
+
+			//If there's been a match ...\
+			
+			auto it = message.find(validator);
 			result = pcback(message);
 
 

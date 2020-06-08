@@ -20,7 +20,7 @@ public:
 
 	bool performRequest(void);
 	void useGETmethod(std::string path_);
-	void usePOSTmethod(std::string path_, const json& data);
+	void usePOSTmethod(std::string path_, const json data);
 
 	void setIP(std::string IP_);
 	void setPort(unsigned int port_);
@@ -55,6 +55,5 @@ private:
 	json data_;
 	std::string myjson;
 	json parsedReply;
-
 };
 

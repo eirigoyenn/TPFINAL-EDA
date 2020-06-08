@@ -21,7 +21,6 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 //	client = new NodeClient(IP, port + 1);
 	GenesisState = GenesisStates::IDLE;
 	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
-
 	RandomTime = randomTime_;
 }
 
@@ -66,7 +65,7 @@ void FullNode::setGenesisState(GenesisStates new_state)
 //Recibe ID del vecino, e ID del bloque a enviar
 //Genera un JSON con los datos del ID del bloque (falta terminar esa función) para luego adjuntarlo como header del mensaje Post
 //Sólo configura el mensaje, la idea sería llamar a perform request (del nodo no del cliente) una vez seteado (por ahí desde el método performRequest de cada nodo)
-bool FullNode::POSTBlock(unsigned int neighbourID, std::string& blockId)
+bool FullNode::POSTBlock(unsigned int neighbourID, std::string blockId)
 {
 	{
 		if (neighbours.find(neighbourID) != neighbours.end())
@@ -176,7 +175,7 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 	}
 }
 
-bool FullNode::GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count)
+bool FullNode::GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count)
 {
 	if (neighbours.find(neighbourID) != neighbours.end())
 	{
@@ -308,6 +307,7 @@ json FullNode::createJSONMerkleBlock(std::string BlockID_, std::string TxID)
 	MerkleBlock["tx"] = createJSONTx(tx);
 	MerkleBlock["txPos"] = 1;
 	MerkleBlock["merklePath"] = block.getMerklePath(tx);
+	
 	/*json path = json::array();
 	MerkleBlock["blockid"] = NodeBlockchain.getBlocksArr()[0].getBlockID();
 	MerkleBlock["tx"] = createJSONTx(NodeBlockchain.getBlocksArr()[0].getTxVector()[0]);
@@ -384,6 +384,7 @@ json FullNode::fullCallback(string message) {
 				result["status"] = false;
 			}
 		}
+
 		else if ( (message.find("get_block_header")) != std::string::npos)
 		{
 
@@ -423,12 +424,12 @@ json FullNode::fullCallback(string message) {
 		else {
 			result["status"] = false;
 		}
-
-
 	}
+	//else if((message.find("ing") != std::string::npos))
 	else {
 		result["status"] = false;
 	}
+
 	return result;
 
 
@@ -515,10 +516,9 @@ json FullNode::find_headers(std::string blockID, int count) {
 
 json FullNode::findBlockJSON(std::string message) {
 
-
-	
-
+	cout << "MENSAJEE " << message  << endl;
 	json blockJSON = json::parse(parseResponse(message)); 
+	
 	Block block(blockJSON);
 	if (block.createMerkleTree()) {
 		return blockJSON;

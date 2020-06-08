@@ -19,9 +19,9 @@ public:
 	json fullCallback(std::string msg);
 	void listen1sec(void);
 	//Funciones para enviar mensajes.
-	bool POSTBlock(unsigned int neighbourID, std::string& BlockID);
+	bool POSTBlock(unsigned int neighbourID, std::string BlockID);
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
-	bool GETBlocks(unsigned int neighbourID, std::string& blockID_, unsigned int count);
+	bool GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 	
 	//Genesis

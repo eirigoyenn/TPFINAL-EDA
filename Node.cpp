@@ -210,6 +210,9 @@ std::string Node::parseResponse(std::string message) {
 	std::string crlf("\r\n\r\n");
 	std::string response;
 	response = message.substr(it + crlf.size(), message.size() - (it + crlf.size()));
+
+	cout << endl << endl << endl << response << endl << endl << endl;
+
 	return response;
 }
 
