@@ -1,1 +1,29 @@
+Conexion creada entre
+ Nodo con Puerto: 8000
+ Nodo con Puerto:6000
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 8000
+ Receptor
+    PUERTO: 6000
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 8000
+ Receptor
+    PUERTO: 6000
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 8000
+ Receptor
+    PUERTO: 6000
+
+Se envio un mensaje
+ Emisor
+    PUERTO:: 8000
+ Receptor
+    PUERTO: 6000
+
 

@@ -19,6 +19,7 @@ typedef struct {
 	int numberofConnections;
 	std::vector<unsigned int> connections; //Vecinos dentro de la red con los que ya se conectó
 	bool checked;	//Indica si fue o no visitado
+
 }NodoSubconjunto;
 
 class NodeClient
@@ -75,6 +76,6 @@ private:
 	json data_;
 	std::string myjson;
 	json parsedReply;
-	std::vector<NodoSubconjunto> Subconjunto;
+	std::vector<NodoSubconjunto>* Subconjunto;
 };
 

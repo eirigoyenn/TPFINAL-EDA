@@ -25,6 +25,8 @@ NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>*
 	IP = "localhost";
 	own_port = port_;
 	stillRunning = 1;
+	Subconjunto = PTR;
+
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
 	{
@@ -107,10 +109,13 @@ bool NodeClient::performRequest(void)
 					NodoSubconjunto nodo2add;
 					nodo2add.TEMP_ID = parsedReply["blockID"];
 					nodo2add.TEMP_PUERTO = parsedReply["port"];
-					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
-					Subconjunto.push_back(nodo2add);
-				}
+					nodo2add.numberofConnections = 0;
+					nodo2add.checked = false;
 
+
+					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
+					(*Subconjunto).push_back(nodo2add);
+				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{
 
@@ -322,22 +327,6 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void NodeClient::particularAlgorithm(void)
 {
 
@@ -349,36 +338,39 @@ void NodeClient::particularAlgorithm(void)
 	json nodes; //Nodos de la red
 	json edges;	//Aristas de la red
 
-	if (Subconjunto.size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
 	{
-		for (int i = 0; i < Subconjunto.size(); i++) {
-			std::string nodeInfo = (Subconjunto)[i].TEMP_ID + ":" + std::to_string((Subconjunto)[i].TEMP_PUERTO);
-			nodes.push_back(nodeInfo);
+		for (int i = 0; i < (*Subconjunto).size(); i++) {
+			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+			layout["nodes"] += nodeInfo;
 		}
 	}
-	layout["nodes"] = nodes;
+	
+	std::cout << nodes << std::endl; 
 
-	if ((Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
+	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{
 
-		for (i = 0, j=0;  i < (Subconjunto).size() ; i++)
+		for (i = 0;  i < (*Subconjunto).size() ; i++)
 		{
-			if ((Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+			if ((*Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
 			{
-				std::cout << (Subconjunto)[i].numberofConnections << std::endl;
+				std::cout << (*Subconjunto)[i].numberofConnections << std::endl;
 			}
 
 			//Caso contrario sigue el agloritmo
 			else
 			{
-				while ((Subconjunto)[i].numberofConnections < 2)
+				while ((*Subconjunto)[i].numberofConnections < 2)
 				{
 
-					nextNode = (rand() % ((Subconjunto).size())); //Busco un aleatorio para conextarme
-					for (j = 0; j < (Subconjunto)[i].connections.size(); j++) //
+					nextNode = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+					for (j = 0; j < (*Subconjunto).size(); j++) //
 					{
-						if ((Subconjunto)[i].connections[j] == nextNode) {
-							index = j;
+						if ( ((*Subconjunto)[i].connections.size() == 0) || (*Subconjunto)[i].connections[0] == nextNode )
+						{
+							j = (*Subconjunto).size();
+							index = nextNode;
 						}
 					}
 
@@ -386,25 +378,24 @@ void NodeClient::particularAlgorithm(void)
 
 						//Agregar JSONS
 						edges.clear();
-						std::string Node1Info = (Subconjunto)[i].TEMP_ID + ":" + std::to_string((Subconjunto)[i].TEMP_PUERTO);
-						std::string Node2Info = (Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((Subconjunto)[nextNode].TEMP_PUERTO);
+						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+						std::string Node2Info = (*Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode].TEMP_PUERTO);
 						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 						layout["edges"] = edges;
 
-						(Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
-						(Subconjunto)[nextNode].connections.push_back(i);
-						(Subconjunto)[i].numberofConnections++;
-						(Subconjunto)[nextNode].numberofConnections++;
+						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+						(*Subconjunto)[nextNode].connections.push_back(i);
+						(*Subconjunto)[i].numberofConnections++;
+						(*Subconjunto)[nextNode].numberofConnections++;
 					}
 				}
 			}
 		}
 	}
-
-	else //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+	else  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
 	{
-		std::string Node1Info = (Subconjunto)[0].TEMP_ID + ":" + std::to_string((Subconjunto)[0].TEMP_PUERTO);
-		std::string Node2Info = (Subconjunto)[1].TEMP_ID + ":" + std::to_string((Subconjunto)[1].TEMP_PUERTO);
+		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
+		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
 		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 		layout["edges"] = edges;
 	}
@@ -413,9 +404,9 @@ void NodeClient::particularAlgorithm(void)
 bool NodeClient::isConvex(void)
 {
 	BFS(0);
-	for (int i = 0; i < (Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
+	for (int i = 0; i < (*Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
 	{
-		if (!((Subconjunto)[i].checked))
+		if (!((*Subconjunto)[i].checked))
 			return false;
 	}
 
@@ -424,10 +415,11 @@ bool NodeClient::isConvex(void)
 
 void NodeClient::BFS(int nodeToVisit)
 {
-	if (!((Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
+	if (!((*Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
 	{
-		(Subconjunto)[nodeToVisit].checked = true;
-		for (int i = 0; i < (Subconjunto)[nodeToVisit].connections.size(); i++)
+		(*Subconjunto)[nodeToVisit].checked = true;
+		for (int i = 0; i < (*Subconjunto)[nodeToVisit].connections.size(); i++)
 			BFS(i);
 	}
 }
+

@@ -100,6 +100,7 @@ void FSM::Add2JSONfile(bool isFullNode, int puerto_)
 	input_file << InputRED;
 }
 
+
 void FSM::MultiiPerform(genericEvent* ev)
 {
 	if (static_cast<evMulti*>(ev)->getType() == NoEvent)
@@ -127,11 +128,11 @@ void FSM::MultiiPerform(genericEvent* ev)
 			*/
 
 			for (const auto& fullnode : fullArray) {
-				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
-				{
+//				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
+//				{
 					fullnode->listen1sec();
 					fullnode->performRequest();
-				}
+//				}
 			}
 
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
@@ -169,11 +170,16 @@ void FSM::MultiiPerform(genericEvent* ev)
 					*/
 					break;
 
-				case GenesisStates::NETCREATED:
+				case GenesisStates::SENDINGLAYOUT:
 					/******** SERIA ALGO ASI *******/
 					int j;
 					for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
 						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
+
+					node->setGenesisState(GenesisStates::NETCREATED);
+					break;
+
+				case GenesisStates::NETCREATED:
 					break;
 
 				default:
@@ -488,9 +494,9 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
 	{
-		this->state4Graphic = GENESIS_G;
+	//	this->state4Graphic = GENESIS_G;
 
-		//this->state4Graphic = DASHBOARD_G; 
+		this->state4Graphic = DASHBOARD_G; 
 
 		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
 		fs::path bPath(GenesisPath.c_str());
@@ -511,7 +517,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						int i = 0;
 						for (const auto& FULL : FULLNODEPORT)
 						{
-							cout << FULL << endl;
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain, makeRandomTime() );
 							fullArray.push_back(tempFullNode);
 						}
@@ -520,8 +525,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						auto SPVNODEPORT = RED_JDATA["spv-nodes"];
 						for (const auto& SPV : SPVNODEPORT)
 						{
-							cout << SPV << endl;
-
 							SPVNode* tempSpvNode = new SPVNode(io_context, i++, "localhost", SPV);
 							spvArray.push_back(tempSpvNode);
 						}
@@ -568,7 +571,7 @@ bool FSM::isNetworkReady(void)
 	
 	for (auto& node : fullArray) 
 	{
-		if (node->getGenesisState() != GenesisStates::NETCREATED)
+		if ((node->getGenesisState() != GenesisStates::NETCREATED) || (node->getGenesisState() != GenesisStates::SENDINGLAYOUT))
 			itsReady = false;
 	}
 

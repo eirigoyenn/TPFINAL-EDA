@@ -180,7 +180,7 @@ void NodeServer::generateTextResponse(void) {
 	ServerOutput += msg.substr(0, msg.size());
 
 	ServerOutput += "\r\n\r\n";
-	std::cout << ServerOutput;
+//	std::cout << ServerOutput;
 
 }
 
