@@ -144,7 +144,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 				{
 				case GenesisStates::IDLE:
 					if (node->getRandomTime() == TIME)			// x = i* 10  --> i = x / 10
-					//	node->setGenesisState(GenesisStates::COLLECTING);					
+						node->setGenesisState(GenesisStates::COLLECTING);					
 					break;
 
 				case GenesisStates::WAITINGLAYOUT:
@@ -156,9 +156,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 				case GenesisStates::COLLECTING:
 				
-					ID2Ping = node->selectRandomNode2Add(fullArray);
-
-					
+					ID2Ping = node->selectRandomNode2Add(fullArray);					
 					/*
 					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
 					fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
@@ -174,8 +172,11 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 				case GenesisStates::NETCREATED:
 					/*
-					*
-					*
+					******* SERIA ALGO ASI *******
+					int j;
+					for(j=0; j< node->subconjuntoNodosRED.size() ; j++)
+						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO)
+
 					*/
 					break;
 

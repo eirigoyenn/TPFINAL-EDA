@@ -228,7 +228,7 @@ bool FullNode::POSTPing(int neighbourPORT)
 	}
 }
 
-bool FullNode::POSTNetworkLayout(int neighbourID)
+bool FullNode::POSTNetworkLayout(int neighbourPORT)
 {
 	if (state == FREE)
 	{
@@ -239,7 +239,7 @@ bool FullNode::POSTNetworkLayout(int neighbourID)
 		
 		jsonLayout["CAMPO"] = 0;
 
-		unsigned int port_ = neighbours[neighbourID].port;
+		unsigned int port_ = neighbours[neighbourPORT].port;
 		client->setPort(port_);
 		client->setIP(IP);
 		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
@@ -256,64 +256,6 @@ bool FullNode::POSTNetworkLayout(int neighbourID)
 	}
 
 }
-
-/*
-bool FullNode::POSTNetwork_NotReady(unsigned int neighbourID)
-{
-	if (state == FREE)
-	{
-		client = new NodeClient(IP, port + 1);
-		state = CLIENT;
-
-
-		unsigned int port_ = neighbours[neighbourID].port;
-		client->setPort(port_);
-		client->setIP(IP);
-		client->usePOSTmethod("/eda_coin/NETWORK_NOTREADY", noInfo);
-
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-		return true;
-	}
-	else {
-		errorType = BUSY_NODE;
-		errorMessage = "Node is not available to perform as client";
-		return false;
-	}
-}
-
-bool FullNode::POSTNetwork_Ready(unsigned int neighbourID)
-{
-	{
-		if (neighbours.find(neighbourID) != neighbours.end())
-		{
-			if (state == FREE)
-			{
-				client = new NodeClient(IP, port + 1);
-				state = CLIENT;
-				json noInfo = "";		//NO LE MANDO INFORMACION?
-				unsigned int port_ = neighbours[neighbourID].port;
-				client->setPort(port_);
-				client->setIP(IP);
-				client->usePOSTmethod("/eda_coin/NETWORK_READY", noInfo);
-
-				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-
-				return true;
-			}
-			else {
-				errorType = BUSY_NODE;
-				errorMessage = "Node is not available to perform as client";
-				return false;
-			}
-		}
-		else {
-			errorType = NOT_NEIGHBOUR;
-			errorMessage = "Requested server is not a Neighbour of current Node";
-			return false;
-		}
-	}
-}
-*/
 
 
 /************************************************************************************************
@@ -511,7 +453,6 @@ json FullNode::fullCallback(string message) {
 		}
 		else if (GenesisState == GenesisStates::COLLECTING) {
 
-			//AlgoritmoParticular();
 			result["result"] = "NETWORK_READY";
 
 			//Cambio estado del nodo full
@@ -519,11 +460,14 @@ json FullNode::fullCallback(string message) {
 		}
 		else if (GenesisState == GenesisStates::WAITINGLAYOUT)
 		{
-			//AlgoritmoParticular();
 			result["result"] = "NETWORK_READY";
-
+			
+			//
 			//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
-
+			/////////////////////////
+			///////////////////////////
+			//////////////////////////////
+			////////////////////////////////
 		}
 	}
 
