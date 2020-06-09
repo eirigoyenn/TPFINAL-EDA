@@ -144,7 +144,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 				{
 				case GenesisStates::IDLE:
 					if (node->getRandomTime() == TIME)			// x = i* 10  --> i = x / 10
-						node->setGenesisState(GenesisStates::COLLECTING);					
+					//	node->setGenesisState(GenesisStates::COLLECTING);					
 					break;
 
 				case GenesisStates::WAITINGLAYOUT:

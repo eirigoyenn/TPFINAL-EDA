@@ -207,7 +207,8 @@ bool FullNode::POSTPing(int neighbourPORT)
 {
 	if (state == FREE)
 	{
-		client = new NodeClient(IP, port + 1);
+		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+		client = new NodeClient(IP, port + 1,&(this->subconjuntoNodosRED));
 		state = CLIENT;
 		json noInfo = "";		//NO LE MANDO INFORMACION?
 		unsigned int port_ = neighbourPORT;
@@ -216,6 +217,7 @@ bool FullNode::POSTPing(int neighbourPORT)
 		client->usePOSTmethod("/eda_coin/PING", noInfo);
 
 		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		std::cout << this->subconjuntoNodosRED.size() << std::endl;
 
 		return true;
 	}
@@ -230,7 +232,8 @@ bool FullNode::POSTNetworkLayout(int neighbourID)
 {
 	if (state == FREE)
 	{
-		client = new NodeClient(IP, port + 1);
+		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+		client = new NodeClient(IP, port + 1, &(this->subconjuntoNodosRED));
 		state = CLIENT;
 		json jsonLayout;
 		
@@ -242,6 +245,7 @@ bool FullNode::POSTNetworkLayout(int neighbourID)
 		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
 
 		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		std::cout << this->subconjuntoNodosRED.size() << std::endl;
 
 		return true;
 	}

@@ -20,6 +20,26 @@ NodeClient::NodeClient(std::string IP_, int port_)
 	}
 }
 
+NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR)
+{
+	IP = "localhost";
+	own_port = port_;
+	PTR2Subconjunto = PTR;
+	stillRunning = 1;
+	easyHandler = curl_easy_init();
+	if (!easyHandler)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+	multiHandle = curl_multi_init();
+	if (!multiHandle)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+}
+
 NodeClient::NodeClient(std::string IP, int own_port, int neighbour_port)
 {
 	IP = "localhost";
@@ -90,7 +110,7 @@ bool NodeClient::performRequest(void)
 					nodo2add.TEMP_PUERTO = parsedReply["port"];
 					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
 
-					this->subconjuntoNodosRED.push_back(nodo2add);
+					this->PTR2Subconjunto->push_back(nodo2add);
 				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{

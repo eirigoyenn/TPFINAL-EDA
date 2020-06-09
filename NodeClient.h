@@ -18,6 +18,7 @@ class NodeClient
 {
 public:
 	NodeClient(std::string IP_, int port_);
+	NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR);
 	NodeClient(std::string IP, int own_port, int neighbour_port);
 	NodeClient();
 	~NodeClient();
@@ -45,10 +46,9 @@ public:
 	errorCode_n getErrorCode(void);
 	std::string getErrorMsg(void);
 
-	//GENESIS
-	std::vector<NodoSubconjunto> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
 
 private:
+	std::vector<NodoSubconjunto>* PTR2Subconjunto;
 	CURL* easyHandler, * multiHandle;
 	CURLcode easyError;
 	CURLMcode multiError;
