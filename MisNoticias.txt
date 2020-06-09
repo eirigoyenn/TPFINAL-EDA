@@ -1,19 +1,1 @@
-Conexion creada entre
- Nodo con Puerto: 8000
- Nodo con Puerto:6000
-
-Se creo un nodo
-IP:localhost - ID: 0 - TYPE: FULL
-PUERTO:4
-
-Conexion creada entre
- Nodo con Puerto: 8000
- Nodo con Puerto:4
-
-Se envio un mensaje
- Emisor
-    PUERTO:: 8000
- Receptor
-    PUERTO: 6000
-
 

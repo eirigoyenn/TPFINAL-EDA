@@ -24,7 +24,6 @@ NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>*
 {
 	IP = "localhost";
 	own_port = port_;
-	PTR2Subconjunto = PTR;
 	stillRunning = 1;
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
@@ -109,9 +108,9 @@ bool NodeClient::performRequest(void)
 					nodo2add.TEMP_ID = parsedReply["blockID"];
 					nodo2add.TEMP_PUERTO = parsedReply["port"];
 					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
-
-					this->PTR2Subconjunto->push_back(nodo2add);
+					Subconjunto.push_back(nodo2add);
 				}
+
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{
 
@@ -345,7 +344,7 @@ void NodeClient::particularAlgorithm(void)
 
 	int nextNode;
 	int index = NOTFOUND;
-
+	int i, j;
 	json layout; //Layout de la red
 	json nodes; //Nodos de la red
 	json edges;	//Aristas de la red
@@ -362,7 +361,7 @@ void NodeClient::particularAlgorithm(void)
 	if ((Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{
 
-		for (int i = 0, int j; i < (Subconjunto).size(); i++)
+		for (i = 0, j=0;  i < (Subconjunto).size() ; i++)
 		{
 			if ((Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
 			{

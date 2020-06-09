@@ -160,7 +160,6 @@ void FSM::MultiiPerform(genericEvent* ev)
 					/*
 					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
 					fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
-
 					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
 					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
 					*		SI RESPONDE NetworkReady -> algoritmo particular
@@ -171,13 +170,10 @@ void FSM::MultiiPerform(genericEvent* ev)
 					break;
 
 				case GenesisStates::NETCREATED:
-					/*
-					******* SERIA ALGO ASI *******
+					/******** SERIA ALGO ASI *******/
 					int j;
-					for(j=0; j< node->subconjuntoNodosRED.size() ; j++)
-						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO)
-
-					*/
+					for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
+						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
 					break;
 
 				default:
@@ -531,17 +527,14 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						}
 
 						//Asi cuando se creen nodos en modo apendice se empiezan a crear a partir de los ya existentes
-						//*(static_cast<evBuscarVecinos*>(ev)->nodeIDPTR) = i;
+						*(static_cast<evBuscarVecinos*>(ev)->nodeIDPTR) = i;
 					}
 				}
 			}
-				//selectRandomFullNode(fullArray.size() - 1);
+				selectRandomFullNode(fullArray.size() - 1);
 		}
 	}
 				//Usamos evento mostrar nodos para no tener q crear evento nuevo 
-
-	this->state4Graphic = DASHBOARD_G;
-	
 }
 
 void FSM::selectRandomFullNode(int i)

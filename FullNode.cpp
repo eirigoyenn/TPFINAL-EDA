@@ -469,6 +469,10 @@ json FullNode::fullCallback(string message) {
 			//////////////////////////////
 			////////////////////////////////
 		}
+		else {
+			result["result"] = "false";
+		}
+
 	}
 
 	/**********
@@ -481,9 +485,13 @@ json FullNode::fullCallback(string message) {
 
 			//Cambio estado del nodo full
 			GenesisState = GenesisStates::NETCREATED;
-
 			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
+			//buscar vecinos en json
 		}
+		else {
+			result["result"] = "false";
+		}
+
 	}
 
 	/**********
@@ -498,13 +506,15 @@ json FullNode::fullCallback(string message) {
 			GenesisState = GenesisStates::NETCREATED;
 
 			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-
 			//AlgoritmoParticular();
+		}
+		else {
+			result["result"] = "false";
 		}
 	}
 	else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
 	{
-		//??? ACA NO HAGO NADA
+		result["result"] = "NULL";
 	}
 
 	else {
