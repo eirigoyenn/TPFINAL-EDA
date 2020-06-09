@@ -722,6 +722,7 @@ void GraphicF3::print_look4Veci(void)
 			break;
 		case BLOCK_Genv:
 			Comunicaciones.front().BLOCK_ID = idbloque4;
+			Comunicaciones.front().BLOCK_ID = idbloque4;
 			Comunicaciones.front().CANT_BLOCKS = atoi(num4);
 			break;
 		}

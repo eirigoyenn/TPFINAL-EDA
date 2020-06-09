@@ -302,7 +302,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			fullArray[senderIndex]->GETBlocks(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, 1);
+			fullArray[senderIndex]->GETBlocks(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, static_cast<evEnviarMsj*>(ev)->Comunication.CANT_BLOCKS);
 
 		}
 
@@ -320,7 +320,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			spvArray[senderIndex]->GETBlockHeader(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, 1);
+			spvArray[senderIndex]->GETBlockHeader(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, static_cast<evEnviarMsj*>(ev)->Comunication.CANT_BLOCKS);
 		}
 
 		/*********************
