@@ -22,7 +22,6 @@ typedef struct RegistroNodo_t
 	int ID;
 	unsigned int TYPE;
 	std::map<unsigned int, Neighbour> NodosVecinos;
-
 	RegistroNodo_t(int ID_, std::string IP_, int PUERTO_, int TYPE_) :ID(ID_), IP(IP_), PUERTO(PUERTO_), TYPE(TYPE_) {}
 	RegistroNodo_t() {}
 
@@ -44,6 +43,9 @@ typedef struct
 	unsigned int MENSAJE;		//Tipo de mensaje 
 	unsigned int COINS_G;
 	std::string PublicKey_G;
+	std::string BLOCK_ID;
+	int CANT_BLOCKS;
+	std::string nTX_;
 
 
 } ParticipantesMsj_t;

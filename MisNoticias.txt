@@ -1,1 +1,13 @@
+Se creo un nodo
+IP:localhost - ID: 0 - TYPE: FULL
+PUERTO:3334
+
+Se creo un nodo
+IP:localhost - ID: 1 - TYPE: FULL
+PUERTO:3336
+
+Conexion creada entre
+ Nodo con Puerto: 3334
+ Nodo con Puerto:3336
+
 

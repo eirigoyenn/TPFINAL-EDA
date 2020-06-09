@@ -302,7 +302,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			fullArray[senderIndex]->GETBlocks(neighbourID, (string) "84CB2573", 1);
+			fullArray[senderIndex]->GETBlocks(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, 1);
 
 		}
 
@@ -320,7 +320,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//unsigned int count = 1;
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			spvArray[senderIndex]->GETBlockHeader(neighbourID, (string) "84CB2573", 1);
+			spvArray[senderIndex]->GETBlockHeader(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, 1);
 		}
 
 		/*********************
@@ -335,7 +335,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			unsigned int senderIndex = getIndex(senderID, FULL);
 			//Recupero valor de BlockID (en esta fase no importa)
 			//std::string BlockID="75FF25E0";
-			fullArray[senderIndex]->POSTBlock(neighbourID, (string)"84CB2573");
+			fullArray[senderIndex]->POSTBlock(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID );
 		}
 
 		/******************************
@@ -352,7 +352,7 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			//std::string TxID_="7B857A14"
 			//std::string blockID = "75FF25E0";
 			//Configuro el mensaje
-			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, (string) "84CB2573", (string) "7B857A14");
+			fullArray[senderIndex]->POSTMerkleBlock(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.BLOCK_ID, static_cast<evEnviarMsj*>(ev)->Comunication.nTX_);
 
 		}
 

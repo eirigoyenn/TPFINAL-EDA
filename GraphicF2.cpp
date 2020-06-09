@@ -568,39 +568,22 @@ void GraphicF3::print_look4Veci(void)
 	static char CantCoins[10000];
 	static char PKey[40];
 	static char idbloque[40];
+	static char idbloque1[40];
+
+	static char idbloque2[40];
+	static char idbloque3[40];
+	static char idbloque4[40];
+
 	static char num[40];
+	static char num1[40];
+	static char num2[40];
+	static char num3[40];
+	static char num4[40];
 
 	switch (ComEnProgreso.NodoEmisor.TYPE)
 	{
 	case FULL:
 		char buf[32];
-		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
-
-		if (ImGui::TreeNode("Operaciones para recibir:"))
-		{
-			sprintf(buf, "Get blocks");
-			{
-				if (ImGui::Selectable(buf, selected == GETBLOCKS_Grec))
-					selected = GETBLOCKS_Grec;
-			}
-			sprintf(buf, "Get block headers");
-			{
-				if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Grec))
-					selected = GETBLOCKHEADERS_Grec;
-			}
-			sprintf(buf, "Block");
-			{
-				if (ImGui::Selectable(buf, selected == BLOCK_Grec))
-					selected = BLOCK_Grec;
-			}
-			sprintf(buf, "Filter");
-			{
-				if (ImGui::Selectable(buf, selected == FILTER_Grec))
-					selected = FILTER_Grec;
-			}
-			ImGui::TreePop();
-		}*/
-
 		ImGui::Text(" ");
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
 
@@ -626,31 +609,31 @@ void GraphicF3::print_look4Veci(void)
 			{
 				sprintf(buf, "Get blocks");
 				{
-					ImGui::InputText("ID DEL BLOQUE:", idbloque , IM_ARRAYSIZE(idbloque));
-					ImGui::InputText("CANTIDAD DE BLOQUES:", num, IM_ARRAYSIZE(num));
+					ImGui::InputText("1-ID DEL BLOQUE:", idbloque1 , IM_ARRAYSIZE(idbloque1));
+					ImGui::InputText("1-CANTIDAD DE BLOQUES:", num1, IM_ARRAYSIZE(num1));
 					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
 						selected = GETBLOCKS_Genv;
 
 				}
 				sprintf(buf, "Get blocks headers");
 				{
-					ImGui::InputText("ID DEL BLOQUE:", idbloque, IM_ARRAYSIZE(idbloque));
-					ImGui::InputText("CANTIDAD DE BLOQUES:", num, IM_ARRAYSIZE(num));
+					ImGui::InputText("2-ID DEL BLOQUE:", idbloque2, IM_ARRAYSIZE(idbloque2));
+					ImGui::InputText("2-CANTIDAD DE BLOQUES:", num2, IM_ARRAYSIZE(num2));
 					if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
 						selected = GETBLOCKHEADERS_Genv;
 
 				}
 				sprintf(buf, "send merkle block");
 				{
-					ImGui::InputText("ID DEL BLOQUE:", idbloque, IM_ARRAYSIZE(idbloque));
-					ImGui::InputText("numero de TX:", num, IM_ARRAYSIZE(num));
+					ImGui::InputText("3-ID DEL BLOQUE:", idbloque3, IM_ARRAYSIZE(idbloque3));
+					ImGui::InputText("3-numero de TX:", num3, IM_ARRAYSIZE(num3));
 					if (ImGui::Selectable(buf, selected == MERKLEBLOCK_Genv))
 						selected = MERKLEBLOCK_Genv;
 
 				}
 				sprintf(buf, "Send Block");
 				{
-					ImGui::InputText("ID DEL BLOQUE:", idbloque , IM_ARRAYSIZE(idbloque));
+					ImGui::InputText("4-ID DEL BLOQUE:", idbloque4 , IM_ARRAYSIZE(idbloque4));
 					if (ImGui::Selectable(buf, selected == BLOCK_Genv))
 						selected = BLOCK_Genv;
 				}
@@ -665,18 +648,6 @@ void GraphicF3::print_look4Veci(void)
 	case SPV:
 
 		char bufSPV[32];
-		/*ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> RECIBIR << ");
-
-		if (ImGui::TreeNode("Operaciones para recibir:"))
-		{
-			sprintf(bufSPV, "MerkleBlock");
-			{
-				if (ImGui::Selectable(bufSPV, selected == MERKLEBLOCK_Grec))
-					selected = MERKLEBLOCK_Grec;
-			}
-			ImGui::TreePop();
-		}*/
-
 		ImGui::Text(" ");
 		ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), " >> ENVIAR << ");
 
@@ -686,8 +657,6 @@ void GraphicF3::print_look4Veci(void)
 			if (ImGui::TreeNode("Datos para transaccion"))
 			{
 				ImGui::InputText("CANTIDAD:", CantCoins, IM_ARRAYSIZE(CantCoins));
-
-
 				ImGui::InputText("PUBLIC KEY:", PKey, IM_ARRAYSIZE(PKey));
 
 				sprintf(bufSPV, "Transaccion");
@@ -700,6 +669,9 @@ void GraphicF3::print_look4Veci(void)
 
 			sprintf(bufSPV, "Get block headers");
 			{
+				ImGui::InputText("ID DEL BLOQUE:", idbloque1, IM_ARRAYSIZE(idbloque1));
+				ImGui::InputText("CANTIDAD DE BLOQUES:", num1, IM_ARRAYSIZE(num1));
+
 				if (ImGui::Selectable(bufSPV, selected == GETBLOCKHEADERS_Genv))
 					selected = GETBLOCKHEADERS_Genv;
 			}
@@ -720,6 +692,7 @@ void GraphicF3::print_look4Veci(void)
 
 	if (ImGui::Button(" >> ENVIAR MENSAJE << ") && verify(selected, CantCoins, PKey, selectedN))
 	{
+
 		Comunicaciones.front().MENSAJE = selected;
 		Comunicaciones.front().VECINO.port = Comunicaciones.front().vecinosVector[selectedN].port;
 		Comunicaciones.front().VECINO.IP = Comunicaciones.front().vecinosVector[selectedN].IP;
@@ -729,11 +702,30 @@ void GraphicF3::print_look4Veci(void)
 		cout << Comunicaciones.front().VECINO.IP << endl;
 		cout << Comunicaciones.front().VECINO.port << endl;
 
-		if (selected == TRANSACTION_Genv)
+		switch (selected)
 		{
+		case TRANSACTION_Genv:
 			Comunicaciones.front().COINS_G = atoi(CantCoins);
 			Comunicaciones.front().PublicKey_G = PKey;
+			break;
+		case GETBLOCKS_Genv:
+			Comunicaciones.front().BLOCK_ID = idbloque1;
+			Comunicaciones.front().CANT_BLOCKS = atoi(num1);
+			break;
+		case GETBLOCKHEADERS_Genv:
+			Comunicaciones.front().BLOCK_ID = idbloque2;
+			Comunicaciones.front().CANT_BLOCKS = atoi(num2);
+			break;
+		case MERKLEBLOCK_Genv:
+			Comunicaciones.front().BLOCK_ID = idbloque3;
+			Comunicaciones.front().nTX_ = num3; 
+			break;
+		case BLOCK_Genv:
+			Comunicaciones.front().BLOCK_ID = idbloque4;
+			Comunicaciones.front().CANT_BLOCKS = atoi(num4);
+			break;
 		}
+
 		GUIQueue.push(GUIEvent::EnviarMsj);
 	}
 
