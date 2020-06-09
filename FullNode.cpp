@@ -631,8 +631,8 @@ void FullNode::particularAlgorithm(void)
 {
 	
 
-	bool isConnectedToNode = false;; //para loopear en la red
 	int nextNode;
+	int index = NOTFOUND;
 
 	json layout; //Layout de la red
 	json nodes; //Nodos de la red
@@ -647,10 +647,10 @@ void FullNode::particularAlgorithm(void)
 	}
 	layout["nodes"] = nodes;
 
-	if ((*PTR2Subconjunto).size() >= 2) //Necesito más de dos elementos para formar la red
+	if ((*PTR2Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{	
-		int j;
-		for (int i=0; i < (*PTR2Subconjunto).size(); i++)
+
+		for (int i=0, int j; i < (*PTR2Subconjunto).size(); i++)
 		{
 			if ((*PTR2Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
 			{
@@ -662,33 +662,28 @@ void FullNode::particularAlgorithm(void)
 			{
 				while ((*PTR2Subconjunto)[i].numberofConnections < 2)
 				{
-					int stillGoing = 1;
-					while (stillGoing)
+
+					nextNode = (rand() % ((*PTR2Subconjunto).size())); //Busco un aleatorio para conextarme
+					for (j = 0; j < (*PTR2Subconjunto)[i].connections.size(); j++) //
 					{
-						nextNode = (rand() % ((*PTR2Subconjunto).size())); //Busco un aleatorio para conextarme
-						for (j = 0; j < (*PTR2Subconjunto)[i].connections.size() && stillGoing; j++) //
-						{
-							if ((*PTR2Subconjunto)[i].connections[j] == nextNode) {
-								stillGoing = 0;
-								isConnectedToNode = true;
-							}
+						if ((*PTR2Subconjunto)[i].connections[j] == nextNode) {
+							index = j;
 						}
-						 
-							
 					}
-					if (j != i && isConnectedToNode != true) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+
+					if ( index!=NOTFOUND  &&  index != i) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
 
 						//Agregar JSONS
 						edges.clear();
 						std::string Node1Info = (*PTR2Subconjunto)[i].TEMP_ID + ":" + std::to_string((*PTR2Subconjunto)[i].TEMP_PUERTO);
-						std::string Node2Info = (*PTR2Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((*PTR2Subconjunto)[j].TEMP_PUERTO);
+						std::string Node2Info = (*PTR2Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((*PTR2Subconjunto)[nextNode].TEMP_PUERTO);
 						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 						layout["edges"] = edges;
 
-						(*PTR2Subconjunto)[i].connections.push_back(j); //Los agrego como conectados
-						(*PTR2Subconjunto)[j].connections.push_back(i);
+						(*PTR2Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+						(*PTR2Subconjunto)[nextNode].connections.push_back(i);
 						(*PTR2Subconjunto)[i].numberofConnections++;
-						(*PTR2Subconjunto)[j].numberofConnections++;
+						(*PTR2Subconjunto)[nextNode].numberofConnections++;
 					}
 				}
 			}
@@ -697,8 +692,8 @@ void FullNode::particularAlgorithm(void)
 
 	else //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
 	{	
-		std::string Node1Info= PTR2Subconjunto[0]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[0]->TEMP_PUERTO);
-		std::string Node2Info = PTR2Subconjunto[1]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[1]->TEMP_PUERTO);
+		std::string Node1Info= (*PTR2Subconjunto)[0].TEMP_ID + ":" + std::to_string((*PTR2Subconjunto)[0].TEMP_PUERTO);
+		std::string Node2Info = (*PTR2Subconjunto)[1].TEMP_ID + ":" + std::to_string((*PTR2Subconjunto)[1].TEMP_PUERTO);
 		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 		layout["edges"] = edges;
 	}
