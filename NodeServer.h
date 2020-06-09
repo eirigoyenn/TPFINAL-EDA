@@ -13,7 +13,7 @@
 using boost::asio::ip::tcp;
 using json = nlohmann::json;
 
-#define MAXSIZE 1000
+#define MAXSIZE 999999
 typedef std::function<json(std::string)> pcallback;
 
 enum class CONNECTIONS {GET_BLOCK_HEADER, GETBLOCK, POST, NO};

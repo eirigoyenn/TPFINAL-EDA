@@ -142,8 +142,11 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	struct curl_slist* list = nullptr;
 	reply.clear();
 	myjson = data.dump();
+	const char* mydata = myjson.c_str();
+	std::string line("Content-Type: application/json");
+	std::string line2("Content-Length:" + std::to_string(strlen(mydata)));
 
-	std::string line("Content-Type: application/json;charset=UTF-8");
+
 
 	/*Prosigo a configurar CURL para usar con el método POST*/
 	if (errorCode == ERROR_FREE2)
@@ -151,12 +154,17 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 
 		list = curl_slist_append(list, line.c_str());
 		list = curl_slist_append(list, "Expect:");
-
+		list = curl_slist_append(list, "Accept: application/json:");
+		//list = curl_slist_append(list,line2.c_str());
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
+		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, -1L);
+		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, mydata);
+		curl_easy_setopt(easyHandler, CURLOPT_POST, 1L);
 
-		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, myjson.c_str());
-		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, myjson.size());
-		curl_easy_setopt(easyHandler, CURLOPT_POST, 1);
+		curl_easy_setopt(easyHandler, CURLOPT_TIMEOUT, 15);
+		curl_easy_setopt(easyHandler, CURLOPT_MAXREDIRS, 1);
+
+
 
 		//Se configura la URL de la página
 		curl_easy_setopt(easyHandler, CURLOPT_URL, url.c_str());
@@ -176,6 +184,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 		//Set handler y multiHandle
 		curl_multi_add_handle(multiHandle, easyHandler);
 		//Configuro el header
+
 
 	}
 }

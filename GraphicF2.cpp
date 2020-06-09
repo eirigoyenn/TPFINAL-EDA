@@ -567,6 +567,8 @@ void GraphicF3::print_look4Veci(void)
 	static int selected = -1;
 	static char CantCoins[10000];
 	static char PKey[40];
+	static char idbloque[40];
+	static char num[40];
 
 	switch (ComEnProgreso.NodoEmisor.TYPE)
 	{
@@ -624,11 +626,31 @@ void GraphicF3::print_look4Veci(void)
 			{
 				sprintf(buf, "Get blocks");
 				{
+					ImGui::InputText("ID DEL BLOQUE:", idbloque , IM_ARRAYSIZE(idbloque));
+					ImGui::InputText("CANTIDAD DE BLOQUES:", num, IM_ARRAYSIZE(num));
 					if (ImGui::Selectable(buf, selected == GETBLOCKS_Genv))
 						selected = GETBLOCKS_Genv;
+
 				}
-				sprintf(buf, "Block");
+				sprintf(buf, "Get blocks headers");
 				{
+					ImGui::InputText("ID DEL BLOQUE:", idbloque, IM_ARRAYSIZE(idbloque));
+					ImGui::InputText("CANTIDAD DE BLOQUES:", num, IM_ARRAYSIZE(num));
+					if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
+						selected = GETBLOCKHEADERS_Genv;
+
+				}
+				sprintf(buf, "send merkle block");
+				{
+					ImGui::InputText("ID DEL BLOQUE:", idbloque, IM_ARRAYSIZE(idbloque));
+					ImGui::InputText("numero de TX:", num, IM_ARRAYSIZE(num));
+					if (ImGui::Selectable(buf, selected == MERKLEBLOCK_Genv))
+						selected = MERKLEBLOCK_Genv;
+
+				}
+				sprintf(buf, "Send Block");
+				{
+					ImGui::InputText("ID DEL BLOQUE:", idbloque , IM_ARRAYSIZE(idbloque));
 					if (ImGui::Selectable(buf, selected == BLOCK_Genv))
 						selected = BLOCK_Genv;
 				}
