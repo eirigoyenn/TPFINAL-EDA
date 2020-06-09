@@ -627,6 +627,106 @@ json FullNode::findFilterJSON(std::string message) {
 	return "NULL";
 }
 
+//void FullNode::particularAlgorithm(void)
+//{
+//	//No logré terminarlo, quizá sirve como idea así que lo dejo.
+//
+//	bool isConnectedToNode = false;; //para loopear en la red
+//	int nextNode;
+//
+//	json layout; //Layout de la red
+//	json nodes; //Nodos de la red
+//	json edges;	//Aristas de la red
+//
+//	if (PTR2Subconjunto.size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+//	{
+//		for (int i = 0; i < PTR2Subconjunto.size(); i++) {
+//			std::string nodeInfo = PTR2Subconjunto[i]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[i]->TEMP_PUERTO);
+//			nodes.push_back(nodeInfo);
+//		}
+//	}
+//	layout["nodes"] = nodes;
+//
+//	if (PTR2Subconjunto.size() > 2) //Necesito más de dos elementos para formar la red
+//	{
+//		for (int i=0; i < PTR2Subconjunto.size(); i++)
+//		{
+//			if (PTR2Subconjunto[i]->numberofConnections > 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+//			{
+//				cout << PTR2Subconjunto[i]->numberofConnections << endl;
+//			}
+//
+//			//Caso contrario sigue el agloritmo
+//			else
+//			{
+//				while (PTR2Subconjunto[i]->numberofConnections < 2) 
+//				{
+//					int stillGoing = 1;
+//					while (stillGoing)
+//					{
+//						nextNode = (rand() % (PTR2Subconjunto.size())); //Busco un aleatorio para conextarme
+//						for (int j = 0; j < PTR2Subconjunto[i]->connections.size(); j++) //
+//						{
+//							if (PTR2Subconjunto[i]->connections[j] == nextNode)
+//								isConnectedToNode = true;
+//						}
+//						if (j == i && isConnectedToNode==true) //Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+//							stillGoing = 0;
+//					}
+//
+//
+//				//Agregar JSONS
+//					edges.clear();
+//					std::string Node1Info = PTR2Subconjunto[i]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[i]->TEMP_PUERTO);
+//					std::string Node2Info = PTR2Subconjunto[nextNode]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[j]->TEMP_PUERTO);
+//					edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+//					layout["edges"] = push_back.(edges);
+//
+//					PTR2Subconjunto[i]->connections.push_back(j); //Los agrego como conectados
+//					PTR2Subconjunto[j]->connections.push_back(i);
+//					PTR2Subconjunto[i]->numberofConnections++;
+//					PTR2Subconjunto[j]->numberofConnections++;
+//				}
+//			}
+//		}
+//	}
+//
+//	else //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+//	{	
+//		std::string Node1Info= PTR2Subconjunto[0]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[0]->TEMP_PUERTO);
+//		std::string Node2Info = PTR2Subconjunto[1]->TEMP_ID + ":" + std::to_string(PTR2Subconjunto[1]->TEMP_PUERTO);
+//		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+//		layout["edges"] = edges;
+//	}
+//}
+
+bool FullNode::isConvex(void)
+{
+	BFS(0);
+	for (int i = 0; i < PTR2Subconjunto.size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
+	{
+		if (!(PTR2Subconjunto[i]->checked))
+			return false;
+	}
+	else
+		return true;
+}
+
+void FullNode::BFS(int nodeToVisit)
+{
+	if (!(PTR2Subconjunto[nodeToVisit]->checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
+	{
+		PTR2Subconjunto[nodeToVisit]->checked = true;
+		for (int i = 0; i < PTR2Subconjunto[nodeToVisit]->connections.size(); i++)
+			BFS(i);
+	}
+}
+
+string GenericNode::createAddress(string ip, int port) {
+	string address = ip + ":" + to_string(port);
+	return address;
+}
+
 
 int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
 {
