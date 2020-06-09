@@ -59,10 +59,7 @@ public:
 	json findTxJSON(std::string message);
 	json findFilterJSON(std::string message);
 
-	//Algoritmo
-	void particularAlgorithm(void);
-	bool isConvex(void); //Revisa si un layour es o no conexo
-	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
+
 
 private:
 	boost::asio::io_context& io_context;
@@ -71,6 +68,6 @@ private:
 	GenesisStates GenesisState;
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
-	std::vector<NodoSubconjunto>* PTR2Subconjunto; 
+
 };
 

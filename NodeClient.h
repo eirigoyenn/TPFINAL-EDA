@@ -4,6 +4,10 @@
 #include "json.hpp"
 #include <curl\curl.h>
 
+
+#define NOTFOUND -1
+
+
 typedef enum { GET, POST } method_n;
 typedef enum { ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA } errorCode_n;
 size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp);
@@ -50,8 +54,13 @@ public:
 	std::string getErrorMsg(void);
 
 
+	//Algoritmo
+	void particularAlgorithm(void);
+	bool isConvex(void); //Revisa si un layour es o no conexo
+	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
+
 private:
-	std::vector<NodoSubconjunto>* PTR2Subconjunto;
+
 	CURL* easyHandler, * multiHandle;
 	CURLcode easyError;
 	CURLMcode multiError;
@@ -66,6 +75,6 @@ private:
 	json data_;
 	std::string myjson;
 	json parsedReply;
-
+	std::vector<NodoSubconjunto> Subconjunto;
 };
 

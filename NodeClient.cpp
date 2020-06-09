@@ -114,9 +114,10 @@ bool NodeClient::performRequest(void)
 				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{
+
 					//Tomo lista de nodos pertewnecientes al subconjunto (subconjuntoNodosRED)
 					// y armo las conexiones
-					//AlgoritmoParticular();
+					particularAlgorithm();
 				}
 			}
 			res = false;
@@ -319,4 +320,115 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 	//std::string* s = (std::string*)userp;
 	//s->append(data, realsize);
 	//return realsize;						//recordar siempre devolver realsize
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void NodeClient::particularAlgorithm(void)
+{
+
+
+	int nextNode;
+	int index = NOTFOUND;
+
+	json layout; //Layout de la red
+	json nodes; //Nodos de la red
+	json edges;	//Aristas de la red
+
+	if (Subconjunto.size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+	{
+		for (int i = 0; i < Subconjunto.size(); i++) {
+			std::string nodeInfo = (Subconjunto)[i].TEMP_ID + ":" + std::to_string((Subconjunto)[i].TEMP_PUERTO);
+			nodes.push_back(nodeInfo);
+		}
+	}
+	layout["nodes"] = nodes;
+
+	if ((Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
+	{
+
+		for (int i = 0, int j; i < (Subconjunto).size(); i++)
+		{
+			if ((Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+			{
+				std::cout << (Subconjunto)[i].numberofConnections << std::endl;
+			}
+
+			//Caso contrario sigue el agloritmo
+			else
+			{
+				while ((Subconjunto)[i].numberofConnections < 2)
+				{
+
+					nextNode = (rand() % ((Subconjunto).size())); //Busco un aleatorio para conextarme
+					for (j = 0; j < (Subconjunto)[i].connections.size(); j++) //
+					{
+						if ((Subconjunto)[i].connections[j] == nextNode) {
+							index = j;
+						}
+					}
+
+					if (index != NOTFOUND && index != i) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+
+						//Agregar JSONS
+						edges.clear();
+						std::string Node1Info = (Subconjunto)[i].TEMP_ID + ":" + std::to_string((Subconjunto)[i].TEMP_PUERTO);
+						std::string Node2Info = (Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((Subconjunto)[nextNode].TEMP_PUERTO);
+						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+						layout["edges"] = edges;
+
+						(Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+						(Subconjunto)[nextNode].connections.push_back(i);
+						(Subconjunto)[i].numberofConnections++;
+						(Subconjunto)[nextNode].numberofConnections++;
+					}
+				}
+			}
+		}
+	}
+
+	else //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+	{
+		std::string Node1Info = (Subconjunto)[0].TEMP_ID + ":" + std::to_string((Subconjunto)[0].TEMP_PUERTO);
+		std::string Node2Info = (Subconjunto)[1].TEMP_ID + ":" + std::to_string((Subconjunto)[1].TEMP_PUERTO);
+		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+		layout["edges"] = edges;
+	}
+}
+
+bool NodeClient::isConvex(void)
+{
+	BFS(0);
+	for (int i = 0; i < (Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
+	{
+		if (!((Subconjunto)[i].checked))
+			return false;
+	}
+
+	return true;
+}
+
+void NodeClient::BFS(int nodeToVisit)
+{
+	if (!((Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
+	{
+		(Subconjunto)[nodeToVisit].checked = true;
+		for (int i = 0; i < (Subconjunto)[nodeToVisit].connections.size(); i++)
+			BFS(i);
+	}
 }
