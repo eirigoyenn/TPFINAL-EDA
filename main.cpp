@@ -11,6 +11,7 @@
 
 int main(void)
 {
+
     uint myCounter = 0;
  
 	FSM fsm;

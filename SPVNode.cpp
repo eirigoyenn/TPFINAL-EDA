@@ -47,7 +47,7 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 	{
 		if (state == FREE)
 		{
-			client = new NodeClient(IP, port+1);
+			//client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			json jsonFilter = createJSONFilter(key);
 			unsigned int port_ = neighbours[neighbourID].port;
@@ -72,7 +72,7 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string  blockID_, un
 	{
 		if (state == FREE)
 		{
-			client = new NodeClient(IP, port+1);
+			//client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
@@ -91,7 +91,7 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 	{
 		if (state == FREE)
 		{
-			client = new NodeClient(IP, port+1);
+			//client = new NodeClient(IP, port+1);
 			json jsonTx;
 
 			jsonTx["nTxin"] = 0;
