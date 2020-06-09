@@ -77,16 +77,27 @@ bool NodeClient::performRequest(void)
 			curl_multi_cleanup(multiHandle);
 			stillRunning = 1;
 
-			std::cout << std::endl << "PARSED REPLY " << reply << std::endl;
+			std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
 
 			if (sizeof(reply) != 0){
-				std::cout << "Reply before parsing: " << reply << std::endl;
 				parsedReply = json::parse(reply);
-
 			
-				///////
-				//////
-				/////////// HACER ALGO CHE
+				if (reply.find("NETWORK_NOTREADY") != std::string::npos)
+				{
+					//Agregamos a lista de nodos pertenecientes a la red
+					NodoSubconjunto nodo2add;
+					nodo2add.TEMP_ID = parsedReply["blockID"];
+					nodo2add.TEMP_PUERTO = parsedReply["port"];
+					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
+
+					this->subconjuntoNodosRED.push_back(nodo2add);
+				}
+				else if (reply.find("NETWORK_READY") != std::string::npos)
+				{
+					//Tomo lista de nodos pertewnecientes al subconjunto (subconjuntoNodosRED)
+					// y armo las conexiones
+					//AlgoritmoParticular();
+				}
 			}
 			res = false;
 		}

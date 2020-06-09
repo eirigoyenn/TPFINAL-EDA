@@ -497,6 +497,10 @@ json FullNode::fullCallback(string message) {
 
 			result["result"] = "NETWORK_NOTREADY";
 
+			//Mandamos ID y puerto para que nodo en estado COLLECTING lo agregue a lista de Subconjuntos de nodos
+			result["blockID"] = this->getID();
+			result["port"] = this->getPort();
+
 			//Cambio estado del nodo full
 			GenesisState = GenesisStates::WAITINGLAYOUT;
 
@@ -684,7 +688,7 @@ int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
 		randomNum = rand() % fullarrayy.size();
 
 	//Salimos del for cuando ya tenemos el random indice
-	this->subconjuntoNodosRED.push_back(randomNum);		//Lo guardamos en arreglo de indices
+//	this->subconjuntoNodosRED.push_back(randomNum);		//Lo guardamos en arreglo de indices
 	return randomNum;
 }
 

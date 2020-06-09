@@ -9,6 +9,11 @@ typedef enum { ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA } er
 size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp);
 using json = nlohmann::json;
 
+typedef struct {
+	int TEMP_PUERTO;
+	int TEMP_ID;
+}NodoSubconjunto;
+
 class NodeClient
 {
 public:
@@ -40,6 +45,9 @@ public:
 	errorCode_n getErrorCode(void);
 	std::string getErrorMsg(void);
 
+	//GENESIS
+	std::vector<NodoSubconjunto> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
+
 private:
 	CURL* easyHandler, * multiHandle;
 	CURLcode easyError;
@@ -55,5 +63,6 @@ private:
 	json data_;
 	std::string myjson;
 	json parsedReply;
+
 };
 
