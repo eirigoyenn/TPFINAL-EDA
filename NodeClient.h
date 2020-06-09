@@ -13,7 +13,7 @@ typedef struct {
 	int TEMP_PUERTO;
 	int TEMP_ID;
 	int numberofConnections;
-	vector<unsigned int> connections; //Vecinos dentro de la red con los que ya se conectó
+	std::vector<unsigned int> connections; //Vecinos dentro de la red con los que ya se conectó
 	bool checked;	//Indica si fue o no visitado
 }NodoSubconjunto;
 

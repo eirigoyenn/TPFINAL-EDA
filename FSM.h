@@ -27,7 +27,7 @@ private:
 		//enum implEvent : eventTypes { CrearNodo, CrearConexion, MostrarNodos, BuscarVecinos, EnviarMsj, Error,Back2Dashboard,  NoEvent, Quit };
 
 				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										Back2Dashboard											No event								BlockSelected
-		//ESTADOS																										/*Start app mode en init state*/		/*SAtart genesis mode en init state*/
+		//ESTADOS																										/*Start app mode en init state*/		/*Start genesis mode en init state*/
 		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	  {ShwDashboard,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc) }},
 
 		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},			{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,		{ShwSelBlock,TX(BlockSelected_r_acc) }},

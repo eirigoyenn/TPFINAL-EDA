@@ -531,13 +531,17 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						}
 
 						//Asi cuando se creen nodos en modo apendice se empiezan a crear a partir de los ya existentes
-						*(static_cast<evBuscarVecinos*>(ev)->nodeIDPTR) = i;
+						//*(static_cast<evBuscarVecinos*>(ev)->nodeIDPTR) = i;
 					}
 				}
 			}
-				selectRandomFullNode(fullArray.size() - 1);
+				//selectRandomFullNode(fullArray.size() - 1);
 		}
 	}
+				//Usamos evento mostrar nodos para no tener q crear evento nuevo 
+
+	this->state4Graphic = DASHBOARD_G;
+	
 }
 
 void FSM::selectRandomFullNode(int i)

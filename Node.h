@@ -49,15 +49,14 @@ public:
 	std::string getErrorMessage(void);
 	std::map <unsigned int, Neighbour> getNeighbours(void);
 	std::vector <std::string> getFilters(void);
-	void listen1sec();
-
+	
 	std::string errReply(void);
 	//Funciones para generar los JSON de los mensajes
 	json createJSONTx(Transaction Tx_);
 	
 
 	bool performRequest(void);
-
+	string createAddress(string ip,int port);
 
 protected:
 

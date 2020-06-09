@@ -8,7 +8,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-//	client = new NodeClient(IP, port +1);
+	client = new NodeClient(IP, port +1);
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
@@ -18,7 +18,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-//	client = new NodeClient(IP, port + 1);
+	client = new NodeClient(IP, port + 1);
 	GenesisState = GenesisStates::IDLE;
 	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
 	RandomTime = randomTime_;
@@ -36,7 +36,7 @@ FullNode::~FullNode()
 void FullNode::listen1sec(void) {
 
 	using namespace std::chrono_literals;
-	auto sec = 60ms;
+	auto sec = 10ms;
 	io_context.run_one_for(sec);
 
 }
@@ -703,29 +703,25 @@ json FullNode::findFilterJSON(std::string message) {
 bool FullNode::isConvex(void)
 {
 	BFS(0);
-	for (int i = 0; i < PTR2Subconjunto.size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
+	for (int i = 0; i < (*PTR2Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
 	{
-		if (!(PTR2Subconjunto[i]->checked))
+		if (!((*PTR2Subconjunto)[i].checked))
 			return false;
 	}
-	else
-		return true;
+	
+	return true;
 }
 
 void FullNode::BFS(int nodeToVisit)
 {
-	if (!(PTR2Subconjunto[nodeToVisit]->checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
+	if (!((*PTR2Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
 	{
-		PTR2Subconjunto[nodeToVisit]->checked = true;
-		for (int i = 0; i < PTR2Subconjunto[nodeToVisit]->connections.size(); i++)
+		(*PTR2Subconjunto)[nodeToVisit].checked = true;
+		for (int i = 0; i < (*PTR2Subconjunto)[nodeToVisit].connections.size(); i++)
 			BFS(i);
 	}
 }
 
-string GenericNode::createAddress(string ip, int port) {
-	string address = ip + ":" + to_string(port);
-	return address;
-}
 
 
 int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)

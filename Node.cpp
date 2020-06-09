@@ -168,6 +168,10 @@ bool Node::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 
 
 
+string Node::createAddress(string ip, int port) {
+	string address = ip + ":" + to_string(port);
+	return address;
+}
 
 
 
