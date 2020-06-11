@@ -21,7 +21,7 @@ SPVNode::~SPVNode()
 void SPVNode::listen1sec(void) {
 
 	using namespace std::chrono_literals;
-	auto sec = 20ms;
+	auto sec = 1ms;
 	io_context.run_for(sec);
 
 }

@@ -14,16 +14,4 @@ Se envio un mensaje
  Receptor
     PUERTO: 6000
 
-Se envio un mensaje
- Emisor
-    PUERTO:: 8000
- Receptor
-    PUERTO: 6000
-
-Se envio un mensaje
- Emisor
-    PUERTO:: 8000
- Receptor
-    PUERTO: 6000
-
 

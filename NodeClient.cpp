@@ -86,21 +86,19 @@ bool NodeClient::performRequest(void)
 			{
 				errorCode = CURLPERFORM_ERROR;
 				errorMsg = "Could not perform curl.";
-				curl_easy_cleanup(easyHandler);
-				curl_multi_cleanup(multiHandle);
+				
 			}
 
 		}
 		else
 		{
 			//Se limpia curl
-			curl_easy_cleanup(easyHandler);
-			curl_multi_cleanup(multiHandle);
-			stillRunning = 1;
+			stillRunning = 1;						// MIRAR QUE PASA CON STILLRUNNING. DEVUELVE ALGO CURLMULTIPERFORME CUANDO TERMINA EL MSG?POR AHI EVITAMOS EL FLAG!!
 
 			std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
 
 			if (sizeof(reply) != 0){
+				std::cout << reply << "imprimio reply\n";
 				parsedReply = json::parse(reply);
 			
 				if (reply.find("NETWORK_NOTREADY") != std::string::npos)

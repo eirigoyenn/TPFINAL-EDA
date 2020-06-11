@@ -71,6 +71,6 @@ private:
 
 	std::string ClientInputStr;
 
-	std::queue<Sockets> SocketQueue;
+	std::list<boost::asio::ip::tcp::socket> SocketQueue;
 
 };
