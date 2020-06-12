@@ -494,9 +494,9 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 
 	if (static_cast<evBuscarVecinos*>(ev)->getType() == BuscarVecinos)			//Usamos evento mostrar vecinos para no tener q crear evento nuevo 
 	{
-	//	this->state4Graphic = GENESIS_G;
+		this->state4Graphic = GENESIS_G;
 
-		this->state4Graphic = DASHBOARD_G; 
+		
 
 		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
 		fs::path bPath(GenesisPath.c_str());
@@ -534,15 +534,16 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 					}
 				}
 			}
-				selectRandomFullNode(fullArray.size() - 1);
+				//selectRandomFullNode(fullArray.size() - 1);
 		}
 	}
+	this->state4Graphic = DASHBOARD_G;
 				//Usamos evento mostrar nodos para no tener q crear evento nuevo 
 }
 
 void FSM::selectRandomFullNode(int i)
 {
-	int selectedNode = rand() % (i-1);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
+	int selectedNode = rand() % (i+1);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
 	fullArray[i]->setGenesisState(GenesisStates::COLLECTING);
 	
 }

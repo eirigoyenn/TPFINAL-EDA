@@ -6,18 +6,7 @@ NodeClient::NodeClient(std::string IP_, int port_)
 	IP = "localhost";
 	own_port = port_;
 	stillRunning = 1;
-	easyHandler = curl_easy_init();
-	if (!easyHandler)
-	{
-		this->setErrorCode(CURLINIT_ERROR);
-		this->setErrorMsg("Unable to start curl");
-	}
-	multiHandle = curl_multi_init();
-	if (!multiHandle)
-	{
-		this->setErrorCode(CURLINIT_ERROR);
-		this->setErrorMsg("Unable to start curl");
-	}
+	
 }
 
 NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR)
@@ -68,9 +57,10 @@ NodeClient::NodeClient()
 
 NodeClient::~NodeClient()
 {
+	curl_multi_remove_handle(multiHandle, easyHandler);
 	curl_easy_cleanup(easyHandler);
 	curl_multi_cleanup(multiHandle);
-	curl_multi_remove_handle(multiHandle, easyHandler);
+	
 }
 
 bool NodeClient::performRequest(void)
@@ -86,6 +76,9 @@ bool NodeClient::performRequest(void)
 			{
 				errorCode = CURLPERFORM_ERROR;
 				errorMsg = "Could not perform curl.";
+				std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
+				curl_easy_cleanup(easyHandler);
+				curl_multi_cleanup(multiHandle);
 				
 			}
 
@@ -94,10 +87,11 @@ bool NodeClient::performRequest(void)
 		{
 			//Se limpia curl
 			stillRunning = 1;						// MIRAR QUE PASA CON STILLRUNNING. DEVUELVE ALGO CURLMULTIPERFORME CUANDO TERMINA EL MSG?POR AHI EVITAMOS EL FLAG!!
+			curl_easy_cleanup(easyHandler);
+			curl_multi_cleanup(multiHandle);
+			
 
-			std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
-
-			if (sizeof(reply) != 0){
+			if (reply.size() != 0){
 				std::cout << reply << "imprimio reply\n";
 				parsedReply = json::parse(reply);
 			
@@ -122,6 +116,7 @@ bool NodeClient::performRequest(void)
 					particularAlgorithm();
 				}
 			}
+								// ACA hay que mandar reply a algun lado
 			res = false;
 		}
 
@@ -131,6 +126,7 @@ bool NodeClient::performRequest(void)
 	{
 		errorCode = INVALID_DATA;
 		errorMsg = "Invalid data.";
+		std::cout << errorMsg;
 		return false;
 	}
 }
@@ -141,7 +137,19 @@ void NodeClient::useGETmethod(std::string path_)
 	host = IP + ":" + std::to_string(port);
 	url = "http://" + host + path_;
 	//struct curl_slist* list = nullptr;
-
+	reply.clear();
+	easyHandler = curl_easy_init();
+	if (!easyHandler)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+	multiHandle = curl_multi_init();
+	if (!multiHandle)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
 	/*Prosigo a configurar CURL para usar con el método GET*/
 	if (errorCode == ERROR_FREE2)
 	{
@@ -179,7 +187,18 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	const char* mydata = myjson.c_str();
 	std::string line("Content-Type: application/json");
 	std::string line2("Content-Length:" + std::to_string(strlen(mydata)));
-
+	easyHandler = curl_easy_init();
+	if (!easyHandler)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
+	multiHandle = curl_multi_init();
+	if (!multiHandle)
+	{
+		this->setErrorCode(CURLINIT_ERROR);
+		this->setErrorMsg("Unable to start curl");
+	}
 
 
 	/*Prosigo a configurar CURL para usar con el método POST*/

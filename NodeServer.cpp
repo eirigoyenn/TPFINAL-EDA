@@ -7,10 +7,12 @@ Calls waitForConnection to accept connections.*/
 NodeServer::NodeServer(boost::asio::io_context& io_context_, std::string IP, pcallback pcback_, unsigned int port_) :
 	io_context(io_context_), acceptor(io_context_, tcp::endpoint(boost::asio::ip::tcp::v4(), port_)), socket(io_context_), nodeIP(IP), pcback(pcback_), port(port_) // q onda con ese puerto 80 eso q era ? // ahi creo q lucas dijo algo de remote endpoints 
 {
-	
-	if (socket.is_open()) {
-		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-		socket.close();
+	socketQ.push_back(&socket);
+	ClientInputQ.emplace_back();
+	if (socketQ.front()->is_open()) {
+		socketQ.front()->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+		socketQ.front()->close();
+		socketQ.pop_front();
 	}
 	waitForConnection();
 }
@@ -19,11 +21,16 @@ NodeServer::NodeServer(boost::asio::io_context& io_context_, std::string IP, pca
 
 NodeServer::~NodeServer() {
 	std::cout << "\nClosing server.\n";
-	if (socket.is_open()) {
-		socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-		socket.close();
+	
+	for (auto& tempSocket : socketQ) {
+		
+		if (tempSocket->is_open()) {
+			tempSocket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+			tempSocket->close();
+		}
 	}
-
+	ClientInputQ.clear();
+	socketQ.clear();
 	if (acceptor.is_open())
 		acceptor.close();
 
@@ -34,21 +41,27 @@ NodeServer::~NodeServer() {
 void NodeServer::waitForConnection() {
 
 
-	if (socket.is_open()) {
+	if (socketQ.front()->is_open()) {
 		std::cout << "Error: Can't accept new connection from an open socket" << std::endl;
-		return;
+		auto newSocketPtr=new boost::asio::ip::tcp::socket(io_context);
+		socketQ.emplace_back(newSocketPtr);
+		ClientInputQ.emplace_back();
 	}
 
 	std::cout << "Waiting for connection.\n";
-	acceptor.async_accept(socket, boost::bind(&NodeServer::connectionCallback, this, boost::asio::placeholders::error));
+	
+	acceptor.async_accept(*(socketQ.back()), boost::bind(&NodeServer::connectionCallback, this, boost::asio::placeholders::error));
+	
+	
 
 }
 
 //Closes socket and clears message holder.
 void NodeServer::closeConnection() {
-	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-	socket.close();
-	int i = 0;
+	socketQ.front()->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+	socketQ.front()->close();
+	socketQ.pop_front();
+	ClientInputQ.pop_front();
 
 }
 
@@ -59,7 +72,7 @@ void NodeServer::connectionCallback(const boost::system::error_code& error) {
 		//Sets socket to read request.
 		socket.async_read_some
 		(
-			boost::asio::buffer(ClientInput, MAXSIZE),
+			boost::asio::buffer(ClientInputQ.front(), MAXSIZE),
 			boost::bind
 			(
 				&NodeServer::parse,
@@ -97,7 +110,7 @@ void NodeServer::parse(const boost::system::error_code& error, size_t bytes_sent
 		bool isInputOk = false;
 
 		//Creates string message from request.
-		std::string message(ClientInput);
+		std::string message(ClientInputQ.front());
 
 		//Validator has the da coin form.
 		std::string validator = "/eda_coin/";
@@ -155,7 +168,7 @@ void NodeServer::answer() {
 	generateTextResponse();
 
 	boost::asio::async_write(
-		socket,
+		*(socketQ.front()),
 		boost::asio::buffer(ServerOutput), // aca poniamos mensaje
 		boost::bind(
 			&NodeServer::response_sent_cb,
@@ -166,9 +179,12 @@ void NodeServer::answer() {
 	);
 
 
-	socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both);
-	socket.close();
-
+	socketQ.front()->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+	socketQ.front()->close();
+	if (socketQ.size() > 1){
+		socketQ.pop_front();
+		ClientInputQ.pop_front();
+	}
 }
 
 /*Generates http response, according to validity of input.*/

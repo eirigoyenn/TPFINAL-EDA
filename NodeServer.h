@@ -56,7 +56,7 @@ private:
 
 	std::string response;
 	std::string nodeIP;
-	char ClientInput[MAXSIZE];
+	std::list< char[MAXSIZE]> ClientInputQ;
 	std::string blockId;
 	unsigned int count;
 	unsigned int state;
@@ -71,6 +71,6 @@ private:
 
 	std::string ClientInputStr;
 
-	std::list<boost::asio::ip::tcp::socket> SocketQueue;
+	std::list<boost::asio::ip::tcp::socket*> socketQ;
 
 };
