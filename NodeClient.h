@@ -8,6 +8,10 @@
 #define NOTFOUND -1
 
 
+enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, SENDINGLAYOUT, NETCREATED };
+enum class GenesisEvents { PING, NETWORKLAYOUT, NETWORKNOTREADY, NETWORKREADY };
+
+
 typedef enum { GET, POST } method_n;
 typedef enum { ERROR_FREE2, CURLINIT_ERROR, CURLPERFORM_ERROR, INVALID_DATA } errorCode_n;
 size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp);
@@ -22,6 +26,7 @@ typedef struct {
 
 }NodoSubconjunto;
 
+
 class NodeClient
 {
 public:
@@ -31,8 +36,11 @@ public:
 	NodeClient();
 	~NodeClient();
 
+	int randomPORT(int i);
 
 	bool performRequest(void);
+	bool GenesisperformRequest(GenesisStates* estadoDelNodo);
+
 	void useGETmethod(std::string path_);
 	void usePOSTmethod(std::string path_, const json data);
 
@@ -53,7 +61,7 @@ public:
 	std::string getReply(void);
 	errorCode_n getErrorCode(void);
 	std::string getErrorMsg(void);
-
+	json getJSONlayout(void);
 
 	//Algoritmo
 	void particularAlgorithm(void);
@@ -77,5 +85,6 @@ private:
 	std::string myjson;
 	json parsedReply;
 	std::vector<NodoSubconjunto>* Subconjunto;
+	json JSONLayout;
 };
 

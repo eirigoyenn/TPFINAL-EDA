@@ -43,6 +43,37 @@ bool Node::performRequest(void)
 	}
 }
 
+bool Node::GperformRequest(GenesisStates* ptr2state)
+{
+	if (client != nullptr)
+	{
+		if (state == CLIENT)
+		{
+			if (!(client->GenesisperformRequest(ptr2state)))
+			{
+				state = FREE;
+				/*if (client) {
+					delete client;
+					client = nullptr;
+				}*/
+				return true;
+			}
+		}
+		else
+		{
+			errorType = BUSY_NODE;
+			errorMessage = "Node is not available to perform as client.";
+			return false;
+		}
+	}
+	else
+	{
+		errorType = CLIENT_ERROR;
+		errorMessage = "client is not working properly....";
+		return false;
+	}
+}
+
 std::string Node::errReply(void)
 {
 	json response;

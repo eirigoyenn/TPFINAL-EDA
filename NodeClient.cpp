@@ -63,8 +63,81 @@ NodeClient::~NodeClient()
 	
 }
 
+
 bool NodeClient::performRequest(void)
 {
+	if (IP.length() && port)
+	{
+		/*static bool isFinished = false;*/
+		bool res = true;
+		if (stillRunning)
+		{
+			multiError = curl_multi_perform(multiHandle, &stillRunning);
+			if (multiError != CURLE_OK)
+			{
+				errorCode = CURLPERFORM_ERROR;
+				errorMsg = "Could not perform curl.";
+				std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
+				curl_easy_cleanup(easyHandler);
+				curl_multi_cleanup(multiHandle);
+
+			}
+
+		}
+		else
+		{
+			//Se limpia curl
+			stillRunning = 1;						// MIRAR QUE PASA CON STILLRUNNING. DEVUELVE ALGO CURLMULTIPERFORME CUANDO TERMINA EL MSG?POR AHI EVITAMOS EL FLAG!!
+			curl_easy_cleanup(easyHandler);
+			curl_multi_cleanup(multiHandle);
+
+
+			if (reply.size() != 0) {
+				std::cout << reply << "imprimio reply\n";
+				parsedReply = json::parse(reply);
+
+				if (reply.find("NETWORK_NOTREADY") != std::string::npos)
+				{
+					//Agregamos a lista de nodos pertenecientes a la red
+					NodoSubconjunto nodo2add;
+					nodo2add.TEMP_ID = parsedReply["blockID"];
+					nodo2add.TEMP_PUERTO = parsedReply["port"];
+					nodo2add.numberofConnections = 0;
+					nodo2add.checked = false;
+
+
+					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
+					(*Subconjunto).push_back(nodo2add);
+				}
+				else if (reply.find("NETWORK_READY") != std::string::npos)
+				{
+
+					//Tomo lista de nodos pertewnecientes al subconjunto (subconjuntoNodosRED)
+					// y armo las conexiones
+					particularAlgorithm();
+
+
+				}
+			}
+			// ACA hay que mandar reply a algun lado
+			res = false;
+		}
+
+		return res;
+	}
+	else
+	{
+		errorCode = INVALID_DATA;
+		errorMsg = "Invalid data.";
+		std::cout << errorMsg;
+		return false;
+	}
+}
+
+
+bool NodeClient::GenesisperformRequest(GenesisStates* estado)
+{
+
 	if (IP.length() && port)
 	{
 		/*static bool isFinished = false;*/
@@ -114,6 +187,8 @@ bool NodeClient::performRequest(void)
 					//Tomo lista de nodos pertewnecientes al subconjunto (subconjuntoNodosRED)
 					// y armo las conexiones
 					particularAlgorithm();
+					*estado = GenesisStates::SENDINGLAYOUT;
+
 				}
 			}
 								// ACA hay que mandar reply a algun lado
@@ -343,7 +418,7 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 	//return realsize;						//recordar siempre devolver realsize
 }
 
-
+/*
 void NodeClient::particularAlgorithm(void)
 {
 
@@ -362,6 +437,7 @@ void NodeClient::particularAlgorithm(void)
 			layout["nodes"] += nodeInfo;
 		}
 	}
+	std::cout << layout << std::endl;
 
 	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{
@@ -414,8 +490,97 @@ void NodeClient::particularAlgorithm(void)
 		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 		layout["edges"] = edges;
 	}
+
+	std::cout << layout << std::endl;
+	this->JSONLayout = layout;
+}
+*/
+
+void NodeClient::particularAlgorithm(void)
+{
+
+
+	int nextNode = 0;
+	int nextNode_index = 0;
+	int index = NOTFOUND;
+	int i, j;
+	json layout; //Layout de la red
+	json nodes; //Nodos de la red
+	json edges;	//Aristas de la red
+
+	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+	{
+		for (int i = 0; i < (*Subconjunto).size(); i++) {
+			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+			layout["nodes"] += nodeInfo;
+		}
+	}
+
+	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
+	{
+
+		for (i = 0; i < (*Subconjunto).size(); i++)
+		{
+			if ((*Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+			{
+				std::cout << (*Subconjunto)[i].numberofConnections << std::endl;
+			}
+
+			//Caso contrario sigue el agloritmo
+			else
+			{
+				while ((*Subconjunto)[i].numberofConnections < 2)
+				{
+
+					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+					nextNode = randomPORT(nextNode);
+
+					for (j = 0; j < (*Subconjunto).size(); j++) //
+					{
+
+						if ((*Subconjunto)[i].numberofConnections == 0 || (*Subconjunto)[i].connections[0] != nextNode) {
+							index = nextNode;
+						}
+					}
+
+					if (index != NOTFOUND) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+
+						//Agregar JSONS
+						edges.clear();
+						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
+						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+						layout["edges"] = edges;
+
+						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+						(*Subconjunto)[nextNode_index].connections.push_back(i);
+						(*Subconjunto)[i].numberofConnections++;
+						(*Subconjunto)[nextNode_index
+						].numberofConnections++;
+					}
+				}
+			}
+		}
+	}
+	else if ((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+	{
+		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
+		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
+		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+		layout["edges"] = edges;
+	}
+	std::cout << layout << std::endl;
+	this->JSONLayout = layout;
 }
 
+int NodeClient::randomPORT(int i) {
+	return (*Subconjunto)[i].TEMP_PUERTO;
+}
+
+json NodeClient::getJSONlayout(void)
+{
+	return JSONLayout;
+}
 bool NodeClient::isConvex(void)
 {
 	BFS(0);

@@ -13,7 +13,6 @@ typedef enum {ERROR_FREE, CLIENT_ERROR, SERVER_ERROR, BUSY_NODE, NOT_NEIGHBOUR} 
 typedef enum {POSTBLOCK, POSTTRANSACTION, POSTMERKLE, POSTFILTER, GETBLOCKS, GETHEADER} connection__;
 typedef enum {SPV, FULL} nodeTypes;
 
-
 //struct MerkleBlock {
 //	std::string BlockId;
 //	vector<Transaction> TxVector_;
@@ -54,8 +53,9 @@ public:
 	//Funciones para generar los JSON de los mensajes
 	json createJSONTx(Transaction Tx_);
 	
-
+	bool GperformRequest(GenesisStates* bbb);	
 	bool performRequest(void);
+
 	string createAddress(string ip,int port);
 
 protected:
@@ -66,7 +66,9 @@ protected:
 	unsigned int ID;
 	int sentMessage;
 	int receivedMessage;
+
 	state_n state;
+
 	NodeClient* client;
 	NodeServer* server;
 	errorType_n errorType;

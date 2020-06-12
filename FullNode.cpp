@@ -199,6 +199,11 @@ bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, u
 /*********************************************************
 *             	MENSAJES PARA EL GENSIS
 *********************************************************/
+GenesisStates* FullNode::getGenesisStateAddress(void)
+{
+	return &(this->GenesisState);
+}
+
 
 bool FullNode::POSTPing(int neighbourPORT)
 {
@@ -214,7 +219,7 @@ bool FullNode::POSTPing(int neighbourPORT)
 		client->setIP(IP);
 		client->usePOSTmethod("/eda_coin/PING", noInfo);
 
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		client->GenesisperformRequest(&(this->GenesisState)); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 
 		return true;
 	}
@@ -232,16 +237,16 @@ bool FullNode::POSTNetworkLayout(int neighbourPORT)
 		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 	
 		state = CLIENT;
-		json jsonLayout;
-		
-		jsonLayout["CAMPO"] = "0";
+		json jsonLayout = client->getJSONlayout();
+		cout << jsonLayout << endl;
+//		jsonLayout["CAMPO"] = "0";
 
 		unsigned int port_ = neighbours[neighbourPORT].port;
 		client->setPort(port_);
 		client->setIP(IP);
-		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
+		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT",jsonLayout);
 
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		client->GenesisperformRequest(& (this->GenesisState)); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 
 		return true;
 	}
@@ -477,7 +482,7 @@ json FullNode::fullCallback(string message) {
 	else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
 	{
 		if (GenesisState == GenesisStates::WAITINGLAYOUT) {
-			result["result"] = "NETWORK_READY";
+			result["result"] = "NET_CREATED";
 
 			//Cambio estado del nodo full
 			GenesisState = GenesisStates::NETCREATED;
@@ -492,17 +497,14 @@ json FullNode::fullCallback(string message) {
 
 	/**********
 	si me llega el network ready
-	***********/
+	**********
 	else if ((message.find("NETWORK_READY") != std::string::npos))
 	{
 		if (GenesisState == GenesisStates::COLLECTING) {
-			result["result"] = "NETWORKREADY";
+			result["result"] = "START SENDING LAYOUT";
 
 			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
-
-			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-			//AlgoritmoParticular();
+			GenesisState = GenesisStates::SENDINGLAYOUT;
 		}
 		else {
 			result["result"] = "false";
@@ -511,7 +513,7 @@ json FullNode::fullCallback(string message) {
 	else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
 	{
 		result["result"] = "NULL";
-	}
+	}*/
 
 	else {
 		result["status"] = false;

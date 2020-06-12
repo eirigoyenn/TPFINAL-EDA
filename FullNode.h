@@ -3,9 +3,6 @@
 
 #define NOTFOUND -1
 
-enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, SENDINGLAYOUT , NETCREATED};
-enum class GenesisEvents{ PING, NETWORKLAYOUT,  NETWORKNOTREADY, NETWORKREADY};
-
 
 
 class FullNode :
@@ -29,6 +26,8 @@ public:
 	
 	//Genesis
 	GenesisStates getGenesisState(void);
+	GenesisStates* getGenesisStateAddress(void);
+
 	void setGenesisState(GenesisStates new_state);
 	unsigned long int getRandomTime(void);
 	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
