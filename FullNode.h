@@ -65,7 +65,6 @@ private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
-	GenesisStates GenesisState;
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
 

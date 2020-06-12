@@ -19,7 +19,6 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	port = port_;
 	NodeBlockchain = bchain;
 	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED);
-	GenesisState = GenesisStates::IDLE;
 	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
 	RandomTime = randomTime_;
 }
@@ -43,7 +42,7 @@ void FullNode::listen1sec(void) {
 
 GenesisStates FullNode::getGenesisState(void)
 {
-	return GenesisState;
+	return this->client->GenesisState;
 }
 
 unsigned long int FullNode::getRandomTime(void)
@@ -53,7 +52,7 @@ unsigned long int FullNode::getRandomTime(void)
 
 void FullNode::setGenesisState(GenesisStates new_state)
 {
-	GenesisState = new_state; 
+	this->client->GenesisState = new_state; 
 }
 
 /************************************************************************************************
@@ -199,10 +198,7 @@ bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, u
 /*********************************************************
 *             	MENSAJES PARA EL GENSIS
 *********************************************************/
-GenesisStates* FullNode::getGenesisStateAddress(void)
-{
-	return &(this->GenesisState);
-}
+
 
 
 bool FullNode::POSTPing(int neighbourPORT)
@@ -219,7 +215,7 @@ bool FullNode::POSTPing(int neighbourPORT)
 		client->setIP(IP);
 		client->usePOSTmethod("/eda_coin/PING", noInfo);
 
-		client->GenesisperformRequest(&(this->GenesisState)); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 
 		return true;
 	}
@@ -246,7 +242,7 @@ bool FullNode::POSTNetworkLayout(int neighbourPORT)
 		client->setIP(IP);
 		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT",jsonLayout);
 
-		client->GenesisperformRequest(& (this->GenesisState)); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 
 		return true;
 	}
@@ -255,7 +251,6 @@ bool FullNode::POSTNetworkLayout(int neighbourPORT)
 		errorMessage = "Node is not available to perform as client";
 		return false;
 	}
-
 }
 
 
@@ -440,7 +435,7 @@ json FullNode::fullCallback(string message) {
 	***********/
 	else if ((message.find("PING") != std::string::npos))
 	{
-		if (GenesisState == GenesisStates::IDLE) {
+		if (this->client->GenesisState == GenesisStates::IDLE) {
 
 			result["result"] = "NETWORK_NOTREADY";
 
@@ -449,17 +444,17 @@ json FullNode::fullCallback(string message) {
 			result["port"] = this->getPort();
 
 			//Cambio estado del nodo full
-			GenesisState = GenesisStates::WAITINGLAYOUT;
+			this->client->GenesisState = GenesisStates::WAITINGLAYOUT;
 
 		}
-		else if (GenesisState == GenesisStates::COLLECTING) {
+		else if (this->client->GenesisState == GenesisStates::COLLECTING) {
 
 			result["result"] = "NETWORK_READY";
 
 			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
+			this->client->GenesisState = GenesisStates::NETCREATED;
 		}
-		else if (GenesisState == GenesisStates::WAITINGLAYOUT)
+		else if (this->client->GenesisState == GenesisStates::WAITINGLAYOUT)
 		{
 			result["result"] = "NETWORK_READY";
 			
@@ -481,11 +476,11 @@ json FullNode::fullCallback(string message) {
 	***********/
 	else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
 	{
-		if (GenesisState == GenesisStates::WAITINGLAYOUT) {
+		if (this->client->GenesisState == GenesisStates::WAITINGLAYOUT) {
 			result["result"] = "NET_CREATED";
 
 			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
+			this->client->GenesisState = GenesisStates::NETCREATED;
 			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
 			//buscar vecinos en json
 		}

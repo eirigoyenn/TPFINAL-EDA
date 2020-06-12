@@ -131,7 +131,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 //				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
 //				{
 					fullnode->listen1sec();
-					fullnode->GperformRequest(fullnode->getGenesisStateAddress());
+					fullnode->performRequest();
 			}
 
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;

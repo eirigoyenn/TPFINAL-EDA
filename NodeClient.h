@@ -27,6 +27,7 @@ typedef struct {
 }NodoSubconjunto;
 
 
+
 class NodeClient
 {
 public:
@@ -39,7 +40,6 @@ public:
 	int randomPORT(int i);
 
 	bool performRequest(void);
-	bool GenesisperformRequest(GenesisStates* estadoDelNodo);
 
 	void useGETmethod(std::string path_);
 	void usePOSTmethod(std::string path_, const json data);
@@ -67,6 +67,7 @@ public:
 	void particularAlgorithm(void);
 	bool isConvex(void); //Revisa si un layour es o no conexo
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
+	GenesisStates GenesisState;
 
 private:
 
