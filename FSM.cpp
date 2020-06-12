@@ -119,78 +119,78 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 		}
 
+
 		/** ESTAMOS IMPRIMIENDO GENESIS **/
-		
+
 		else if (this->state4Graphic == GENESIS_G)
 		{
 			/*
 				unsigned long int timeoutVar;
 			*/
 
-			for (const auto& fullnode : fullArray) {
-//				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
-//				{
-					fullnode->listen1sec();
-					fullnode->performRequest();
-			}
-
-			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
-			/* RECORRO ESTADOS DE NODOS FULL */
-			int ID2Ping;
-			for (auto& node : fullArray)
+			for (const auto& fullnode : fullArray)
 			{
+				fullnode->listen1sec();
+				fullnode->performRequest();
 
-				switch (node->getGenesisState())
+	
+				unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
+				/* RECORRO ESTADOS DE NODOS FULL */
+				int ID2Ping;
+				for (auto& node : fullArray)
 				{
-				case GenesisStates::IDLE:
-					if (node->getRandomTime() == TIME)		// x = i* 10  --> i = x / 10
-						node->setGenesisState(GenesisStates::COLLECTING);					
-					break;
 
-				case GenesisStates::WAITINGLAYOUT:
-					/*
-					* SI RECIBE NetworkLayout -> responde 200 OK + guarda info
-					* SI RECIBE Ping -> responde NetworkReady agrega a nodo emisor como vecino
-					*/
-					break;
+					switch (node->getGenesisState())
+					{
+					case GenesisStates::IDLE:
+						if (node->getRandomTime() == TIME)		// x = i* 10  --> i = x / 10
+							node->setGenesisState(GenesisStates::COLLECTING);
+						break;
 
-				case GenesisStates::COLLECTING:
-				
-					ID2Ping = node->selectRandomNode2Add(fullArray);					
-					/*
-					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
-					fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
-					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
-					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
-					*		SI RESPONDE NetworkReady -> algoritmo particular
-					*								 -> se agrega al que respondio como vecino
-					*								 -> cambio estado de nodo emisor a NETWORKCREATED
-				    * SI RECIBE PING -> responde con NetworkReady y arma conexiones
-					*/
-					break;
+					case GenesisStates::WAITINGLAYOUT:
+						/*
+						* SI RECIBE NetworkLayout -> responde 200 OK + guarda info
+						* SI RECIBE Ping -> responde NetworkReady agrega a nodo emisor como vecino
+						*/
+						break;
 
-				case GenesisStates::SENDINGLAYOUT:
-					/******** SERIA ALGO ASI *******/
-					int j;
-					for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
-						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
+					case GenesisStates::COLLECTING:
 
-					node->setGenesisState(GenesisStates::NETCREATED);
-					break;
+						ID2Ping = node->selectRandomNode2Add(fullArray);
+						/*
+						* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
+						fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
+						/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
+						*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
+						*		SI RESPONDE NetworkReady -> algoritmo particular
+						*								 -> se agrega al que respondio como vecino
+						*								 -> cambio estado de nodo emisor a NETWORKCREATED
+						* SI RECIBE PING -> responde con NetworkReady y arma conexiones
+						*/
+						break;
 
-				case GenesisStates::NETCREATED:
-					break;
+					case GenesisStates::SENDINGLAYOUT:
+						/******** SERIA ALGO ASI *******/
+						int j;
+						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
+							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
 
-				default:
-					break;
+						node->setGenesisState(GenesisStates::NETCREATED);
+						break;
+
+					case GenesisStates::NETCREATED:
+						break;
+
+					default:
+						break;
+					}
 				}
-			}
 
-			if (isNetworkReady())
-				this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
+				if (isNetworkReady())
+					this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
+			}
 		}
 	}
-
 }
 
 unsigned int FSM::getIndex(unsigned int senderID, nodeTypes nodeType)
@@ -287,7 +287,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero la publickey del nodo y configuro para enviar el mensaje.
 			spvArray[senderIndex]->POSTFilter(neighbourID, spvArray[senderIndex]->getKey());
-
 		}
 
 		/************************
@@ -495,7 +494,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 	{
 		this->state4Graphic = GENESIS_G;
 
-		
 
 		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
 		fs::path bPath(GenesisPath.c_str());

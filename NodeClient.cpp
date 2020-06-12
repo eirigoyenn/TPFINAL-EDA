@@ -79,7 +79,7 @@ bool NodeClient::performRequest(void)
 			{
 				errorCode = CURLPERFORM_ERROR;
 				errorMsg = "Could not perform curl.";
-				std::cout << std::endl << " >>> REPLY <<<\n" << reply << std::endl;
+				std::cout << std::endl << " >>> REPLY <<<\n\n" << reply << std::endl;
 				curl_easy_cleanup(easyHandler);
 				curl_multi_cleanup(multiHandle);
 
@@ -94,7 +94,7 @@ bool NodeClient::performRequest(void)
 			curl_multi_cleanup(multiHandle);
 
 			if (reply.size() != 0) {
-				std::cout << reply << "imprimio reply\n";
+				std::cout << reply << "imprimio\n\n";
 				parsedReply = json::parse(reply);
 
 				if (reply.find("NETWORK_NOTREADY") != std::string::npos)
@@ -209,7 +209,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 		list = curl_slist_append(list, line.c_str());
 		list = curl_slist_append(list, "Expect:");
 		list = curl_slist_append(list, "Accept: application/json:");
-		//list = curl_slist_append(list,line2.c_str());
+
 		curl_easy_setopt(easyHandler, CURLOPT_HTTPHEADER, list);
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDSIZE, -1L);
 		curl_easy_setopt(easyHandler, CURLOPT_POSTFIELDS, mydata);
@@ -340,8 +340,6 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 
 void NodeClient::particularAlgorithm(void)
 {
-
-
 	int nextNode = 0;
 	int nextNode_index = 0;
 	int index = NOTFOUND;
