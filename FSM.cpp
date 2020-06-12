@@ -132,7 +132,6 @@ void FSM::MultiiPerform(genericEvent* ev)
 //				{
 					fullnode->listen1sec();
 					fullnode->performRequest();
-//				}
 			}
 
 			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
@@ -534,17 +533,18 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 					}
 				}
 			}
-				//selectRandomFullNode(fullArray.size() - 1);
+				selectRandomFullNode(fullArray.size() - 1);
 		}
 	}
-	this->state4Graphic = DASHBOARD_G;
+	//this->state4Graphic = DASHBOARD_G;
 				//Usamos evento mostrar nodos para no tener q crear evento nuevo 
 }
 
 void FSM::selectRandomFullNode(int i)
 {
-	int selectedNode = rand() % (i+1);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
-	fullArray[i]->setGenesisState(GenesisStates::COLLECTING);
+	int selectedNode = rand() % (i);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
+	cout << "selectedNode" << selectedNode << endl;
+	fullArray[selectedNode]->setGenesisState(GenesisStates::COLLECTING);
 	
 }
 

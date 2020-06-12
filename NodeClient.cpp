@@ -362,8 +362,6 @@ void NodeClient::particularAlgorithm(void)
 			layout["nodes"] += nodeInfo;
 		}
 	}
-	
-	std::cout << nodes << std::endl; 
 
 	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{
@@ -384,7 +382,7 @@ void NodeClient::particularAlgorithm(void)
 					nextNode = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
 					for (j = 0; j < (*Subconjunto).size(); j++) //
 					{
-						if ( ((*Subconjunto)[i].connections.size() == 0) || (*Subconjunto)[i].connections[0] == nextNode )
+						if ( ((*Subconjunto)[i].connections.size() == 0) || (*Subconjunto)[i].connections[0] == nextNode ) // se une dos veces al mismo 
 						{
 							j = (*Subconjunto).size();
 							index = nextNode;
@@ -409,7 +407,7 @@ void NodeClient::particularAlgorithm(void)
 			}
 		}
 	}
-	else  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+	else if((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
 	{
 		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
 		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);

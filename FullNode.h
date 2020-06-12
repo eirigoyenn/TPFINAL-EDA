@@ -33,6 +33,7 @@ public:
 	unsigned long int getRandomTime(void);
 	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
 	bool esteIndiceNOT_OK(int randID);
+
 	std::vector<NodoSubconjunto> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
 
 	//MENSAJES de genesis
