@@ -8,7 +8,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	client = new NodeClient(IP, port +1, &subconjuntoNodosRED);
+	client = new NodeClient(IP, port +1, &subconjuntoNodosRED, ID_);
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
@@ -18,7 +18,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	IP = IP_;
 	port = port_;
 	NodeBlockchain = bchain;
-	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED);
+	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED, ID_);
 	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
 	RandomTime = randomTime_;
 }
@@ -637,7 +637,9 @@ int FullNode::selectRandomNode2Add(std::vector<FullNode*>& fullarrayy)
 		randomNum = rand() % fullarrayy.size();
 
 	//Salimos del for cuando ya tenemos el random indice
-//	this->subconjuntoNodosRED.push_back(randomNum);		//Lo guardamos en arreglo de indices
+	if (randomNum == fullarrayy.size())
+		randomNum -= 1;
+
 	return randomNum;
 }
 
@@ -646,7 +648,6 @@ bool FullNode::esteIndiceNOT_OK(int randID)
 	bool result = false;
 	if (randID == this->getID())		//ID es igual al indice
 		result = true;
-
 	return result;
 
 }

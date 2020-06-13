@@ -167,12 +167,18 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 					case GenesisStates::SENDINGLAYOUT:
 						int j;
-						cout << " ALGUIEN SENDING LAYOUTS " << endl;
+						cout << " ALGUIEN COLLECTING " << endl;
 
 						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
 							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
-						break;
 
+						/* ESTO NO FUNCA
+						int j;
+						j = node->selectRandomNode2Add(fullArray);						
+						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);		*/
+
+						break;
+						
 					case GenesisStates::NETCREATED:
 						cout << "LLEGAMOS A NETCREATED " << endl;
 

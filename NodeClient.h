@@ -3,7 +3,7 @@
 #include <string>
 #include "json.hpp"
 #include <curl\curl.h>
-
+#include <string.h>
 
 #define NOTFOUND -1
 
@@ -32,7 +32,8 @@ class NodeClient
 {
 public:
 	NodeClient(std::string IP_, int port_);
-	NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR);
+
+	NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR, unsigned int ID_);
 	NodeClient(std::string IP, int own_port, int neighbour_port);
 	NodeClient();
 	~NodeClient();
@@ -69,7 +70,7 @@ public:
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
 	GenesisStates GenesisState;
 	int cantNodes;
-	void MeGuardoAMisVecinos(json reply);
+	void MeGuardoAMisVecinos(std::string reply);
 
 private:
 
@@ -79,6 +80,7 @@ private:
 	method_n method;
 	std::string reply, host, url;
 	std::string IP; //IP del vecino
+	unsigned int ID;
 	unsigned int port; //Puerto del vecino
 	unsigned int own_port; //Puerto propio
 	int stillRunning;

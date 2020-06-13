@@ -11,8 +11,11 @@ NodeClient::NodeClient(std::string IP_, int port_)
 	
 }
 
-NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR)
+
+
+NodeClient::NodeClient(std::string IP_, int port_, std::vector<NodoSubconjunto>* PTR, unsigned int ID_)
 {
+	ID = ID_;
 	IP = "localhost";
 	own_port = port_;
 	stillRunning = 1;
@@ -130,9 +133,41 @@ bool NodeClient::performRequest(void)
 		return res;
 }
 
-void NodeClient::MeGuardoAMisVecinos(json reply)
+void NodeClient::MeGuardoAMisVecinos(std::string reply)
 {
+	auto it = reply.find("\r\n\r\n");
+	std::string crlf("\r\n\r\n");
+	std::string response;
+	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
+	
+	json LAYOUT = json::parse(response);
+	std::cout << std::endl << std::endl << LAYOUT << std::endl << std::endl << std::endl;
+	
+	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->own_port -1); 
+
+	for (auto& edge : LAYOUT["edges"]) {
+		std::string target1 = edge["target1"];
+		std::string target2 = edge["target2"];
+		std::string target;
+
+		if (target1 == soyyo)
+			target = target2;
+		else if (target2 == soyyo)
+			target = target1;
+
+		if (target.length()) {
+			int pos1 = target.find_first_of(':');
+			std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
+			std::string id = target.substr(0, pos1);
+			int id_ = std::stoi(id);
+			int pos2 = temp.find_first_of(':');
+			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
+		}
+
+		//TENGO ID Y PUETO DEL VECINO, EL IP VA A SER EL MISMO Q THIS->CLIENT
+	}
 }
+	
 
 void NodeClient::useGETmethod(std::string path_)
 {
