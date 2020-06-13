@@ -40,6 +40,11 @@ void FullNode::listen1sec(void) {
 
 }
 
+void FullNode::setTotalFullNodes(int total)
+{
+	this->client->cantNodes = total;
+}
+
 GenesisStates FullNode::getGenesisState(void)
 {
 	return this->client->GenesisState;

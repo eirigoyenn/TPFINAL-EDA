@@ -167,10 +167,10 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 					case GenesisStates::SENDINGLAYOUT:
 						int j;
+						cout << " ALGUIEN SENDING LAYOUTS " << endl;
+
 						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
 							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
-
-						node->setGenesisState(GenesisStates::NETCREATED);
 						break;
 
 					case GenesisStates::NETCREATED:
@@ -557,7 +557,8 @@ void FSM::selectRandomFullNode(int i)
 	int selectedNode = rand() % (i);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
 	cout << "selectedNode" << selectedNode << endl;
 	fullArray[selectedNode]->setGenesisState(GenesisStates::COLLECTING);
-	
+	fullArray[selectedNode]->setTotalFullNodes((int) fullArray.size());
+
 }
 
 unsigned int FSM::makeRandomTime(void)

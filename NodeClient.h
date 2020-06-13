@@ -68,6 +68,8 @@ public:
 	bool isConvex(void); //Revisa si un layour es o no conexo
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
 	GenesisStates GenesisState;
+	int cantNodes;
+	void MeGuardoAMisVecinos(json reply);
 
 private:
 

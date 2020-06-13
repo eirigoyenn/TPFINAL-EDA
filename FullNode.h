@@ -70,6 +70,5 @@ private:
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
 	int nodes2Add;
-	int cantNodes;
 };
 
