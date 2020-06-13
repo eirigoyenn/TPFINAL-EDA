@@ -132,6 +132,45 @@ bool NodeClient::performRequest(void)
 
 void NodeClient::MeGuardoAMisVecinos(json reply)
 {
+	/*
+	void Full_Node::neighborFromJSON(const std::string & request, bool fromServer) {
+		json layout;
+		int content = request.find("Content-Type");
+		int data = request.find("Data=");
+
+
+		if (content != std::string::npos && data != std::string::npos || !fromServer) {
+			if (fromServer)
+				layout = json::parse(request.substr(data + 5, content - data - 5));
+			else
+				layout = json::parse(request);
+
+				std::string self = std::to_string(identifier) + ':' + ip + ':' + std::to_string(port);
+
+			for (auto& edge : layout["edges"]) {
+				std::string target1 = edge["target1"];
+				std::string target2 = edge["target2"];
+				std::string target;
+
+				if (target1 == self)
+					target = target2;
+				else if (target2 == self)
+					target = target1;
+
+				if (target.length()) {
+					int pos1 = target.find_first_of(':');
+					std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
+					std::string id = target.substr(0, pos1);
+					std::string ip = temp.substr(0, temp.find_first_of(':'));
+					int id_real = std::stoi(id);
+					int pos2 = temp.find_first_of(':');
+					int port_real = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
+					newNeighbor(id_real, ip, port_real);
+				}
+			}
+		}
+	}
+*/
 }
 
 void NodeClient::useGETmethod(std::string path_)
