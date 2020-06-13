@@ -509,7 +509,7 @@ void FullNode::MeGuardoAMisVecinos(std::string reply)
 		std::string target2 = edge["target2"];
 		std::string target;
 
-		cout << "TARGET 1"<< target1 << "TARGET2" << target2 << endl;
+		cout << "SOY YO" << soyyo << endl << "TARGET 1"<< target1 << endl << "TARGET2" << target2 << endl;
 
 		if (target1 == soyyo)
 			target = target2;
