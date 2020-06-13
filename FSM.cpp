@@ -163,11 +163,11 @@ void FSM::MultiiPerform(genericEvent* ev)
 						break;
 
 					case GenesisStates::SENDINGLAYOUT:
-						int j;
 						cout << " ALGUIEN SENDING LAYOUT " << endl;
-
-						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
-							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
+						int j;
+						j = rand() % node->subconjuntoNodosRED.size();
+						
+						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
 
 						/* ESTO NO FUNCA
 						int j;
@@ -608,8 +608,11 @@ bool FSM::isNetworkReady(void)
 	
 	for (auto& node : fullArray) 
 	{
-		if ((node->getGenesisState() != GenesisStates::NETCREATED) || (node->getGenesisState() != GenesisStates::SENDINGLAYOUT))
+		if ((node->getGenesisState() != GenesisStates::NETCREATED) && (node->getGenesisState() != GenesisStates::SENDINGLAYOUT))
 			itsReady = false;
+		if ((node->getGenesisState() != GenesisStates::SENDINGLAYOUT) && (node->getGenesisState() != GenesisStates::NETCREATED))
+		itsReady = false;
+
 	}
 
 	return itsReady;
