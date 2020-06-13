@@ -231,16 +231,6 @@ bool FullNode::POSTPing(int neighbourPORT)
 	}
 }
 
-void FullNode::AddVecinosFromAlgoritmo(void)
-{
-	int i;
-	for (auto vecino : this->client->VecinosdeAlgoritmo)
-	{
-		addNeighbour(vecino.ID, vecino.IP, vecino.port);
-
-	}
-}
-
 
 bool FullNode::POSTNetworkLayout(int neighbourPORT)
 {
@@ -489,44 +479,55 @@ json FullNode::fullCallback(string message) {
 			//Cambio estado del nodo full
 			this->client->GenesisState = GenesisStates::NETCREATED;
 			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-			//buscar vecinos en json
-		}
-		else {
-			result["result"] = "false";
-		}
-
-	}
-
-	/**********
-	si me llega el network ready
-	**********
-	else if ((message.find("NETWORK_READY") != std::string::npos))
-	{
-		if (GenesisState == GenesisStates::COLLECTING) {
-			result["result"] = "START SENDING LAYOUT";
-
-			//Cambio estado del nodo full
-			GenesisState = GenesisStates::SENDINGLAYOUT;
+			MeGuardoAMisVecinos(message);
 		}
 		else {
 			result["result"] = "false";
 		}
 	}
-	else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
-	{
-		result["result"] = "NULL";
-	}*/
-
 	else {
 		result["status"] = false;
 	}
-
 	return result;
-
-
 }
 
 
+void FullNode::MeGuardoAMisVecinos(std::string reply)
+{
+	auto it = reply.find("\r\n\r\n");
+	std::string crlf("\r\n\r\n");
+	std::string response;
+	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
+
+	json LAYOUT = json::parse(response);
+	std::cout << std::endl << std::endl << "LAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
+
+	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->port - 1);
+
+	for (auto& edge : LAYOUT["edges"]) {
+		std::string target1 = edge["target1"];
+		std::string target2 = edge["target2"];
+		std::string target;
+
+		cout << "TARGET 1"<< target1 << "TARGET2" << target2 << endl;
+
+		if (target1 == soyyo)
+			target = target2;
+		else if (target2 == soyyo)
+			target = target1;
+
+		if (target.length()) {
+			int pos1 = target.find_first_of(':');
+			std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
+			std::string id = target.substr(0, pos1);
+			int id_ = std::stoi(id);
+			int pos2 = temp.find_first_of(':');
+			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
+
+			addNeighbour(id_, IP, port_);		
+		}
+	}
+}
 
 json FullNode::find_array(std::string blockID, int count) {
 

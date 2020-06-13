@@ -188,12 +188,6 @@ void FSM::MultiiPerform(genericEvent* ev)
 				cout << " >>>>>>> CYCLE <<<<<<<" << endl;
 				if (isNetworkReady())
 				{
-					
-					for (const auto& full : fullArray)
-					{
-						full->AddVecinosFromAlgoritmo();
-					}
-
 					for (const auto& spvs : spvArray)
 					{
 						while ((sizeof(spvs->getNeighbours())) < 2)
@@ -212,8 +206,6 @@ void FSM::MultiiPerform(genericEvent* ev)
 		}
 	}
 }
-
-//isThereAnIDLEturnit2COLLECTING();
 
 
 void FSM::isThereAnIDLEturnit2COLLECTING()

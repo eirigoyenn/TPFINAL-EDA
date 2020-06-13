@@ -70,8 +70,6 @@ public:
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
 	GenesisStates GenesisState;
 	int cantNodes;
-	void MeGuardoAMisVecinos(std::string reply);
-	std::vector<Neighbour> VecinosdeAlgoritmo;
 
 private:
 

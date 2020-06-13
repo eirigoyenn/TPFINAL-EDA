@@ -61,8 +61,11 @@ public:
 
 	void setTotalFullNodes(int total);
 	void AddVecinosFromAlgoritmo(void);
+	void MeGuardoAMisVecinos(std::string reply);
+
 
 private:
+	std::vector<Neighbour> VecinosdeAlgoritmo;
 
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;

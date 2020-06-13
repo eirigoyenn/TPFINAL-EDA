@@ -119,12 +119,6 @@ bool NodeClient::performRequest(void)
 						this->GenesisState = GenesisStates::SENDINGLAYOUT;
 					}
 				}
-				else if (reply.find("NETWORK_LAYOUT") != std::string::npos)
-				{
-					MeGuardoAMisVecinos(parsedReply);
-					this->GenesisState = GenesisStates::NETCREATED;
-				}
-
 			}
 			// ACA hay que mandar reply a algun lado
 			res = false;
@@ -133,46 +127,7 @@ bool NodeClient::performRequest(void)
 		return res;
 }
 
-void NodeClient::MeGuardoAMisVecinos(std::string reply)
-{
-	auto it = reply.find("\r\n\r\n");
-	std::string crlf("\r\n\r\n");
-	std::string response;
-	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
-	
-	json LAYOUT = json::parse(response);
-	std::cout << std::endl << std::endl << LAYOUT << std::endl << std::endl << std::endl;
-	
-	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->own_port -1); 
 
-	for (auto& edge : LAYOUT["edges"]) {
-		std::string target1 = edge["target1"];
-		std::string target2 = edge["target2"];
-		std::string target;
-
-		if (target1 == soyyo)
-			target = target2;
-		else if (target2 == soyyo)
-			target = target1;
-
-		if (target.length()) {
-			int pos1 = target.find_first_of(':');
-			std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
-			std::string id = target.substr(0, pos1);
-			int id_ = std::stoi(id);
-			int pos2 = temp.find_first_of(':');
-			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
-
-			Neighbour tempNei;
-			tempNei.IP = IP;
-			tempNei.port - port_;
-			tempNei.ID = id_;
-
-			VecinosdeAlgoritmo.push_back(tempNei);
-		}
-	}
-}
-	
 
 void NodeClient::useGETmethod(std::string path_)
 {
@@ -416,22 +371,18 @@ void NodeClient::particularAlgorithm(void)
 			{
 				while ((*Subconjunto)[i].numberofConnections < 2)
 				{
-
 					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
 					nextNode = randomPORT(nextNode_index);
 
 					for (j = 0; j < (*Subconjunto).size(); j++) //
 					{
-
 						if ((*Subconjunto)[i].numberofConnections == 0 || (*Subconjunto)[i].connections[0] != nextNode) {
 							index = nextNode;
 							std::cout << "NEXT NODEEEE " << nextNode << std::endl;
 
 						}
 					}
-
 					if (index != NOTFOUND) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
-
 						//Agregar JSONS
 						json temp;
 						temp["target1"] = std::to_string((*Subconjunto)[i].TEMP_ID) + ':' + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
@@ -450,6 +401,7 @@ void NodeClient::particularAlgorithm(void)
 			}
 		}
 	}
+
 	else if ((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
 	{
 		json temp;
