@@ -90,9 +90,8 @@ bool NodeClient::performRequest(void)
 			curl_easy_cleanup(easyHandler);
 			curl_multi_cleanup(multiHandle);
 			
-
+			std::cout << std::endl  << "ESTA ES LA RESPUESTA" << reply << std::endl;
 			if (reply.size() != 0){
-				std::cout << reply << "imprimio reply\n";
 				parsedReply = json::parse(reply);
 			
 				if (reply.find("NETWORK_NOTREADY") != std::string::npos)
@@ -105,14 +104,10 @@ bool NodeClient::performRequest(void)
 					nodo2add.checked = false;
 
 
-					std::cout << std::endl << " >>> BLOCK ID <<<" << nodo2add.TEMP_ID << " >>> PUERTO <<<" << nodo2add.TEMP_PUERTO << std::endl;
 					(*Subconjunto).push_back(nodo2add);
 				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{
-
-					//Tomo lista de nodos pertewnecientes al subconjunto (subconjuntoNodosRED)
-					// y armo las conexiones
 					particularAlgorithm();
 				}
 			}
@@ -187,6 +182,7 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	const char* mydata = myjson.c_str();
 	std::string line("Content-Type: application/json");
 	std::string line2("Content-Length:" + std::to_string(strlen(mydata)));
+
 	easyHandler = curl_easy_init();
 	if (!easyHandler)
 	{
@@ -348,7 +344,7 @@ void NodeClient::particularAlgorithm(void)
 {
 
 
-	int nextNode;
+	int nextNode, nextNode_index;
 	int index = NOTFOUND;
 	int i, j;
 	json layout; //Layout de la red
@@ -379,29 +375,31 @@ void NodeClient::particularAlgorithm(void)
 				while ((*Subconjunto)[i].numberofConnections < 2)
 				{
 
-					nextNode = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+					nextNode=randomPORT(nextNode_index);
+
 					for (j = 0; j < (*Subconjunto).size(); j++) //
 					{
-						if ( ((*Subconjunto)[i].connections.size() == 0) || (*Subconjunto)[i].connections[0] == nextNode ) // se une dos veces al mismo 
-						{
-							j = (*Subconjunto).size();
+
+						if ((*Subconjunto)[i].numberofConnections == 0 ||(*Subconjunto)[i].connections[0] != nextNode ){
 							index = nextNode;
 						}
 					}
 
-					if (index != NOTFOUND && index != i) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+					if (index != NOTFOUND ) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
 
 						//Agregar JSONS
 						edges.clear();
 						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
-						std::string Node2Info = (*Subconjunto)[nextNode].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode].TEMP_PUERTO);
+						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
 						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 						layout["edges"] = edges;
 
 						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
-						(*Subconjunto)[nextNode].connections.push_back(i);
+						(*Subconjunto)[nextNode_index].connections.push_back(i);
 						(*Subconjunto)[i].numberofConnections++;
-						(*Subconjunto)[nextNode].numberofConnections++;
+						(*Subconjunto)[nextNode_index
+						 ].numberofConnections++;
 					}
 				}
 			}
@@ -438,3 +436,6 @@ void NodeClient::BFS(int nodeToVisit)
 	}
 }
 
+int NodeClient::randomPORT(int i){
+	return (*Subconjunto)[i].TEMP_PUERTO;
+}

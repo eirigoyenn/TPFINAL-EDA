@@ -659,14 +659,14 @@ void GraphicF3::print_look4Veci(void)
 					if (ImGui::Selectable(buf, selected == GETBLOCKHEADERS_Genv))
 						selected = GETBLOCKHEADERS_Genv;
 
-				}
+				}*/
 				sprintf(buf, "send merkle block");
 				{
 					ImGui::InputText("3-ID DEL BLOQUE:", idbloque3, IM_ARRAYSIZE(idbloque3));
 					ImGui::InputText("3-numero de TX:", num3, IM_ARRAYSIZE(num3));
 					if (ImGui::Selectable(buf, selected == MERKLEBLOCK_Genv))
 						selected = MERKLEBLOCK_Genv;
-				}*/
+				}
 				sprintf(buf, "Send Block");
 				{
 					ImGui::InputText("4-ID DEL BLOQUE:", idbloque4 , IM_ARRAYSIZE(idbloque4));

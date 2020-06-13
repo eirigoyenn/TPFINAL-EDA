@@ -1,5 +1,9 @@
 #pragma once
+
 #include "Node.h"
+#include "EventHandling.h"
+#include "GenEventGenerator.h"
+#include "GEN_FSM.h"
 
 #define NOTFOUND -1
 
@@ -60,6 +64,11 @@ public:
 	json findTxJSON(std::string message);
 	json findFilterJSON(std::string message);
 
+	void setGENFSM(GEN_FSM* pointer);
+	GEN_FSM* getGENFSM(void) { return GenFSM; }
+	void attach(void);
+	void cycle(void);
+	bool isnetworkcreated(void) {return fsm.getEvent() };
 
 
 private:
@@ -69,6 +78,10 @@ private:
 	GenesisStates GenesisState;
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
+	
+	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
+	GenEventGenerator genEvents;	// mi gen de eventos especifico
+	GEN_FSM* GenFSM;
 
 };
 

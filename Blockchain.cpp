@@ -78,6 +78,27 @@ void Blockchain::parsingBlockchain(json chain_JData)
 				tempTx.vIn.push_back(tempVin);
 			}
 
+			/* VINS */
+			json VotObj = TXX["vout"];
+
+			for (const auto& VOUTdata : VotObj)
+			{
+				VoutS tempVout;
+
+				auto AMNT = VOUTdata["amount"];
+				tempVout.amount = AMNT;
+
+
+
+				auto PBID = VOUTdata["publicid"];
+				tempVout.publicID = PBID.get<string>();
+
+
+
+				/* Vin temporario listo para agregar al vector de vins de transaccion temporal*/
+				tempTx.vOut.push_back(tempVout);
+			}
+
 		
 			tempBlock.setPush_Back(tempTx);
 		}

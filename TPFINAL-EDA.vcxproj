@@ -171,6 +171,8 @@
     <ClCompile Include="FSM.cpp" />
     <ClCompile Include="FullNode.cpp" />
     <ClCompile Include="GenericFSM.cpp" />
+    <ClCompile Include="GenEventGenerator.cpp" />
+    <ClCompile Include="GEN_FSM.cpp" />
     <ClCompile Include="GraphicF2.cpp" />
     <ClCompile Include="GUIEventGenerator.cpp" />
     <ClCompile Include="Imgui_files\imgui.cpp" />
@@ -203,6 +205,8 @@
     <ClInclude Include="FSM.h" />
     <ClInclude Include="FullNode.h" />
     <ClInclude Include="GenericFSM.h" />
+    <ClInclude Include="GenEventGenerator.h" />
+    <ClInclude Include="GEN_FSM.h" />
     <ClInclude Include="GraphicF2.h" />
     <ClInclude Include="GUIEventGenerator.h" />
     <ClInclude Include="Imgui_files\imconfig.h" />

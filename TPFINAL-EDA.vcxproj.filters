@@ -99,6 +99,12 @@
     <ClCompile Include="Imgui_files\imgui_widgets.cpp">
       <Filter>Source Files\Events\ImGuiFiles</Filter>
     </ClCompile>
+    <ClCompile Include="GEN_FSM.cpp">
+      <Filter>Source Files\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="GenEventGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="blockChain4.json">
@@ -186,6 +192,12 @@
     </ClInclude>
     <ClInclude Include="SPVNode.h">
       <Filter>Header Files\Nodos</Filter>
+    </ClInclude>
+    <ClInclude Include="GEN_FSM.h">
+      <Filter>Header Files\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="GenEventGenerator.h">
+      <Filter>Header Files\Events</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

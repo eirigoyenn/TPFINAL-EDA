@@ -1,1 +1,13 @@
+Se creo un nodo
+IP:localhost - ID: 0 - TYPE: FULL
+PUERTO:8888
+
+Se creo un nodo
+IP:localhost - ID: 1 - TYPE: SPV 
+PUERTO:6666
+
+Conexion creada entre
+ Nodo con Puerto: 8888
+ Nodo con Puerto:6666
+
 

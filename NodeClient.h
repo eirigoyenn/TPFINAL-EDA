@@ -36,6 +36,9 @@ public:
 	void useGETmethod(std::string path_);
 	void usePOSTmethod(std::string path_, const json data);
 
+
+
+	int randomPORT(int i);
 	void setIP(std::string IP_);
 	void setPort(unsigned int port_);
 	void setURL(std::string URL_);

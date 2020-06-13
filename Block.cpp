@@ -12,6 +12,7 @@ Block::Block(const json & j)
 
 	/*Cargo los datos del bloque*/
 	height = j["height"].get<unsigned int>();
+	merkleRoot = j["merkleroot"].get<string>();
 	BigBlockID = j["blockid"].get<string>();
 	prevBlockID = j["previousblockid"].get<string>();
 	ntx = j["nTx"].get<unsigned int>();
@@ -224,7 +225,6 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 			string newIDstr(tohex);
 
 			temp.push_back(newIDstr);
-			Tree.EntireTree.push_back(newIDstr);
 		}
 		stringMerkleRoot = temp;
 		generateMerkleRoot(stringMerkleRoot);

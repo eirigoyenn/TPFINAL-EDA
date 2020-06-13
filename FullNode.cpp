@@ -114,9 +114,8 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 			client->setPort(port_);
 			client->setIP(IP);
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
+			client->performRequest();
 
-			this->performRequest();
-			delete client;
 
 			return true;
 		}
@@ -154,47 +153,46 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string blockID_, unsigne
 	else return false;
 }
 
-bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
-{
-	if (neighbours.find(neighbourID) != neighbours.end())
-	{
-		if (state == FREE)
-		{
-			json jsonTx;
-
-			jsonTx["nTxin"] = 0;
-			jsonTx["nTxout"] = 1;
-			jsonTx["txid"] = "7E46A3BC";
-			jsonTx["vin"] = json();
-			json vout_;
-			vout_["amount"] = amount;
-			vout_["publicid"] = wallet;
-			jsonTx["vout"] = vout_;
-
-			state = CLIENT;
-			unsigned int port_ = neighbours[neighbourID].port;
-			client->setPort(port_);
-			client->setIP(IP);
-			//client->setIP(neighbours[neighbourID].IP);
-			//client->setPort(neighbours[neighbourID].port);
-			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-
-			client->performRequest();
-
-			return true;
-		}
-		else {
-			errorType = BUSY_NODE;
-			errorMessage = "Node is not available to perform as client";
-			return false;
-		}
-	}
-	else {
-		errorType = NOT_NEIGHBOUR;
-		errorMessage = "Requested server is not a Neighbour of current Node";
-		return false;
-	}
-}
+//bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
+//{
+//	if (neighbours.find(neighbourID) != neighbours.end())
+//	{
+//		if (state == FREE)
+//		{
+//			json jsonTx;
+//
+//			jsonTx["nTxin"] = 0;
+//			jsonTx["nTxout"] = 1;
+//			jsonTx["txid"] = "7E46A3BC";
+//			jsonTx["vin"] = json();
+//			json vout_;
+//			vout_["amount"] = amount;
+//			vout_["publicid"] = wallet;
+//			jsonTx["vout"] = vout_;
+//
+//			state = CLIENT;
+//			unsigned int port_ = neighbours[neighbourID].port;
+//			client->setPort(port_);
+//			client->setIP(IP);
+//			//client->setIP(neighbours[neighbourID].IP);
+//			//client->setPort(neighbours[neighbourID].port);
+//			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+//			client->performRequest();
+//
+//			return true;
+//		}
+//		else {
+//			errorType = BUSY_NODE;
+//			errorMessage = "Node is not available to perform as client";
+//			return false;
+//		}
+//	}
+//	else {
+//		errorType = NOT_NEIGHBOUR;
+//		errorMessage = "Requested server is not a Neighbour of current Node";
+//		return false;
+//	}
+//}
 
 /*********************************************************
 *             	MENSAJES PARA EL GENSIS
@@ -295,6 +293,7 @@ json FullNode::createJSONBlock(std::string BlockId)
 //Cargo con datos del primer bloque del arreglo.
 //Para fases futuros hay que agregar en Block.h una función que recupere el MerklePath
 //Genera el JSON de un Merkle Block.
+
 json FullNode::createJSONMerkleBlock(std::string BlockID_, std::string TxID)
 {
 	json MerkleBlock;
@@ -307,6 +306,7 @@ json FullNode::createJSONMerkleBlock(std::string BlockID_, std::string TxID)
 			break;
 		}
 	}
+	block.createMerkleLeaves();
 	MerkleBlock["blockid"] = block.getBlockID();
 	for (int i = 0; i < block.getTxVector().size(); i++)
 	{
@@ -430,87 +430,10 @@ json FullNode::fullCallback(string message) {
 	/***********************
 	mensajes GENESIS
 	************************/
-	/**********
-		si me llega un ping
-	***********/
-	else if ((message.find("PING") != std::string::npos))
+
+	else if ((message.find("PING") != std::string::npos) || (message.find("NETWORK_LAYOUT") != std::string::npos) || (message.find("NETWORK_READY") != std::string::npos) || (message.find("NETWORK_NOTREADY") != std::string::npos))
 	{
-		if (GenesisState == GenesisStates::IDLE) {
-
-			result["result"] = "NETWORK_NOTREADY";
-
-			//Mandamos ID y puerto para que nodo en estado COLLECTING lo agregue a lista de Subconjuntos de nodos
-			result["blockID"] = this->getID();
-			result["port"] = this->getPort();
-
-			//Cambio estado del nodo full
-			GenesisState = GenesisStates::WAITINGLAYOUT;
-
-		}
-		else if (GenesisState == GenesisStates::COLLECTING) {
-
-			result["result"] = "NETWORK_READY";
-
-			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
-		}
-		else if (GenesisState == GenesisStates::WAITINGLAYOUT)
-		{
-			result["result"] = "NETWORK_READY";
-			
-			//
-			//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
-			/////////////////////////
-			///////////////////////////
-			//////////////////////////////
-			////////////////////////////////
-		}
-		else {
-			result["result"] = "false";
-		}
-
-	}
-
-	/**********
-	si me llega el network layout
-	***********/
-	else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
-	{
-		if (GenesisState == GenesisStates::WAITINGLAYOUT) {
-			result["result"] = "NETWORK_READY";
-
-			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
-			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-			//buscar vecinos en json
-		}
-		else {
-			result["result"] = "false";
-		}
-
-	}
-
-	/**********
-	si me llega el network ready
-	***********/
-	else if ((message.find("NETWORK_READY") != std::string::npos))
-	{
-		if (GenesisState == GenesisStates::COLLECTING) {
-			result["result"] = "NETWORKREADY";
-
-			//Cambio estado del nodo full
-			GenesisState = GenesisStates::NETCREATED;
-
-			//ACA GUARDAR INFO DE LOS VECINOS QUE ESTA EN NETWORK LAYOUT
-			//AlgoritmoParticular();
-		}
-		else {
-			result["result"] = "false";
-		}
-	}
-	else if ((message.find("NETWORK_NOTREADY") != std::string::npos))
-	{
-		result["result"] = "NULL";
+		genEvents.parseEvents(message);
 	}
 
 	else {
@@ -603,7 +526,7 @@ json FullNode::find_headers(std::string blockID, int count) {
 
 json FullNode::findBlockJSON(std::string message) {
 
-	cout << "MENSAJEE " << message  << endl;
+
 	json blockJSON = json::parse(parseResponse(message)); 
 	
 	Block block(blockJSON);
@@ -621,7 +544,7 @@ json FullNode::findTxJSON(std::string message) {
 
 	json TxJSON = json::parse(parseResponse(message));
 
-	return "NULL";
+	return TxJSON;
 }
 
 
@@ -630,7 +553,7 @@ json FullNode::findFilterJSON(std::string message) {
 
 	json filterJSON = json::parse(parseResponse(message));
 
-	return "NULL";
+	return filterJSON;
 }
 
 
@@ -657,3 +580,14 @@ bool FullNode::esteIndiceNOT_OK(int randID)
 	return result;
 
 }
+void FullNode::attach(void)
+{
+	eventGen.attach(&genEvents);	//registro fuente de eventos 
+}
+void FullNode::cycle(void)
+{
+	genericEvent* ev;
+	ev = eventGen.getNextEvent(fsm.state4Graphic);  //ACA
+	GenFSM.cycle(ev);
+	delete ev;
+

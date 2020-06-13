@@ -270,8 +270,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 		
 		std::vector<RegistroNodo_t>* NodoArray;
 		*****************/
-		cout << " Veamos si la info que le llega a r_acc esta bien:\n "<< endl;
-		cout << "\nSU PUERTO:  " + to_string(static_cast<evEnviarMsj*>(ev)->Comunication.VECINO.port) << endl;
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO;
 		/*******************
@@ -376,38 +374,36 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 			else
 				unsigned int senderIndex = getIndex(senderID, SPV);
 			//Recupero el monto a enviar y la wallet a donde enviar y configuro el mensaje
+
+			Transaction jsonTx;
+
+			jsonTx.nTxin = 0;
+			jsonTx.nTxout= 1;
+			jsonTx.txID= "7E46A3BC"; //generica dummy
+
+			VinS vin;
+			vin.LilblockID = "0";
+			vin.outputIndex = 0;
+			vin.signature = "0";
+			vin.txID = "0";
+
+			jsonTx.vIn.push_back(vin);
+
+			VoutS vout;
+			vout.amount = static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G;
+			vout.publicID = static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G;
+
+			jsonTx.vOut.push_back(vout);
+
 			if (type == FULL)
 			{
-				fullArray[getIndex(senderID, FULL)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
+				fullArray[getIndex(senderID, FULL)]->POSTTransaction(neighbourID,jsonTx);
 			}
 			else
 			{
-				spvArray[getIndex(senderID, SPV)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
+				spvArray[getIndex(senderID, SPV)]->POSTTransaction(neighbourID, jsonTx);
 			}
 		}
-
-
-		/******************************
-		*    transaction recibir       *
-		*******************************/
-		//else if ((static_cast<evEnviarMsj*>(ev)->Comunication.MENSAJE) == TRANSACTION_Grec)
-		//{
-		//	//Recupero el tipo de nodo emisor
-		//	nodeTypes type = (nodeTypes)static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino.TYPE;
-		//	//Recupero el ID del vecino y el del sender
-		//	int neighbourID = static_cast<evEnviarMsj*>(ev)->Comunication.selectedVecino;
-		//	unsigned int senderID = static_cast<evEnviarMsj*>(ev)->Comunication.NodoEmisor.ID;
-		//	//Busco el índice del nodo en el arreglo
-		//	if (type == FULL)
-		//		unsigned int senderIndex = getIndex(senderID, FULL);
-		//	else
-		//		unsigned int senderIndex = getIndex(senderID, SPV);
-		//	//Recupero el monto a enviar y la wallet a donde enviar y configuro el mensaje
-		//	if (type == FULL)
-		//		fullArray[getIndex(senderID, FULL)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
-		//	else
-		//		spvArray[getIndex(senderID, SPV)]->makeTransaction(neighbourID, static_cast<evEnviarMsj*>(ev)->Comunication.PublicKey_G, static_cast<evEnviarMsj*>(ev)->Comunication.COINS_G);
-		//}
 
 
 		/***** ACA MANDAMOS UPDATE A BULLETIN   ******/
@@ -423,12 +419,7 @@ void FSM::CrearConexion_r_acc(genericEvent* ev)
 
 	if (static_cast<evCrearConexion*>(ev)->getType() == CrearConexion)
 	{
-		/*			
-		RegistroNodo_t Nodo1;
-		RegistroNodo_t Nodo2;
-		std::vector<RegistroNodo_t>* NodoArrayC;
-		string* nameofFile;		
-		*/
+
 
 		for (int i = 0; i < fullArray.size() ; i++)
 		{
@@ -482,10 +473,6 @@ void FSM::ErrorEncontrado_r_acc(genericEvent* ev)
 
 void FSM::Start_genesis_r_acc(genericEvent* ev)
 {
-	/*
-		string JSONPath;
-		int * node_id;   ---> PUNTERO AL ID DE LA CLASE GUIEVENTGENERATOR
-	*/
 
 	//Seed for random timeout
 	srand((unsigned)time(NULL));
@@ -517,6 +504,9 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						for (const auto& FULL : FULLNODEPORT)
 						{
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain, makeRandomTime() );
+							auto pointer = new GEN_FSM();
+							tempFullNode.setGENFSM(pointer);          //INICIAS LA GEN_FSM de cada uno
+							tempFullNode.attach();
 							fullArray.push_back(tempFullNode);
 						}
 
@@ -533,20 +523,11 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 					}
 				}
 			}
-				selectRandomFullNode(fullArray.size() - 1);
+			
 		}
-	}
-	//this->state4Graphic = DASHBOARD_G;
-				//Usamos evento mostrar nodos para no tener q crear evento nuevo 
+	}			
 }
 
-void FSM::selectRandomFullNode(int i)
-{
-	int selectedNode = rand() % (i);		//Le resto uno pq ya esta incrementado en 1 el i para que usen los SPV
-	cout << "selectedNode" << selectedNode << endl;
-	fullArray[selectedNode]->setGenesisState(GenesisStates::COLLECTING);
-	
-}
 
 unsigned int FSM::makeRandomTime(void)
 {
@@ -555,10 +536,6 @@ unsigned int FSM::makeRandomTime(void)
 
 void FSM::RutaDefaultInitState(genericEvent* ev)
 {
-	/*
-		unsigned long int timeoutVar;
-	*/
-
 	if (static_cast<evMulti*>(ev)->getType() == NoEvent)			//Usamos evento mostrar nodos para no tener q crear evento nuevo 
 	{
 	
@@ -581,11 +558,49 @@ bool FSM::isNetworkReady(void)
 
 void FSM::Start_app_r_acc(genericEvent* ev)
 {
-	if (static_cast<evMostrarNodos*>(ev)->getType() == MostrarNodos)			//Usamos evento mostrar nodos para no tener q crear evento nuevo 
+	if (static_cast<evMostrarNodos*>(ev)->getType() == MostrarNodos)			
 	{
 		this->state4Graphic = DASHBOARD_G;
 	}
 }
+
+void FSM::finish_r_acc(genericEvent* ev)
+{
+		int count;
+		for (auto it : fullArray) {
+			if (it->isnetworkcreated) {
+				count++;
+			}
+		}
+		if (count == fullArray.size()) {
+			//cambiar estado a dashboard again 
+		}
+}
+
+void FSM::cycle_each_r_acc(genericEvent* ev)
+{
+		int count;
+		for (auto it : fullArray) {
+			(*(it->getGENFSM))->cycle();
+		}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Blockchain& FSM::getBchain() {
 	return Bchain;

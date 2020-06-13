@@ -154,7 +154,7 @@ json SPVNode::SpvCallback(string message) {
 
 	json result;
 
-	result["state"] = true;
+	result["status"] = true;
 
 	//Si se trata de un POSTmerkletree
 	if (message.find("send_merkle_block"))
@@ -162,7 +162,7 @@ json SPVNode::SpvCallback(string message) {
 		result["result"] = findMBlockJSON(message);// guardar los datos
 	}
 	else {
-		result["state"] == false;
+		result["status"] == false;
 	}
 
 	return result;
@@ -175,7 +175,7 @@ json SPVNode::SpvCallback(string message) {
 json SPVNode::findMBlockJSON(std::string message) {
 
 
-	json mBlockJSON = json::parse(message);
+	json mBlockJSON = json::parse(parseResponse(message));
 
-	return "NULL";
+	return mBlockJSON;
 }
