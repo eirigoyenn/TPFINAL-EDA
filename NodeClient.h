@@ -3,7 +3,7 @@
 #include <string>
 #include "json.hpp"
 #include <curl\curl.h>
-#include <string.h>
+#include "Structs.h"
 
 #define NOTFOUND -1
 
@@ -71,6 +71,7 @@ public:
 	GenesisStates GenesisState;
 	int cantNodes;
 	void MeGuardoAMisVecinos(std::string reply);
+	std::vector<Neighbour> VecinosdeAlgoritmo;
 
 private:
 
@@ -91,5 +92,6 @@ private:
 	json parsedReply;
 	std::vector<NodoSubconjunto>* Subconjunto;
 	json JSONLayout;
+
 };
 

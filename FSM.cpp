@@ -119,15 +119,12 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 		}
 
-
 		/** ESTAMOS IMPRIMIENDO GENESIS **/
-
 		else if (this->state4Graphic == GENESIS_G)
 		{
 			/*
 				unsigned long int timeoutVar;
 			*/
-
 			for (const auto& fullnode : fullArray)
 			{
 				fullnode->listen1sec();
@@ -136,7 +133,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 	
 				unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
 				/* RECORRO ESTADOS DE NODOS FULL */
-				int ID2Ping;
+				int ID2Ping, ID2Connect;
 				for (auto& node : fullArray)
 				{
 					switch (node->getGenesisState())
@@ -167,7 +164,7 @@ void FSM::MultiiPerform(genericEvent* ev)
 
 					case GenesisStates::SENDINGLAYOUT:
 						int j;
-						cout << " ALGUIEN COLLECTING " << endl;
+						cout << " ALGUIEN SENDING LAYOUT " << endl;
 
 						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
 							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
@@ -190,7 +187,27 @@ void FSM::MultiiPerform(genericEvent* ev)
 				}
 				cout << " >>>>>>> CYCLE <<<<<<<" << endl;
 				if (isNetworkReady())
+				{
+					
+					for (const auto& full : fullArray)
+					{
+						full->AddVecinosFromAlgoritmo();
+					}
+
+					for (const auto& spvs : spvArray)
+					{
+						while ((sizeof(spvs->getNeighbours())) < 2)
+						{
+							ID2Connect = rand() % fullArray.size();
+
+							for (; ID2Connect == spvs->getID(); )		//Si esteIndiceOK devuelve true hay que buscar otro
+								ID2Connect = rand() % fullArray.size();
+
+							spvs->addNeighbour2(spvArray[ID2Connect]->getID(), spvArray[ID2Connect]->getIP(), spvArray[ID2Connect]->getPort());
+						}	
+					}
 					this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
+				}
 			}
 		}
 	}

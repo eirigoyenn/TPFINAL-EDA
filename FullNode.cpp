@@ -231,6 +231,17 @@ bool FullNode::POSTPing(int neighbourPORT)
 	}
 }
 
+void FullNode::AddVecinosFromAlgoritmo(void)
+{
+	int i;
+	for (auto vecino : this->client->VecinosdeAlgoritmo)
+	{
+		addNeighbour(vecino.ID, vecino.IP, vecino.port);
+
+	}
+}
+
+
 bool FullNode::POSTNetworkLayout(int neighbourPORT)
 {
 	if (state == FREE)

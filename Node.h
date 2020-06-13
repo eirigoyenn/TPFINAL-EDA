@@ -29,6 +29,8 @@ public:
 
 	bool addNeighbour(int ID_,std::string& IP_, int port_);
 	
+	bool addNeighbour2(int ID_, std::string IP_, int port_);
+
 	//Funciones para enviar mensajes.
 	bool POSTTransaction(unsigned int neighbourID, Transaction Tx_);
 

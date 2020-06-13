@@ -34,7 +34,6 @@ public:
 	json createJSONFilter(std::string Id_);
 
 
-
 private:
 	boost::asio::io_context& io_context;
 	json findMBlockJSON(std::string message);

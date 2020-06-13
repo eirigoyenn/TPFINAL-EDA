@@ -60,7 +60,7 @@ public:
 	json findFilterJSON(std::string message);
 
 	void setTotalFullNodes(int total);
-
+	void AddVecinosFromAlgoritmo(void);
 
 private:
 

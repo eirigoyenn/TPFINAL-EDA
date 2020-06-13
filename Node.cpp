@@ -147,6 +147,19 @@ bool Node::addNeighbour(int ID_, std::string& IP_, int port_)
 	}
 }
 
+
+
+bool Node::addNeighbour2(int ID_, std::string IP_, int port_)
+{
+	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
+	if (port_ < 0)
+		return false;
+	else {
+		neighbours[ID_] = { IP_, port_ };
+		return true;
+	}
+}
+
 bool Node::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
 {
 	if (neighbours.find(neighbourID) != neighbours.end())

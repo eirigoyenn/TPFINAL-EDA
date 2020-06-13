@@ -162,9 +162,14 @@ void NodeClient::MeGuardoAMisVecinos(std::string reply)
 			int id_ = std::stoi(id);
 			int pos2 = temp.find_first_of(':');
 			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
-		}
 
-		//TENGO ID Y PUETO DEL VECINO, EL IP VA A SER EL MISMO Q THIS->CLIENT
+			Neighbour tempNei;
+			tempNei.IP = IP;
+			tempNei.port - port_;
+			tempNei.ID = id_;
+
+			VecinosdeAlgoritmo.push_back(tempNei);
+		}
 	}
 }
 	
