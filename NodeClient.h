@@ -20,9 +20,9 @@ using json = nlohmann::json;
 typedef struct {
 	int TEMP_PUERTO;
 	int TEMP_ID;
-	int numberofConnections;
+	int numberofConnections=0;
 	std::vector<unsigned int> connections; //Vecinos dentro de la red con los que ya se conectó
-	bool checked;	//Indica si fue o no visitado
+	bool checked=false;	//Indica si fue o no visitado
 
 }NodoSubconjunto;
 

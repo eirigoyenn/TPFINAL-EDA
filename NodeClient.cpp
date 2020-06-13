@@ -453,3 +453,94 @@ void NodeClient::BFS(int nodeToVisit)
 	}
 }
 
+
+
+
+//void NodeClient::particularAlgorithm(void)
+//{
+//	int nextNode = 0;
+//	bool areConnected = false;
+//	int nextNode_index = -1;
+//	int index = NOTFOUND;
+//	int i, j;
+//	json layout; //Layout de la red
+//	json nodes; //Nodos de la red
+//	json edges;	//Aristas de la red
+//
+//
+//	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+//	{
+//		for (int i = 0; i < (*Subconjunto).size(); i++) {
+//			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+//			nodes.push_back(nodeInfo);
+//		}
+//	}
+//
+//	if ((*Subconjunto).size() > 1)
+//	{
+//		std::cout << std::endl << std::endl << nodes << std::endl << std::endl;
+//		if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
+//		{
+//
+//			for (i = 0; i < (*Subconjunto).size(); i++)
+//			{
+//				if ((*Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+//				{
+//					std::cout << (*Subconjunto)[i].numberofConnections << std::endl;
+//				}
+//
+//				//Caso contrario sigue el algoritmo
+//				else
+//				{
+//					while ((*Subconjunto)[i].numberofConnections < 2)
+//					{
+//						do
+//						{
+//							nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+//							areConnected = false;
+//							for (int j = 0; j < (*Subconjunto)[i].connections.size(); j++)
+//							{
+//								if ((*Subconjunto)[i].connections[j] == nextNode_index)
+//								{
+//									areConnected = true;
+//								}
+//							}
+//						} while (areConnected == true || i == nextNode_index);
+//
+//						//Agregar JSONS
+//						json temp;
+//						temp["target1"] = std::to_string((*Subconjunto)[i].TEMP_ID) + ':' + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+//						temp["target2"] = std::to_string((*Subconjunto)[nextNode_index].TEMP_ID) + ':' + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
+//						std::cout << std::endl << "nodeinfo 1 " << temp["target1"] << std::endl;
+//						std::cout << std::endl << "nodeinfo 2 " << temp["target2"] << std::endl;
+//
+//						edges.push_back(temp);
+//
+//						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+//						(*Subconjunto)[nextNode_index].connections.push_back(i);
+//						(*Subconjunto)[i].numberofConnections++;
+//						(*Subconjunto)[nextNode_index].numberofConnections++;
+//					}
+//				}
+//			}
+//		}
+//		else if ((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+//		{
+//			json temp;
+//			temp["target1"] = std::to_string((*Subconjunto)[0].TEMP_ID) + ':' + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
+//			temp["target2"] = std::to_string((*Subconjunto)[1].TEMP_ID) + ':' + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
+//			std::cout << std::endl << "nodeinfo 1 EN EL ELSE  " << temp["target1"] << std::endl;
+//			std::cout << std::endl << " nodeinfo 1 EN ELK ELSE  " << temp["target2"] << std::endl;
+//
+//			edges.push_back(temp);
+//
+//		}
+//
+//		layout["nodes"] = nodes;
+//		layout["edges"] = edges;
+//
+//		std::cout << layout << std::endl;
+//		this->JSONLayout = layout;
+//
+//	}
+//}

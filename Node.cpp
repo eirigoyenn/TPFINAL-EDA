@@ -138,26 +138,54 @@ std::vector<std::string> Node::getFilters(void)
 
 bool Node::addNeighbour(int ID_, std::string& IP_, int port_)
 {
-	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
-	if (port_ < 0)
-		return false;
-	else {
-		neighbours[ID_] = { IP_, port_ };
+	bool addNeighbour_ = true;
+	for (auto& neighbour_ : neighbours)
+	{
+		if (neighbour_.second.port == port_ && neighbour_.second.IP == IP_)
+			addNeighbour_ = false;
+	}
+	if (addNeighbour_)
+	{
+		neighbours[ID_] = { IP_,port_ };
 		return true;
 	}
+	else
+		return false;
+
+	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
+	//if (port_ < 0)
+	//	return false;
+	//else {
+	//	neighbours[ID_] = { IP_, port_ };
+	//	return true;
+	//}
 }
 
 
 
 bool Node::addNeighbour2(int ID_, std::string IP_, int port_)
 {
-	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
-	if (port_ < 0)
-		return false;
-	else {
-		neighbours[ID_] = { IP_, port_ };
+	bool addNeighbour_ = true;
+	for (auto& neighbour_ : neighbours)
+	{
+		if (neighbour_.second.port == port_ && neighbour_.second.IP == IP_)
+			addNeighbour_ = false;
+	}
+	if (addNeighbour_)
+	{
+		neighbours[ID_] = { IP_,port_ };
 		return true;
 	}
+	else
+		return false;
+
+	//Nodo Full puede ser vecino con cualquier otro tipo de nodo.
+	//if (port_ < 0)
+	//	return false;
+	//else {
+	//	neighbours[ID_] = { IP_, port_ };
+	//	return true;
+	//}
 }
 
 bool Node::POSTTransaction(unsigned int neighbourID, Transaction Tx_)
@@ -227,5 +255,3 @@ std::string Node::parseResponse(std::string message) {
 
 	return response;
 }
-
-
