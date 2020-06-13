@@ -93,6 +93,7 @@ private:
 	unsigned int makeRandomTime(void);
 
 	bool isNetworkReady();
+	void isThereAnIDLEturnit2COLLECTING();
 
 	json InputRED;
 	Blockchain Bchain;

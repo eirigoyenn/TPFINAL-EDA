@@ -115,7 +115,7 @@ bool FullNode::POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, s
 			client->usePOSTmethod("/eda_coin/send_merkle_block", jsonMerkleBlock);
 
 			this->performRequest();
-			delete client;
+//			delete client;
 
 			return true;
 		}
@@ -235,10 +235,8 @@ bool FullNode::POSTNetworkLayout(int neighbourPORT)
 		state = CLIENT;
 		json jsonLayout = client->getJSONlayout();
 		cout << jsonLayout << endl;
-//		jsonLayout["CAMPO"] = "0";
 
-		unsigned int port_ = neighbours[neighbourPORT].port;
-		client->setPort(port_);
+		client->setPort(neighbourPORT);
 		client->setIP(IP);
 		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT",jsonLayout);
 
@@ -446,13 +444,6 @@ json FullNode::fullCallback(string message) {
 			//Cambio estado del nodo full
 			this->client->GenesisState = GenesisStates::WAITINGLAYOUT;
 
-		}
-		else if (this->client->GenesisState == GenesisStates::COLLECTING) {
-
-			result["result"] = "NETWORK_READY";
-
-			//Cambio estado del nodo full
-			this->client->GenesisState = GenesisStates::NETCREATED;
 		}
 		else if (this->client->GenesisState == GenesisStates::WAITINGLAYOUT)
 		{

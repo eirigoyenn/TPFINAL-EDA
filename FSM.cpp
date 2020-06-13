@@ -139,12 +139,13 @@ void FSM::MultiiPerform(genericEvent* ev)
 				int ID2Ping;
 				for (auto& node : fullArray)
 				{
-
 					switch (node->getGenesisState())
 					{
 					case GenesisStates::IDLE:
 						if (node->getRandomTime() == TIME)		// x = i* 10  --> i = x / 10
 							node->setGenesisState(GenesisStates::COLLECTING);
+						cout << " ALGUIENN EN IDLE " << endl;
+
 						break;
 
 					case GenesisStates::WAITINGLAYOUT:
@@ -152,25 +153,19 @@ void FSM::MultiiPerform(genericEvent* ev)
 						* SI RECIBE NetworkLayout -> responde 200 OK + guarda info
 						* SI RECIBE Ping -> responde NetworkReady agrega a nodo emisor como vecino
 						*/
+						cout << " ALGUIEN WAITING LAYOUT " << endl;
+
 						break;
 
 					case GenesisStates::COLLECTING:
+						cout << " ALGUIEN COLLECTING " << endl;
 
 						ID2Ping = node->selectRandomNode2Add(fullArray);
-						/*
-						* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
+						/* FUNCION DONDE SE LE MANDA UN PING A ESE ID: */
 						fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
-						/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
-						*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
-						*		SI RESPONDE NetworkReady -> algoritmo particular
-						*								 -> se agrega al que respondio como vecino
-						*								 -> cambio estado de nodo emisor a NETWORKCREATED
-						* SI RECIBE PING -> responde con NetworkReady y arma conexiones
-						*/
 						break;
 
 					case GenesisStates::SENDINGLAYOUT:
-						/******** SERIA ALGO ASI *******/
 						int j;
 						for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
 							node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
@@ -179,17 +174,36 @@ void FSM::MultiiPerform(genericEvent* ev)
 						break;
 
 					case GenesisStates::NETCREATED:
+						cout << "LLEGAMOS A NETCREATED " << endl;
+
 						break;
 
 					default:
 						break;
 					}
 				}
-
+				cout << " >>>>>>> CYCLE <<<<<<<" << endl;
 				if (isNetworkReady())
 					this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
 			}
 		}
+	}
+}
+
+//isThereAnIDLEturnit2COLLECTING();
+
+
+void FSM::isThereAnIDLEturnit2COLLECTING()
+{
+	int i;
+	for (i=0; i< fullArray.size() ; i++)
+	{
+		if (fullArray[i]->getGenesisState() == GenesisStates::IDLE)
+		{
+			fullArray[i]->setGenesisState(GenesisStates::COLLECTING);
+			i = fullArray.size();
+		}
+
 	}
 }
 

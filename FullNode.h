@@ -59,14 +59,17 @@ public:
 	json findTxJSON(std::string message);
 	json findFilterJSON(std::string message);
 
+	void setTotalFullNodes(int total);
 
 
 private:
+
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
-
+	int nodes2Add;
+	int cantNodes;
 };
 

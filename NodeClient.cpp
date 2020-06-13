@@ -68,8 +68,6 @@ NodeClient::~NodeClient()
 
 bool NodeClient::performRequest(void)
 {
-	if (IP.length() && port)
-	{
 		/*static bool isFinished = false;*/
 		bool res = true;
 		if (stillRunning)
@@ -94,7 +92,7 @@ bool NodeClient::performRequest(void)
 			curl_multi_cleanup(multiHandle);
 
 			if (reply.size() != 0) {
-				std::cout << reply << "imprimio\n\n";
+				std::cout << reply << "\n\nimprimio\n\n";
 				parsedReply = json::parse(reply);
 
 				if (reply.find("NETWORK_NOTREADY") != std::string::npos)
@@ -115,20 +113,13 @@ bool NodeClient::performRequest(void)
 					particularAlgorithm();
 					this->GenesisState = GenesisStates::SENDINGLAYOUT;
 				}
+
 			}
 			// ACA hay que mandar reply a algun lado
 			res = false;
 		}
 
 		return res;
-	}
-	else
-	{
-		errorCode = INVALID_DATA;
-		errorMsg = "Invalid data.";
-		std::cout << errorMsg;
-		return false;
-	}
 }
 
 
@@ -347,15 +338,18 @@ void NodeClient::particularAlgorithm(void)
 	json layout; //Layout de la red
 	json nodes; //Nodos de la red
 	json edges;	//Aristas de la red
+	
 
 	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
 	{
 		for (int i = 0; i < (*Subconjunto).size(); i++) {
 			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
-			layout["nodes"] += nodeInfo;
+			nodes.push_back(nodeInfo);
 		}
 	}
 
+	layout["nodes"] = nodes; 
+	std::cout << std::endl << std::endl << nodes << std::endl << std::endl;
 	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
 	{
 
@@ -373,28 +367,29 @@ void NodeClient::particularAlgorithm(void)
 				{
 
 					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
-					nextNode = randomPORT(nextNode);
+					nextNode = randomPORT(nextNode_index);
 
 					for (j = 0; j < (*Subconjunto).size(); j++) //
 					{
 
 						if ((*Subconjunto)[i].numberofConnections == 0 || (*Subconjunto)[i].connections[0] != nextNode) {
 							index = nextNode;
+							std::cout << "NEXT NODEEEE " << nextNode << std::endl;
+
 						}
 					}
 
 					if (index != NOTFOUND) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
 
 						//Agregar JSONS
-//						edges.clear();
-						std::string Node1Info = std::to_string((*Subconjunto)[i].TEMP_PUERTO);
-						std::string Node2Info =  std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
-						std::cout << "nodeinfo 1  " << Node1Info << std::endl;
-						std::cout << "nodeinfo 1   " << Node2Info << std::endl;
+						edges.clear();
+						json temp;
+						temp["target1"] = std::to_string((*Subconjunto)[i].TEMP_ID) + ':' + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+						temp["target2"] = std::to_string((*Subconjunto)[nextNode_index].TEMP_ID) + ':' + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
+						std::cout << std::endl << "nodeinfo 1 " << temp["target1"]  << std::endl;
+						std::cout << std::endl << "nodeinfo 2 " << temp["target2"] << std::endl;
 
-						edges += "target1", Node1Info;
-						edges += "target2", Node2Info;
-						layout["edges"] += edges;
+						edges.push_back(temp);
 
 						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
 						(*Subconjunto)[nextNode_index].connections.push_back(i);
@@ -407,12 +402,19 @@ void NodeClient::particularAlgorithm(void)
 	}
 	else if ((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
 	{
-		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
-		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
-		edges += "target1", Node1Info;
-		edges += "target2", Node2Info;
-		layout["edges"] = edges;
+		json temp;
+		temp["target1"] = std::to_string((*Subconjunto)[0].TEMP_ID) + ':' + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
+		temp["target2"] = std::to_string((*Subconjunto)[1].TEMP_ID) + ':' + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
+		std::cout << std::endl <<"nodeinfo 1 EN EL ELSE  " << temp["target1"] << std::endl;
+		std::cout << std::endl<<" nodeinfo 1 EN ELK ELSE  " << temp["target2"] << std::endl;
+
+		edges.push_back(temp);	
+
 	}
+
+	layout["edges"] = edges;
+
+	layout["nodes"] = nodes;
 
 	std::cout << layout << std::endl;
 	this->JSONLayout = layout;
