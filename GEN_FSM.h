@@ -3,7 +3,7 @@
 
 #include "GenericFSM.h"
 #include "GenEventGenerator.h"
-#include "FullNode.h"
+#include "Node.h"
 
 #define TR(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&GEN_FSM::x)) 
 
@@ -16,9 +16,11 @@ public:
 	~GEN_FSM();
 	eventTypes getState(void) { return State; }
 	void setRandomTime(unsigned long int Randomtime);
-	void setFullArr(std::vector<FullNode*>* fullArray_) { fullArray = fullArray_; };
+	unsigned int selectRandomNode(void) ;
+
 	void setClient(NodeClient* cliente_) { client = cliente_; };
 	void setServer(NodeServer* server_) { server = server_; };
+	void setportArray(std::vector<unsigned int>* portsArray_) { portsArray = portsArray_; };
 private:
 	const fsmCell fsmTable[4][6] = {
 		//     EVENTOS					PING								NETWORK NOT READY							NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
@@ -35,12 +37,11 @@ private:
 	void secping_r_acc(genericEvent* ev);
 	void collect_r_acc(genericEvent* ev);
 	void sendlayout_r_acc(genericEvent* ev);
-	void startcollecting_r_acc(genericEvent* ev);
 	void idle_r_acc(genericEvent* ev);
 
 	states State;
-	std::vector<FullNode*>* fullArray;
 	unsigned long int RandomTime;
 	NodeClient* client=nullptr;
 	NodeServer* server = nullptr;
+	std::vector<unsigned int>* portsArray;
 };

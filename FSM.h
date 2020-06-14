@@ -96,6 +96,7 @@ private:
 	std::vector<SPVNode*> spvArray;
 	
 	std::vector<FullNode*> fullArray;
+	std::vector<unsigned int> portsArray;
 
 	unsigned int makeRandomTime(void);
 

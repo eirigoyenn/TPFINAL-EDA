@@ -503,6 +503,11 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						/* CREATING FULL NODES */
 						auto FULLNODEPORT = RED_JDATA["full-nodes"];
 						int i = 0;
+						int j = 0;
+						for (const auto& FULL : FULLNODEPORT)
+						{
+							portsArray.push_back(FULL);
+						}
 						for (const auto& FULL : FULLNODEPORT)
 						{
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain);
@@ -511,7 +516,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 							tempFullNode->attach();
 							tempFullNode->setFSMtimer(makeRandomTime());
 							tempFullNode->setFSMCandS();
-							tempFullNode->setFSMarr(&fullArray);
+							tempFullNode->setFMSPortsArray(&portsArray);
 							fullArray.push_back(tempFullNode);
 						}
 
@@ -574,7 +579,10 @@ void FSM::finish_r_acc(genericEvent* ev)
 
 void FSM::cycle_each_r_acc(genericEvent* ev)
 {
-	
+	for (const auto& fullnode : fullArray) {
+		fullnode->listen1sec();
+		fullnode->performRequest();
+	}
 		
 	for (auto it : fullArray) {
 		(it)->my_cycle();

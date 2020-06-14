@@ -74,6 +74,7 @@ protected:
 	/*std::vector <Neighbour> neighbours;*/
 	std::map <unsigned int, Neighbour> neighbours;
 	std::vector <std::string> FilterArray;
+	
 	//std::vector <Transaction> TxVector;
 	//std::vector <MerkleBlock> MerkleBlockVector;
 

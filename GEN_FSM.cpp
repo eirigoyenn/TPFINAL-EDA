@@ -10,20 +10,16 @@ void GEN_FSM::setRandomTime(unsigned long int Randomtime_) {
 
 void GEN_FSM::RutaDefault(genericEvent* ev)
 {
-	for (const auto& fullnode : *fullArray) {
-		fullnode->listen1sec();
-		fullnode->performRequest();
-	}
-	return;
+	
 }
 void GEN_FSM::Noevent_r_acc(genericEvent* ev)
 {
-	for (const auto& fullnode : *fullArray) {
-		fullnode->listen1sec();
-		fullnode->performRequest();
-	}
+	RandomTime > 5 ? RandomTime - 5 : 0;
 	if (RandomTime)
 		RandomTime--;
+	if (!RandomTime)
+		collect_r_acc(NULL);
+		/// Largar un evento de time out
 	return;
 }
 void GEN_FSM::idle_r_acc(genericEvent* ev)
@@ -33,10 +29,59 @@ void GEN_FSM::idle_r_acc(genericEvent* ev)
 	}
 	return;
 }
-void GEN_FSM::idle_r_acc(genericEvent* ev)
+
+void GEN_FSM::firstping_r_acc(genericEvent* ev)
 {
 	if (!RandomTime) {
 		//cambiar estado  a mandar mensaje
 	}
 	return;
 }
+
+void GEN_FSM::secping_r_acc(genericEvent* ev)
+{
+	if (!RandomTime) {
+		//cambiar estado  a mandar mensaje
+	}
+	return;
+}
+
+void GEN_FSM::collect_r_acc(genericEvent* ev)
+{
+	if (state == FREE)
+	{
+
+		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+		state = CLIENT;
+		json noInfo;
+		noInfo.clear();		//NO LE MANDO INFORMACION?
+		unsigned int port_ = selectRandomNode();
+		client->setPort(port_);
+		client->setIP("localhost");
+		client->usePOSTmethod("/eda_coin/PING", noInfo);
+
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+	}
+	
+
+	return;
+}
+
+void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
+{
+	if (!RandomTime) {
+		//cambiar estado  a mandar mensaje
+	}
+	return;
+}
+
+
+
+unsigned int GEN_FSM::selectRandomNode(void) {
+	unsigned int randPort;
+	randPort = (*portsArray)[rand() % (portsArray->size())];
+	return randPort;
+
+}
+

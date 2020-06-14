@@ -69,9 +69,10 @@ public:
 		GenFSM->setClient(client);
 		GenFSM->setServer(server);
 	}
-	void setFSMarr(std::vector<FullNode*>* fullarr) {
-		GenFSM->setFullArr(fullarr);
+	void setFMSPortsArray(std::vector<unsigned int>* portsArray) {
+		GenFSM->setportArray(portsArray);
 	}
+	
 private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
