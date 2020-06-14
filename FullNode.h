@@ -7,8 +7,6 @@
 
 #define NOTFOUND -1
 
-enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, SENDINGLAYOUT , NETCREATED};
-enum class GenesisEvents{ PING, NETWORKLAYOUT,  NETWORKNOTREADY, NETWORKREADY};
 
 
 
@@ -29,11 +27,8 @@ public:
 	bool POSTBlock(unsigned int neighbourID, std::string BlockID);
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	bool GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count);
-	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
 	//Genesis
-	GenesisStates getGenesisState(void);
-	void setGenesisState(GenesisStates new_state);
 	unsigned long int getRandomTime(void);
 	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
 	bool esteIndiceNOT_OK(int randID);
@@ -75,9 +70,7 @@ private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
-	GenesisStates GenesisState;
 	unsigned long int RandomTime;
-	std::queue<GenesisEvents> EventQueueGenesis;
 
 	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
 	GEN_FSM* GenFSM;

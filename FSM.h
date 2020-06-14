@@ -8,14 +8,14 @@
 #define TX(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&FSM::x)) //casteo a funcion, por visual
 
 
-enum implStates : stateTypes {InitState, ShwDashboard, Look4Veci, ShwNodos, ShwSelBlock , ShwError , SHwGENESIS};
+enum implStates : stateTypes {InitState, ShwDashboard, Look4Veci, ShwNodos, ShwSelBlock , ShwError , SHwGENESIS, multi};
 
 using namespace std;
 
 class FSM : public genericFSM
 {
 public:
-	FSM() : genericFSM(&fsmTable[0][0], 7, 11, InitState), state4Graphic(INITSTATE_G) {};
+	FSM() : genericFSM(&fsmTable[0][0], 8, 11, InitState), state4Graphic(INITSTATE_G) {};
 	~FSM();
 
 	unsigned int state4Graphic;
@@ -24,11 +24,11 @@ public:
 	Blockchain& getBchain(void);
 
 private:
-	const fsmCell fsmTable[7][11] = {
+	const fsmCell fsmTable[8][10] = {
 
 				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										    Back2Dashboard											No event								BlockSelected										FINISHED GENESIS NETWORK               
 		//ESTADOS																										/*Start app mode en init state*/		/*Start genesis mode en init state*/
-		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	  {ShwDashboard,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {InitState,TX(RutaDefault)}  },
+		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},		{SHwGENESIS,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {InitState,TX(RutaDefault)}  },
 
 		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},			{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,		{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {ShwDashboard,TX(RutaDefault)}    },
 
@@ -40,9 +40,10 @@ private:
 		
 		/*   ShwError  */		{{ShwError,TX(RutaDefault)},			{ShwError,TX(RutaDefault)},						{ShwError,TX(RutaDefault)},				{ShwError,TX(RutaDefault)},					{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)},				{ShwDashboard,TX(VolverADashboard_r_acc)} , 		{ShwError,TX(MultiiPerform)} ,			{ShwDashboard,TX(RutaDefault)}            ,		  {ShwError,TX(RutaDefault)}    },
 
-		/* SHwGENESIS */		{{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},					{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},						{SHwGENESIS,TX(RutaDefault)} , 						{SHwGENESIS,TX(cycle_each_r_acc)} ,			{SHwGENESIS,TX(RutaDefault)}          ,       {SHwGENESIS,TX(finish_r_acc)}  }
+		/* SHwGENESIS */		{{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},					{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},						{SHwGENESIS,TX(RutaDefault)} , 						{multi,TX(cycle_each_r_acc)} ,			{SHwGENESIS,TX(RutaDefault)}          ,			 {SHwGENESIS,TX(finish_r_acc)}  },
 			
-
+		/*State to let multi*/	{ {multi,TX(RutaDefault)},				{multi,TX(RutaDefault)},						{multi,TX(RutaDefault)},				{multi,TX(RutaDefault)},					{multi,TX(RutaDefault)},					{multi,TX(RutaDefault)},							{multi,TX(RutaDefault)} , 							{SHwGENESIS,TX(MultiiPerform)} ,			{multi,TX(RutaDefault)} ,						{multi,TX(finish_r_acc)}  }
+		/*THINK*/
 	};
 
 	//The action routines for the FSM
@@ -50,8 +51,6 @@ private:
 
 	/* FUNCIONES */
 	void Add2JSONfile(bool isFullNode, int puerto);
-
-	void selectRandomFullNode(int i);
 
 	std::ofstream BulletinFileR_ACC;
 

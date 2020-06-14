@@ -44,14 +44,7 @@ void FSM::CrearNodo_r_acc(genericEvent* ev)
 {
 	if (static_cast<evCrearNodo*>(ev)->getType() == CrearNodo)
 	{
-		/*******
-			uint TYPE;
-			int PUERTO;
-			string IP;
-			std::vector<RegistroNodo_t>* NodoArray;
-			int nodeID;
-			std::string * nameofFile;
-		*******/
+		
 
 		string input2file;
 
@@ -107,90 +100,18 @@ void FSM::MultiiPerform(genericEvent* ev)
 {
 	if (static_cast<evMulti*>(ev)->getType() == NoEvent)
 	{
-		if (this->state4Graphic == DASHBOARD_G)
-		{
-			for (const auto& spvnode : spvArray) {
-				spvnode->listen1sec();
-				spvnode->performRequest();
-			}
 
-			for (const auto& fullnode : fullArray) {
-				fullnode->listen1sec();
-				fullnode->performRequest();
-			}
-
+		for (const auto& spvnode : spvArray) {
+			spvnode->listen1sec();
+			spvnode->performRequest();
 		}
 
-		/** ESTAMOS IMPRIMIENDO GENESIS **/
+		for (const auto& fullnode : fullArray) {
+			fullnode->listen1sec();
+			fullnode->performRequest();
+		}
+
 		
-		else if (this->state4Graphic == GENESIS_G)
-		{
-			/*
-				unsigned long int timeoutVar;
-			*/
-
-			for (const auto& fullnode : fullArray) {
-//				if (fullnode->getGenesisState() == GenesisStates::COLLECTING)
-//				{
-					fullnode->listen1sec();
-					fullnode->performRequest();
-			}
-
-			unsigned long int TIME = (static_cast<evMulti*>(ev)->timeoutVar) / 10;
-			/* RECORRO ESTADOS DE NODOS FULL */
-			int ID2Ping;
-			for (auto& node : fullArray)
-			{
-
-				switch (node->getGenesisState())
-				{
-				case GenesisStates::IDLE:
-					if (node->getRandomTime() == TIME)			// x = i* 10  --> i = x / 10
-						node->setGenesisState(GenesisStates::COLLECTING);					
-					break;
-
-				case GenesisStates::WAITINGLAYOUT:
-					/*
-					* SI RECIBE NetworkLayout -> responde 200 OK + guarda info
-					* SI RECIBE Ping -> responde NetworkReady agrega a nodo emisor como vecino
-					*/
-					break;
-
-				case GenesisStates::COLLECTING:
-				
-					ID2Ping = node->selectRandomNode2Add(fullArray);					
-					/*
-					* FUNCION DONDE SE LE MANDA UN PING A ESE ID:*/
-					fullArray[node->getID()]->POSTPing(fullArray[ID2Ping]->getPort());
-					/*		SI RESPONDE NetworkNotReady -> se lo pushea a subconjuntoNodosRED de node
-					*									-> en rutina de cliente se le cambia estdo a WAITINGLAYOUT
-					*		SI RESPONDE NetworkReady -> algoritmo particular
-					*								 -> se agrega al que respondio como vecino
-					*								 -> cambio estado de nodo emisor a NETWORKCREATED
-				    * SI RECIBE PING -> responde con NetworkReady y arma conexiones
-					*/
-					break;
-
-				case GenesisStates::SENDINGLAYOUT:
-					/******** SERIA ALGO ASI *******/
-					int j;
-					for (j = 0; j < node->subconjuntoNodosRED.size(); j++)
-						node->POSTNetworkLayout(node->subconjuntoNodosRED[j].TEMP_PUERTO);
-
-					node->setGenesisState(GenesisStates::NETCREATED);
-					break;
-
-				case GenesisStates::NETCREATED:
-					break;
-
-				default:
-					break;
-				}
-			}
-
-			if (isNetworkReady())
-				this->state4Graphic = DASHBOARD_G;			//Ahora imprimimos esto pero en realidad ya estabamos en el estado ShowingDashboard 
-		}
 	}
 
 }
@@ -257,21 +178,6 @@ void FSM::EnviarMensaje_r_acc(genericEvent* ev)
 	if (static_cast<evEnviarMsj*>(ev)->getType() == EnviarMsj)
 	{
 		this->state4Graphic = DASHBOARD_G;
-		/****************
-		typedef struct
-		{
-			RegistroNodo_t NodoEmisor;
-			std::map<unsigned int, Neighbour> NodosVecinos;
-			std::string mensaje;
-			std::string vecinos;	//Esto se usa para la funcion combo de ImGui
-			int selectedVecino;
-
-		} ParticipantesMsj_t;
-
-		ParticipantesMsj_t Comunication;
-		
-		std::vector<RegistroNodo_t>* NodoArray;
-		*****************/
 
 		Neighbour NodoReceptor = static_cast<evEnviarMsj*>(ev)->Comunication.VECINO;
 		/*******************
@@ -544,19 +450,6 @@ void FSM::RutaDefaultInitState(genericEvent* ev)
 	}
 }
 
-bool FSM::isNetworkReady(void)
-{
-	bool itsReady;
-	itsReady = true;
-	
-	for (auto& node : fullArray) 
-	{
-		if ((node->getGenesisState() != GenesisStates::NETCREATED) || (node->getGenesisState() != GenesisStates::SENDINGLAYOUT))
-			itsReady = false;
-	}
-
-	return itsReady;
-}
 
 void FSM::Start_app_r_acc(genericEvent* ev)
 {
@@ -590,10 +483,10 @@ void FSM::finish_r_acc(genericEvent* ev)
 
 void FSM::cycle_each_r_acc(genericEvent* ev)
 {
-		int count;
-		for (auto it : fullArray) {
-			(it)->my_cycle();
-		}
+	int count;
+	for (auto it : fullArray) {
+		(it)->my_cycle();
+	}
 }
 
 
