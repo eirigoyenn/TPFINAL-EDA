@@ -17,7 +17,6 @@ public:
 
 	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain);
 
-	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
 
 	~FullNode();
 
@@ -70,7 +69,6 @@ private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
-	unsigned long int RandomTime;
 
 	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
 	GEN_FSM* GenFSM;

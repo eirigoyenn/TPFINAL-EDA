@@ -12,6 +12,7 @@ public:
 	GEN_FSM() : genericFSM(&fsmTable[0][0], 4, 6, idle) {};
 	~GEN_FSM();
 	eventTypes getState(void) { return State; }
+	void setRandomTime(unsigned long int Randomtime);
 private:
 	const fsmCell fsmTable[4][6] = {
 		//     EVENTOS					PING								NETWORK NOT READY							NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
@@ -26,5 +27,6 @@ private:
 	void Noevent_r_acc(genericEvent* ev);
 	void idle_r_acc(genericEvent* ev);
 	states State;
+	unsigned long int RandomTime;
 };
 

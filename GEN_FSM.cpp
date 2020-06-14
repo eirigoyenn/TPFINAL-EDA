@@ -4,6 +4,9 @@
 GEN_FSM::~GEN_FSM() {
 
 }
+void GEN_FSM::setRandomTime(unsigned long int Randomtime_) {
+	RandomTime = Randomtime_;
+}
 
 void GEN_FSM::RutaDefault(genericEvent* ev)
 {
