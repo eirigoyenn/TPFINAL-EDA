@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include "Node.h"
 #include "EventHandling.h"
 #include "GenEventGenerator.h"
@@ -7,8 +8,6 @@
 
 #define NOTFOUND -1
 
-enum class GenesisStates { IDLE, WAITINGLAYOUT, COLLECTING, SENDINGLAYOUT , NETCREATED};
-enum class GenesisEvents{ PING, NETWORKLAYOUT,  NETWORKNOTREADY, NETWORKREADY};
 
 
 
@@ -19,7 +18,6 @@ public:
 
 	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain);
 
-	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
 
 	~FullNode();
 
@@ -29,11 +27,8 @@ public:
 	bool POSTBlock(unsigned int neighbourID, std::string BlockID);
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	bool GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count);
-	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
 
 	//Genesis
-	GenesisStates getGenesisState(void);
-	void setGenesisState(GenesisStates new_state);
 	unsigned long int getRandomTime(void);
 	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
 	bool esteIndiceNOT_OK(int randID);
@@ -69,18 +64,22 @@ public:
 	void attach(void);
 	void my_cycle(void);
 	bool isnetworkcreated(void);
-
-
+	void setFSMtimer(unsigned int time_) { GenFSM->setRandomTime(time_); }
+	void setFSMCandS() {
+		GenFSM->setClient(client);
+		GenFSM->setServer(server);
+	}
+	void setFSMarr(std::vector<FullNode*>* fullarr) {
+		GenFSM->setFullArr(fullarr);
+	}
 private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
-	GenesisStates GenesisState;
-	unsigned long int RandomTime;
-	std::queue<GenesisEvents> EventQueueGenesis;
 
 	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
-	GEN_FSM* GenFSM;
+	GEN_FSM* GenFSM=nullptr;
 	GenEventGenerator genEvents;
 
 };
+

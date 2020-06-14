@@ -55,7 +55,7 @@ getEvent(unsigned int estado)
 		break;
 
 	case implEvent::NoEvent:
-		ret = new evMulti(this->GUI->timeout);
+		ret = new evMulti;
 		break;
 	}
 

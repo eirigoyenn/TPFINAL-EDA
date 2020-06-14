@@ -12,19 +12,6 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 	server = new NodeServer(io_context_ , IP , boost::bind(&FullNode::fullCallback,this,_1), port);
 }
 
-FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime_) : io_context(io_context_)
-{
-	ID = ID_;
-	IP = IP_;
-	port = port_;
-	NodeBlockchain = bchain;
-	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED);
-	GenesisState = GenesisStates::IDLE;
-	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
-	RandomTime = randomTime_;
-}
-
-
 FullNode::~FullNode()
 {
 	if (client)
@@ -41,20 +28,7 @@ void FullNode::listen1sec(void) {
 
 }
 
-GenesisStates FullNode::getGenesisState(void)
-{
-	return GenesisState;
-}
 
-unsigned long int FullNode::getRandomTime(void)
-{
-	return RandomTime;
-}
-
-void FullNode::setGenesisState(GenesisStates new_state)
-{
-	GenesisState = new_state; 
-}
 
 /************************************************************************************************
 *					                          MENSAJES											*
