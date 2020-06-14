@@ -1,8 +1,7 @@
 #include "FullNode.h"
 
 
-
-FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_,Blockchain& bchain): io_context(io_context_) 
+FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_,Blockchain& bchain): io_context(io_context_)
 {
 	ID = ID_;
 	IP = IP_;

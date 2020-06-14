@@ -80,6 +80,7 @@ protected:
 	std::vector <std::string> FilterArray;
 	//std::vector <Transaction> TxVector;
 	//std::vector <MerkleBlock> MerkleBlockVector;
+	json transactions_;
 
 };
 

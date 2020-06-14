@@ -168,6 +168,7 @@
     <ClCompile Include="Blockchain.cpp" />
     <ClCompile Include="EventHandling.cpp" />
     <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="FullMinerNode.cpp" />
     <ClCompile Include="FullNode.cpp" />
     <ClCompile Include="GenericFSM.cpp" />
     <ClCompile Include="GraphicF2.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Blockchain.h" />
     <ClInclude Include="EventHandling.h" />
     <ClInclude Include="FSM.h" />
+    <ClInclude Include="FullMinerNode.h" />
     <ClInclude Include="FullNode.h" />
     <ClInclude Include="GenericFSM.h" />
     <ClInclude Include="GraphicF2.h" />

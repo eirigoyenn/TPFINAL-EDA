@@ -106,3 +106,16 @@ int Blockchain::saveBlockInfo(std::string path)
 	
 	return result;
 }
+
+const string Blockchain::createMerkleRoot(const json & block)
+{
+	Block blck(block);
+	blck.createMerkleTree();
+	return blck.getMerkleRoot();
+}
+
+void Blockchain::addBlock(const json & block_json)
+{
+	Block newblock(block_json);
+	BlocksArr.push_back(newblock);
+}

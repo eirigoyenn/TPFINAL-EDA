@@ -99,6 +99,9 @@
     <ClCompile Include="Imgui_files\imgui_widgets.cpp">
       <Filter>Source Files\Events\ImGuiFiles</Filter>
     </ClCompile>
+    <ClCompile Include="FullMinerNode.cpp">
+      <Filter>Source Files\Nodos</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="blockChain4.json">
@@ -185,6 +188,9 @@
       <Filter>Header Files\Nodos</Filter>
     </ClInclude>
     <ClInclude Include="SPVNode.h">
+      <Filter>Header Files\Nodos</Filter>
+    </ClInclude>
+    <ClInclude Include="FullMinerNode.h">
       <Filter>Header Files\Nodos</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,7 @@ class FullNode :
 	public Node
 {
 public:
-
+	FullNode();
 	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_,Blockchain& bchain);
 	
 	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
@@ -64,7 +64,7 @@ public:
 	void MeGuardoAMisVecinos(std::string reply);
 
 
-private:
+protected:
 	std::vector<Neighbour> VecinosdeAlgoritmo;
 
 	boost::asio::io_context& io_context;

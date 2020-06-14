@@ -14,7 +14,8 @@ public:
 	vector<Block>& getBlocksArr(void) { return BlocksArr; }
 	size_t getBlocksSize() { return BlocksArr.size(); }
 	int saveBlockInfo(std::string);
-
+	const string createMerkleRoot(const json& block);
+	void addBlock(const json& block_json);
 
 private:
 
