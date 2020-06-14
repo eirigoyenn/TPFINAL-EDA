@@ -113,9 +113,7 @@ class evMulti : public genericEvent
 {
 public:
 	eventTypes getType(void) { return NoEvent; }
-	evMulti(unsigned long int timeoutVar_) : timeoutVar(timeoutVar_) {}
-
-	unsigned long int timeoutVar;
+  
 };
 
 //Hereda de clase eventGenerator (EventHandling.h)
