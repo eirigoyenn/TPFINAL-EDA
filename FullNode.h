@@ -17,9 +17,9 @@ class FullNode :
 {
 public:
 
-	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_,Blockchain& bchain);
-	
-	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
+	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain);
+
+	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
 
 	~FullNode();
 
@@ -30,7 +30,7 @@ public:
 	bool POSTMerkleBlock(unsigned int neighbourID, std::string BlockID_, std::string TxID);
 	bool GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count);
 	bool makeTransaction(unsigned int neighbourID, std::string& wallet, unsigned int amount);
-	
+
 	//Genesis
 	GenesisStates getGenesisState(void);
 	void setGenesisState(GenesisStates new_state);
@@ -43,11 +43,11 @@ public:
 	//MENSAJES de genesis
 	bool POSTPing(int neighbourPORT);
 	bool POSTNetworkLayout(int neighbourPORT);
-		//bool POSTNetwork_NotReady(unsigned int neighbourID);
-		//bool POSTNetwork_Ready(unsigned int neighbourID);
+	//bool POSTNetwork_NotReady(unsigned int neighbourID);
+	//bool POSTNetwork_Ready(unsigned int neighbourID);
 
 
-	//Funciones para generar los JSON de los mensajes
+//Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string BlockId);
 	json createJSONMerkleBlock(std::string BlockID_, std::string TxID_);
 	json createJSONheader(std::string BlockID_);
@@ -67,8 +67,8 @@ public:
 	void setGENFSM(GEN_FSM* pointer);
 	GEN_FSM* getGENFSM(void) { return GenFSM; }
 	void attach(void);
-	void cycle(void);
-	bool isnetworkcreated(void) {return fsm.getEvent() };
+	void my_cycle(void);
+	bool isnetworkcreated(void);
 
 
 private:
@@ -76,12 +76,11 @@ private:
 	Blockchain NodeBlockchain;
 	std::vector <std::string> filters;
 	GenesisStates GenesisState;
-	unsigned long int RandomTime; 
+	unsigned long int RandomTime;
 	std::queue<GenesisEvents> EventQueueGenesis;
-	
+
 	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
-	GenEventGenerator genEvents;	// mi gen de eventos especifico
 	GEN_FSM* GenFSM;
+	GenEventGenerator genEvents;
 
 };
-

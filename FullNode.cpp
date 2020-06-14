@@ -584,10 +584,22 @@ void FullNode::attach(void)
 {
 	eventGen.attach(&genEvents);	//registro fuente de eventos 
 }
-void FullNode::cycle(void)
+void FullNode::my_cycle(void)
 {
 	genericEvent* ev;
-	ev = eventGen.getNextEvent(fsm.state4Graphic);  //ACA
-	GenFSM.cycle(ev);
+	ev = eventGen.getNextEvent(NULL); //pongo el null pq no se usa el parametro q se le pasa 
+	GenFSM->cycle(ev);
 	delete ev;
+}
 
+void FullNode::setGENFSM(GEN_FSM* gen_fsm_)
+{
+	GenFSM = gen_fsm_;
+}
+
+
+bool FullNode::isnetworkcreated(void)
+{
+// qverga me tengo q fijar
+	return true;
+}

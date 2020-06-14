@@ -103,7 +103,7 @@
       <Filter>Source Files\Events</Filter>
     </ClCompile>
     <ClCompile Include="GenEventGenerator.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,10 +193,10 @@
     <ClInclude Include="SPVNode.h">
       <Filter>Header Files\Nodos</Filter>
     </ClInclude>
-    <ClInclude Include="GEN_FSM.h">
+    <ClInclude Include="GenEventGenerator.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
-    <ClInclude Include="GenEventGenerator.h">
+    <ClInclude Include="GEN_FSM.h">
       <Filter>Header Files\Events</Filter>
     </ClInclude>
   </ItemGroup>

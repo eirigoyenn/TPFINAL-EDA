@@ -3,6 +3,8 @@
 
 
 
+
+
 FSM::~FSM()
 {
 	for (auto& node : spvArray) {
@@ -505,8 +507,8 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						{
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain, makeRandomTime() );
 							auto pointer = new GEN_FSM();
-							tempFullNode.setGENFSM(pointer);          //INICIAS LA GEN_FSM de cada uno
-							tempFullNode.attach();
+							tempFullNode->setGENFSM(pointer);          //INICIAS LA GEN_FSM de cada uno
+							tempFullNode->attach();
 							fullArray.push_back(tempFullNode);
 						}
 
@@ -564,11 +566,20 @@ void FSM::Start_app_r_acc(genericEvent* ev)
 	}
 }
 
+
+
+
+
+
+
+
+
+
 void FSM::finish_r_acc(genericEvent* ev)
 {
-		int count;
+		int count = 0;
 		for (auto it : fullArray) {
-			if (it->isnetworkcreated) {
+			if (it->isnetworkcreated()) {
 				count++;
 			}
 		}
@@ -581,23 +592,9 @@ void FSM::cycle_each_r_acc(genericEvent* ev)
 {
 		int count;
 		for (auto it : fullArray) {
-			(*(it->getGENFSM))->cycle();
+			(it)->my_cycle();
 		}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
