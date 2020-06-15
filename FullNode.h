@@ -72,6 +72,11 @@ public:
 	void setFMSPortsArray(std::vector<unsigned int>* portsArray) {
 		GenFSM->setportArray(portsArray);
 	}
+
+	void setFSMNodetoCollecting(void)
+	{
+		GenFSM->setCollecting();
+	}
 	
 private:
 	boost::asio::io_context& io_context;

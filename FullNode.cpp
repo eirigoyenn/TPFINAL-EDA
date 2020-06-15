@@ -23,7 +23,7 @@ FullNode::~FullNode()
 void FullNode::listen1sec(void) {
 
 	using namespace std::chrono_literals;
-	auto sec = 1ms;
+	auto sec = 20ms;
 	io_context.run_one_for(sec);
 
 }

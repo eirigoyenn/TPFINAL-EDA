@@ -86,7 +86,7 @@ bool NodeClient::performRequest(void)
 		else
 		{
 			//Se limpia curl
-			stillRunning = 1;						// MIRAR QUE PASA CON STILLRUNNING. DEVUELVE ALGO CURLMULTIPERFORME CUANDO TERMINA EL MSG?POR AHI EVITAMOS EL FLAG!!
+			stillRunning = 1;						
 			curl_easy_cleanup(easyHandler);
 			curl_multi_cleanup(multiHandle);
 			

@@ -62,6 +62,8 @@ public:
 	void particularAlgorithm(void);
 	bool isConvex(void); //Revisa si un layour es o no conexo
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
+	
+	std::vector<NodoSubconjunto>* Subconjunto;
 
 private:
 
@@ -79,6 +81,5 @@ private:
 	json data_;
 	std::string myjson;
 	json parsedReply;
-	std::vector<NodoSubconjunto>* Subconjunto;
 };
 
