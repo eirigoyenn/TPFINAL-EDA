@@ -57,6 +57,7 @@ public:
 
 	bool performRequest(void);
 	string createAddress(string ip,int port);
+	state_n state;
 
 protected:
 
@@ -66,7 +67,6 @@ protected:
 	unsigned int ID;
 	int sentMessage;
 	int receivedMessage;
-	state_n state;
 	NodeClient* client;
 	NodeServer* server;
 	errorType_n errorType;

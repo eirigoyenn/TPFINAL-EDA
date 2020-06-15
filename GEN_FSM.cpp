@@ -1,6 +1,6 @@
 #include "GEN_FSM.h"
 
-GEN_FSM::GEN_FSM(): genericFSM(&fsmTable[0][0], 4, 6, idle)
+GEN_FSM::GEN_FSM(state_n* ptr): genericFSM(&fsmTable[0][0], 4, 6, idle), statePTR(ptr)
 {
 
 };
@@ -55,11 +55,10 @@ void GEN_FSM::secping_r_acc(genericEvent* ev)
 
 void GEN_FSM::collect_r_acc(genericEvent* ev)
 {
-	if (state == FREE)
+	if (*statePTR == FREE)
 	{
-
 		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
-		state = CLIENT;
+		*statePTR = CLIENT;
 		json noInfo;
 		noInfo.clear();		
 		unsigned int port_ = selectRandomNode();
@@ -67,7 +66,6 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 		client->setIP("localhost");
 		client->usePOSTmethod("/eda_coin/PING", noInfo);
 		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-
 	}
 	return;
 }

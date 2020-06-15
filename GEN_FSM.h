@@ -12,15 +12,16 @@ enum states:eventTypes {idle,waitinglayout,collecting,netcreated };
 class GEN_FSM : public genericFSM
 {
 public:
-	GEN_FSM(); 
+	GEN_FSM(state_n* stateptr); 
 	~GEN_FSM();
-	eventTypes getState(void) { return State; }
+	eventTypes getState(void) { return this->State; }
 	void setRandomTime(unsigned long int Randomtime);
 	unsigned int selectRandomNode(void) ;
 	void setCollecting(void);
 	void setClient(NodeClient* cliente_) { client = cliente_; };
 	void setServer(NodeServer* server_) { server = server_; };
 	void setportArray(std::vector<unsigned int>* portsArray_) { portsArray = portsArray_; };
+	
 private:
 	const fsmCell fsmTable[4][6] = {
 		//     EVENTOS					PING								    NETWORK NOT READY							NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
@@ -45,4 +46,5 @@ private:
 	NodeClient* client=nullptr;
 	NodeServer* server = nullptr;
 	std::vector<unsigned int>* portsArray;
+	state_n* statePTR;
 };

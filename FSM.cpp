@@ -511,7 +511,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						for (const auto& FULL : FULLNODEPORT)
 						{
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain);
-							auto pointer = new GEN_FSM();
+							auto pointer = new GEN_FSM(&(tempFullNode->state));
 							tempFullNode->setGENFSM(pointer);          //INICIAS LA GEN_FSM de cada uno
 							tempFullNode->attach();
 							tempFullNode->setFSMtimer(makeRandomTime());

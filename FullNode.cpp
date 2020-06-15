@@ -171,7 +171,7 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string blockID_, unsigne
 /*********************************************************
 *             	MENSAJES PARA EL GENSIS
 *********************************************************/
-
+/*
 bool FullNode::POSTPing(int neighbourPORT)
 {
 	if (state == FREE)
@@ -224,7 +224,7 @@ bool FullNode::POSTNetworkLayout(int neighbourPORT)
 	}
 
 }
-
+*/
 
 /************************************************************************************************
 *					               GENERADORES DE JSON											*
@@ -408,6 +408,44 @@ json FullNode::fullCallback(string message) {
 	else if ((message.find("PING") != std::string::npos) || (message.find("NETWORK_LAYOUT") != std::string::npos) || (message.find("NETWORK_READY") != std::string::npos) || (message.find("NETWORK_NOTREADY") != std::string::npos))
 	{
 		genEvents.parseEvents(message);
+
+		if ((message.find("PING") != std::string::npos))
+		{
+			if (this->GenFSM->getState() == states::idle) {
+
+				result["result"] = "NETWORK_NOTREADY";
+
+				//Mandamos ID y puerto para que nodo en estado COLLECTING lo agregue a lista de Subconjuntos de nodos
+				result["blockID"] = this->getID();
+				result["port"] = this->getPort();
+			}
+			else if (this->GenFSM->getState() == states::waitinglayout)
+			{
+				result["result"] = "NETWORK_READY";
+
+				//////////////////////////////////
+				//////////////////////////
+				//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
+				/////////////////////////
+				///////////////////////////
+				//////////////////////////////
+				////////////////////////////////
+			}
+			else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
+			{
+				if (this->GenFSM->getState() == states::waitinglayout) {
+					result["result"] = "NET_CREATED";
+					MeGuardoAMisVecinos(message);
+				}
+				else {
+					result["result"] = "false";
+				}
+			}
+			else {
+				result["result"] = "false";
+			}
+		}
+
 	}
 
 	else {
@@ -420,6 +458,42 @@ json FullNode::fullCallback(string message) {
 }
 
 
+void FullNode::MeGuardoAMisVecinos(std::string reply)
+{
+	auto it = reply.find("\r\n\r\n");
+	std::string crlf("\r\n\r\n");
+	std::string response;
+	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
+
+	json LAYOUT = json::parse(response);
+	std::cout << std::endl << std::endl << "LAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
+
+	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->port - 1);
+
+	for (auto& edge : LAYOUT["edges"]) {
+		std::string target1 = edge["target1"];
+		std::string target2 = edge["target2"];
+		std::string target;
+
+		cout << "SOY YO" << soyyo << endl << "TARGET 1" << target1 << endl << "TARGET2" << target2 << endl;
+
+		if (target1 == soyyo)
+			target = target2;
+		else if (target2 == soyyo)
+			target = target1;
+
+		if (target.length()) {
+			int pos1 = target.find_first_of(':');
+			std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
+			std::string id = target.substr(0, pos1);
+			int id_ = std::stoi(id);
+			int pos2 = temp.find_first_of(':');
+			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
+
+			addNeighbour(id_, IP, port_);
+		}
+	}
+}
 
 json FullNode::find_array(std::string blockID, int count) {
 

@@ -15,12 +15,14 @@ public:
 	bool anyEvent(void);
 private:
 	std::queue<GENevents> eventsQueue;
-
+	std::string MENSAJE;
+	std::string LAYOUT;
 };
 
 class evPing : public genericEvent
 {
 public:
+	std::string MENSAJE; 
 	eventTypes getType(void) { return ping; }
 };
 
@@ -28,6 +30,7 @@ public:
 class evNetworklayout : public genericEvent
 {
 public:
+	std::string LAYOUT;
 	eventTypes getType(void) { return networklayout; }
 };
 

@@ -8,6 +8,7 @@ void GenEventGenerator::parseEvents(std::string message) {
 	************/
 	if ((message.find("PING") != std::string::npos)) {
 		eventsQueue.push(ping);
+
 	}
 
 
@@ -33,6 +34,8 @@ void GenEventGenerator::parseEvents(std::string message) {
 	{
 		eventsQueue.push(networknotready);
 	}
+	
+
 }
 
 
