@@ -67,18 +67,18 @@ genericEvent* GenEventGenerator::getEvent(unsigned int estado)
 GENevents GenEventGenerator::getGENevent()
 {
 	GENevents Event = GENevents::Noevent;
-
-	if (anyEvent())
+	if (!eventsQueue.empty())
 	{
 		Event = eventsQueue.front();
 		eventsQueue.pop();
 	}
-
 	return Event;
 }
 
 
 bool GenEventGenerator::anyEvent()
 {
+	if(!eventsQueue.empty())
+		cout << "EVENT" << to_string(eventsQueue.front()) << endl;
 	return !eventsQueue.empty();
 }

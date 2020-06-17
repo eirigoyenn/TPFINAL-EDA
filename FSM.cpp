@@ -484,8 +484,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 	{
 		this->state4Graphic = GENESIS_G;
 
-		
-
 		string GenesisPath = static_cast<evBuscarVecinos*>(ev)->JSONPath;
 		fs::path bPath(GenesisPath.c_str());
 		if (exists(bPath) && is_directory(bPath))

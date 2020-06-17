@@ -19,7 +19,6 @@ getNextEvent(unsigned int estado)
 		eventQueue.push(temp);
 	}
 
-
 	genericEvent* ret = nullptr;
 
 	//If queue is not empty, saves firts item and pops it out of the queue.
