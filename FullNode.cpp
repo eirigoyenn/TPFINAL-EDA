@@ -436,6 +436,7 @@ json FullNode::fullCallback(string message) {
 				if (this->GenFSM->getState() == states::waitinglayout) {
 					result["result"] = "NET_CREATED";
 					MeGuardoAMisVecinos(message);
+					this->GenFSM->setState(states::netcreated);
 				}
 				else {
 					result["result"] = "false";

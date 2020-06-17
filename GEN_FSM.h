@@ -21,19 +21,21 @@ public:
 	void setClient(NodeClient* cliente_) { client = cliente_; };
 	void setServer(NodeServer* server_) { server = server_; };
 	void setportArray(std::vector<unsigned int>* portsArray_) { portsArray = portsArray_; };
-	
+	void setState(states estadonuevo);
+
 private:
 	const fsmCell fsmTable[5][6] = {
 		//     EVENTOS					PING								    NETWORK NOT READY					NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
 		/*estados*/
 		/*IDLE*/						{{waitinglayout,TR(firstping_r_acc)},	{idle,TR(RutaDefault)},				{idle,TR(RutaDefault)},					{idle,TR(RutaDefault)},				{idle,TR(Noevent_r_acc)},				{collecting,TR(collect_r_acc)} },
+
 		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(Noevent_r_acc)},		{waitinglayout,TR(RutaDefault)} },
-		/*COLLECTING NET MEMBERS*/	/*{{netcreated,TR(sendlayout_r_acc)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(Noevent_r_acc)},			{collecting,TR(RutaDefault)} },*/
 
 		/*COLLECTING NET MEMBERS*/		{{netcreated,TR(sendlayout_r_acc)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(Noevent_r_acc)},			{collecting,TR(RutaDefault)} },
-		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
-		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} },
 
+		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
+
+		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} },
 	};
 
 	void RutaDefault(genericEvent* ev);

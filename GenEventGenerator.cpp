@@ -7,8 +7,7 @@ void GenEventGenerator::parseEvents(std::string message) {
 	SI LLEGA PING
 	************/
 	if ((message.find("PING") != std::string::npos)) {
-		eventsQueue.push(ping);
-
+		this->eventsQueue.push(ping);
 	}
 
 
@@ -67,6 +66,7 @@ genericEvent* GenEventGenerator::getEvent(unsigned int estado)
 GENevents GenEventGenerator::getGENevent()
 {
 	GENevents Event = GENevents::Noevent;
+
 	if (!eventsQueue.empty())
 	{
 		Event = eventsQueue.front();

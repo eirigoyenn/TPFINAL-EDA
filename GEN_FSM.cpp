@@ -109,6 +109,9 @@ unsigned int GEN_FSM::selectRandomNode(void) {
 	return randPort;
 }
 
-
+void GEN_FSM::setState(states estadonuevo)
+{
+	this->state = estadonuevo;
+}
 
 

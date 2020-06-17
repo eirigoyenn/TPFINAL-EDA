@@ -90,7 +90,8 @@ bool NodeClient::performRequest(void)
 			curl_easy_cleanup(easyHandler);
 			curl_multi_cleanup(multiHandle);
 			
-			std::cout << std::endl  << "ESTA ES LA RESPUESTA" << reply << std::endl;
+			std::cout << std::endl  << "ESTA ES LA RESPUESTA: \n" << reply << std::endl;
+
 			if (reply.size() != 0){
 				parsedReply = json::parse(reply);
 			
@@ -109,7 +110,7 @@ bool NodeClient::performRequest(void)
 					particularAlgorithm();
 				}
 			}
-								// ACA hay que mandar reply a algun lado
+								
 			res = false;
 		}
 
