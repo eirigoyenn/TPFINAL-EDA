@@ -7,12 +7,12 @@
 
 #define TR(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&GEN_FSM::x)) 
 
-enum states:stateTypes {idle,waitinglayout,collecting,netcreated };
+enum states:stateTypes {idle,waitinglayout,collecting,netcreated, sendinglayout };
 
 class GEN_FSM : public genericFSM
 {
 public:
-	GEN_FSM(state_n* stateptr); 
+	GEN_FSM(state_n* stateptr, int port); 
 	~GEN_FSM();
 	stateTypes getState(void) { return state; }
 	void setRandomTime(unsigned long int Randomtime);
@@ -23,17 +23,19 @@ public:
 	void setportArray(std::vector<unsigned int>* portsArray_) { portsArray = portsArray_; };
 	
 private:
-	const fsmCell fsmTable[4][6] = {
-		//     EVENTOS					PING								    NETWORK NOT READY							NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
+	const fsmCell fsmTable[5][6] = {
+		//     EVENTOS					PING								    NETWORK NOT READY					NETWORK READY						NETWORK CREATED						NOEVENT										TIMER
 		/*estados*/
-		/*IDLE*/						{{waitinglayout,TR(firstping_r_acc)},	{idle,TR(RutaDefault)},						{idle,TR(RutaDefault)},				{idle,TR(RutaDefault)},				{idle,TR(Noevent_r_acc)},				{collecting,TR(collect_r_acc)} },
-		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},			{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(Noevent_r_acc)},		{waitinglayout,TR(RutaDefault)} },
-		/*COLLECTING NET MEMBERS*/		{{netcreated,TR(sendlayout_r_acc)},		{collecting,TR(collect_r_acc)},				{netcreated,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(Noevent_r_acc)},			{collecting,TR(RutaDefault)} },
-		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},				{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},		{netcreated,TR(Noevent_r_acc)},			{netcreated,TR(RutaDefault)} },
+		/*IDLE*/						{{waitinglayout,TR(firstping_r_acc)},	{idle,TR(RutaDefault)},				{idle,TR(RutaDefault)},					{idle,TR(RutaDefault)},				{idle,TR(Noevent_r_acc)},				{collecting,TR(collect_r_acc)} },
+		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(Noevent_r_acc)},		{waitinglayout,TR(RutaDefault)} },
+		/*COLLECTING NET MEMBERS*/	/*{{netcreated,TR(sendlayout_r_acc)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(Noevent_r_acc)},			{collecting,TR(RutaDefault)} },*/
+
+		/*COLLECTING NET MEMBERS*/		{{netcreated,TR(sendlayout_r_acc)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(Noevent_r_acc)},			{collecting,TR(RutaDefault)} },
+		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
+		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} },
 
 	};
 
-	unsigned int selectRandomNode2SendLayout(void);
 	void RutaDefault(genericEvent* ev);
 	void Noevent_r_acc(genericEvent* ev);
 	void firstping_r_acc(genericEvent* ev);
@@ -48,4 +50,6 @@ private:
 	NodeServer* server = nullptr;
 	std::vector<unsigned int>* portsArray;
 	state_n* statePTR;
+	int NodoDelSubconjuntoQueLeVoyAEnviarElLayout;
+	int myport;
 };

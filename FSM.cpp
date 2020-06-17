@@ -509,7 +509,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 						for (const auto& FULL : FULLNODEPORT)
 						{
 							FullNode* tempFullNode = new FullNode(io_context, i++, "localhost", FULL, Bchain);
-							auto pointer = new GEN_FSM(&(tempFullNode->state));
+							auto pointer = new GEN_FSM(&(tempFullNode->state), FULL );
 							tempFullNode->setGENFSM(pointer);          //INICIAS LA GEN_FSM de cada uno
 							tempFullNode->attach();
 							tempFullNode->setFSMtimer(makeRandomTime());
@@ -568,12 +568,13 @@ void FSM::finish_r_acc(genericEvent* ev)
 {
 		int count = 0;
 		for (auto it : fullArray) {
-			if (it->isnetworkcreated()) {
+			if (it->getGENFSM()->getState() == netcreated) {
 				count++;
 			}
 		}
 		if (count == fullArray.size()) {
 			this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 
+			this->state = ShwDashboard;
 		}
 }
 
@@ -587,6 +588,9 @@ void FSM::cycle_each_r_acc(genericEvent* ev)
 	for (auto it : fullArray) {
 		(it)->my_cycle();
 	}
+
+	finish_r_acc(ev);
+
 }
 
 

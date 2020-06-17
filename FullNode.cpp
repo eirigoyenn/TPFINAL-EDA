@@ -421,7 +421,7 @@ json FullNode::fullCallback(string message) {
 			}
 			else if (this->GenFSM->getState() == states::waitinglayout)
 			{
-				result["result"] = "NETWORK_READY";
+			result["result"] = "NETWORK_READY";
 
 				//////////////////////////////////
 				//////////////////////////
@@ -466,6 +466,7 @@ void FullNode::MeGuardoAMisVecinos(std::string reply)
 	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
 
 	json LAYOUT = json::parse(response);
+
 	std::cout << std::endl << std::endl << "LAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
 
 	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->port - 1);

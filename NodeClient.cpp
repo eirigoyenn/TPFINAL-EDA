@@ -102,8 +102,6 @@ bool NodeClient::performRequest(void)
 					nodo2add.TEMP_PUERTO = parsedReply["port"];
 					nodo2add.numberofConnections = 0;
 					nodo2add.checked = false;
-
-
 					(*Subconjunto).push_back(nodo2add);
 				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
@@ -238,6 +236,108 @@ void NodeClient::usePOSTmethod(std::string path_, const json data)
 	}
 }
 
+void NodeClient::particularAlgorithm(void)
+{
+	int nextNode, nextNode_index;
+	int index = NOTFOUND;
+	int i, j;
+	json layout; //Layout de la red
+	json nodes; //Nodos de la red
+	json edges;	//Aristas de la red
+
+	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
+	{
+		for (int i = 0; i < (*Subconjunto).size(); i++) {
+			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+			layout["nodes"] += nodeInfo;
+		}
+	}
+
+	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
+	{
+
+		for (i = 0;  i < (*Subconjunto).size() ; i++)
+		{
+			if ((*Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
+			{
+				std::cout << (*Subconjunto)[i].numberofConnections << std::endl;
+			}
+
+			//Caso contrario sigue el agloritmo
+			else
+			{
+				while ((*Subconjunto)[i].numberofConnections < 2)
+				{
+
+					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
+					nextNode=randomPORT(nextNode_index);
+
+					for (j = 0; j < (*Subconjunto).size(); j++) //
+					{
+
+						if ((*Subconjunto)[i].numberofConnections == 0 ||(*Subconjunto)[i].connections[0] != nextNode ){
+							index = nextNode;
+						}
+					}
+
+					if (index != NOTFOUND ) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+
+						//Agregar JSONS
+						edges.clear();
+						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
+						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
+						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+						layout["edges"] = edges;
+
+						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
+						(*Subconjunto)[nextNode_index].connections.push_back(i);
+						(*Subconjunto)[i].numberofConnections++;
+						(*Subconjunto)[nextNode_index
+						 ].numberofConnections++;
+					}
+				}
+			}
+		}
+	}
+	else if((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
+	{
+		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
+		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
+		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+		layout["edges"] = edges;
+	}
+
+	std::cout << layout << std::endl;
+	LAYOUT2SEND = layout; 
+}
+
+bool NodeClient::isConvex(void)
+{
+	BFS(0);
+	for (int i = 0; i < (*Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
+	{
+		if (!((*Subconjunto)[i].checked))
+			return false;
+	}
+
+	return true;
+}
+
+void NodeClient::BFS(int nodeToVisit)
+{
+	if (!((*Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
+	{
+		(*Subconjunto)[nodeToVisit].checked = true;
+		for (int i = 0; i < (*Subconjunto)[nodeToVisit].connections.size(); i++)
+			BFS(i);
+	}
+}
+
+int NodeClient::randomPORT(int i){
+	return (*Subconjunto)[i].TEMP_PUERTO;
+}
+
+
 void NodeClient::setIP(std::string IP_)
 {
 	IP = IP_;
@@ -329,105 +429,4 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 	userDataPtr->append(contents, size * nmemb);
 
 	return size * nmemb;
-}
-
-
-void NodeClient::particularAlgorithm(void)
-{
-	int nextNode, nextNode_index;
-	int index = NOTFOUND;
-	int i, j;
-	json layout; //Layout de la red
-	json nodes; //Nodos de la red
-	json edges;	//Aristas de la red
-
-	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
-	{
-		for (int i = 0; i < (*Subconjunto).size(); i++) {
-			json nodeInfo = "localhost:" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
-			layout["nodes"] += nodeInfo;
-		}
-	}
-
-	if ((*Subconjunto).size() > 2) //Necesito más de dos elementos para formar la red
-	{
-
-		for (i = 0;  i < (*Subconjunto).size() ; i++)
-		{
-			if ((*Subconjunto)[i].numberofConnections >= 2) //Si ya tiene más de dos conexiones no hace falta seguir agregando.
-			{
-				std::cout << (*Subconjunto)[i].numberofConnections << std::endl;
-			}
-
-			//Caso contrario sigue el agloritmo
-			else
-			{
-				while ((*Subconjunto)[i].numberofConnections < 2)
-				{
-
-					nextNode_index = (rand() % ((*Subconjunto).size())); //Busco un aleatorio para conextarme
-					nextNode=randomPORT(nextNode_index);
-
-					for (j = 0; j < (*Subconjunto).size(); j++) //
-					{
-
-						if ((*Subconjunto)[i].numberofConnections == 0 ||(*Subconjunto)[i].connections[0] != nextNode ){
-							index = nextNode;
-						}
-					}
-
-					if (index != NOTFOUND ) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
-
-						//Agregar JSONS
-						edges.clear();
-						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
-						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
-						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
-						layout["edges"] = edges;
-
-						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
-						(*Subconjunto)[nextNode_index].connections.push_back(i);
-						(*Subconjunto)[i].numberofConnections++;
-						(*Subconjunto)[nextNode_index
-						 ].numberofConnections++;
-					}
-				}
-			}
-		}
-	}
-	else if((*Subconjunto).size() == 2)  //Caso contrario, armo el layout con los dos nodos presentes, no hace falta BFS ni DFS puesto que ya es conexo.
-	{
-		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
-		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
-		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
-		layout["edges"] = edges;
-	}
-	
-	LAYOUT2SEND = layout; 
-}
-
-bool NodeClient::isConvex(void)
-{
-	BFS(0);
-	for (int i = 0; i < (*Subconjunto).size(); i++)	//Busco en todos los nodos a ver si hay alguno no visitado
-	{
-		if (!((*Subconjunto)[i].checked))
-			return false;
-	}
-
-	return true;
-}
-
-void NodeClient::BFS(int nodeToVisit)
-{
-	if (!((*Subconjunto)[nodeToVisit].checked)) //Si todavía no se llegó a este nodo, lo marca como visitado y visita a todos sus vecinos
-	{
-		(*Subconjunto)[nodeToVisit].checked = true;
-		for (int i = 0; i < (*Subconjunto)[nodeToVisit].connections.size(); i++)
-			BFS(i);
-	}
-}
-
-int NodeClient::randomPORT(int i){
-	return (*Subconjunto)[i].TEMP_PUERTO;
 }

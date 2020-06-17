@@ -8,7 +8,7 @@
 #define TX(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&FSM::x)) //casteo a funcion, por visual
 
 
-enum implStates : stateTypes {InitState, ShwDashboard, Look4Veci, ShwNodos, ShwSelBlock , ShwError , SHwGENESIS,Multi};
+enum implStates : stateTypes {InitState, ShwDashboard, Look4Veci, ShwNodos, ShwSelBlock , ShwError , SHwGENESIS, Multi};
 
 using namespace std;
 
@@ -53,7 +53,7 @@ private:
 	/* FUNCIONES */
 	void Add2JSONfile(bool isFullNode, int puerto);
 
-	void selectRandomFullNode(int i);
+	//void selectRandomFullNode(int i);
 
 	std::ofstream BulletinFileR_ACC;
 
@@ -102,7 +102,7 @@ private:
 
 	unsigned int makeRandomTime(void);
 
-	bool isNetworkReady();
+//	bool isNetworkReady();
 
 	json InputRED;
 	Blockchain Bchain;

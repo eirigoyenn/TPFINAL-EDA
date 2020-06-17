@@ -27,6 +27,8 @@ bool Node::performRequest(void)
 				}*/
 				return true;
 			}
+			else
+				return false;
 		}
 		else
 		{
