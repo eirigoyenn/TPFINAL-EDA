@@ -7,14 +7,14 @@
 
 #define TR(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&GEN_FSM::x)) 
 
-enum states:eventTypes {idle,waitinglayout,collecting,netcreated };
+enum states:stateTypes {idle,waitinglayout,collecting,netcreated };
 
 class GEN_FSM : public genericFSM
 {
 public:
 	GEN_FSM(state_n* stateptr); 
 	~GEN_FSM();
-	eventTypes getState(void) { return this->State; }
+	stateTypes getState(void) { return state; }
 	void setRandomTime(unsigned long int Randomtime);
 	unsigned int selectRandomNode(void) ;
 	void setCollecting(void);
@@ -41,7 +41,7 @@ private:
 	void sendlayout_r_acc(genericEvent* ev);
 	void idle_r_acc(genericEvent* ev);
 
-	states State;
+//	states State;
 	unsigned long int RandomTime;
 	NodeClient* client=nullptr;
 	NodeServer* server = nullptr;

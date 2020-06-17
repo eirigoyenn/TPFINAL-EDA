@@ -582,10 +582,10 @@ void FSM::cycle_each_r_acc(genericEvent* ev)
 	for (const auto& fullnode : fullArray) {
 		fullnode->listen1sec();
 		fullnode->performRequest();
-//	}
+	}
 		
-	//for (auto it : fullArray) {
-		(fullnode)->my_cycle();
+	for (auto it : fullArray) {
+		(it)->my_cycle();
 	}
 }
 
