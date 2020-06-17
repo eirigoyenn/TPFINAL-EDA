@@ -33,7 +33,6 @@ void GEN_FSM::idle_r_acc(genericEvent* ev)
 {
 	if (!RandomTime) {
 		//cambiar estado  a mandar mensaje
-//		this->State = 
 	}
 	return;
 }
@@ -74,7 +73,15 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
 	
-
+	//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+	*statePTR = CLIENT;
+	json Layout;
+	Layout = client->LAYOUT2SEND; 
+	unsigned int port_ = selectRandomNode2SendLayout();
+	client->setPort(port_);
+	client->setIP("localhost");
+	client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
+	client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 }
 
 void GEN_FSM::setCollecting(void) {
@@ -85,8 +92,18 @@ void GEN_FSM::setCollecting(void) {
 unsigned int GEN_FSM::selectRandomNode(void) {
 	unsigned int randPort;
 	randPort = (*portsArray)[rand() % (portsArray->size())];
-	cout << "PORT" << randPort << endl; 
+//	cout << "PORT" << randPort << endl; 
 	return randPort;
+}
 
+
+
+unsigned int GEN_FSM::selectRandomNode2SendLayout(void) {
+
+	unsigned int randPort;
+	randPort = client->Subconjunto->size();
+	cout << "PORT" << randPort << endl;
+
+	return randPort;
 }
 

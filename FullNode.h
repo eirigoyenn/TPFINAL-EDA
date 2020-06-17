@@ -29,7 +29,7 @@ public:
 	bool GETBlocks(unsigned int neighbourID, std::string blockID_, unsigned int count);
 
 	//Genesis
-	unsigned long int getRandomTime(void);
+//	unsigned long int getRandomTime(void);
 	int selectRandomNode2Add(std::vector<FullNode*>& fullarrayy);
 	bool esteIndiceNOT_OK(int randID);
 

@@ -329,21 +329,11 @@ size_t myCallback(char* contents, size_t size, size_t nmemb, void* userp)
 	userDataPtr->append(contents, size * nmemb);
 
 	return size * nmemb;
-
-
-	//size_t realsize = size * nmemb;
-	//char* data = (char*)contents;
-	////fprintf(stdout, "%s",data);
-	//std::string* s = (std::string*)userp;
-	//s->append(data, realsize);
-	//return realsize;						//recordar siempre devolver realsize
 }
 
 
 void NodeClient::particularAlgorithm(void)
 {
-
-
 	int nextNode, nextNode_index;
 	int index = NOTFOUND;
 	int i, j;
@@ -412,6 +402,8 @@ void NodeClient::particularAlgorithm(void)
 		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 		layout["edges"] = edges;
 	}
+	
+	LAYOUT2SEND = layout; 
 }
 
 bool NodeClient::isConvex(void)

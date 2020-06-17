@@ -33,6 +33,7 @@ private:
 
 	};
 
+	unsigned int selectRandomNode2SendLayout(void);
 	void RutaDefault(genericEvent* ev);
 	void Noevent_r_acc(genericEvent* ev);
 	void firstping_r_acc(genericEvent* ev);

@@ -64,6 +64,7 @@ public:
 	void BFS(int nodeToVisit);	//Breadth first search, algoritmo de búsqueda.
 	
 	std::vector<NodoSubconjunto>* Subconjunto;
+	json LAYOUT2SEND;
 
 private:
 
