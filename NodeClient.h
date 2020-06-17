@@ -37,6 +37,7 @@ public:
 	void usePOSTmethod(std::string path_, const json data);
 
 
+	unsigned int getOwnPort(void);
 
 	int randomPORT(int i);
 	void setIP(std::string IP_);

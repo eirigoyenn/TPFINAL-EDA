@@ -389,6 +389,11 @@ unsigned int NodeClient::getPort(void)
 	return port;
 }
 
+unsigned int NodeClient::getOwnPort(void)
+{
+	return own_port;
+}
+
 std::string NodeClient::getURL(void)
 {
 	return url;

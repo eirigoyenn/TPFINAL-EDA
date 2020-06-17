@@ -2,9 +2,9 @@
 #include <iostream>
 #include "EventHandling.h"
 #include "GEN_FSM.h"
+#include "json.hpp"
 
-
-enum GENevents : eventTypes { ping , networklayout ,networkready , networknotready ,Noevent,timer};
+enum GENevents : eventTypes { ping , networknotready , networkready, networkcreated ,Noevent,timer, networklayout};
 
 class GenEventGenerator : public eventGenerator
 {
@@ -13,8 +13,10 @@ public:
 	genericEvent* getEvent(unsigned int estado);
 	GENevents getGENevent(void);
 	bool anyEvent(void);
+
 private:
 	std::queue<GENevents> eventsQueue;
+	int PUERTO;
 	std::string MENSAJE;
 	std::string LAYOUT;
 };
@@ -22,7 +24,9 @@ private:
 class evPing : public genericEvent
 {
 public:
-	std::string MENSAJE; 
+	evPing(int puerto): puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting(puerto) {}
+
+	int puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting;
 	eventTypes getType(void) { return ping; }
 };
 
@@ -30,7 +34,9 @@ public:
 class evNetworklayout : public genericEvent
 {
 public:
-	std::string LAYOUT;
+	evNetworklayout(std::string mensaje):layouttt(mensaje){}
+	
+	std::string layouttt;
 	eventTypes getType(void) { return networklayout; }
 };
 

@@ -3,11 +3,23 @@
 
 void GenEventGenerator::parseEvents(std::string message) {
 
+
 	/************
 	SI LLEGA PING
 	************/
 	if ((message.find("PING") != std::string::npos)) {
 		this->eventsQueue.push(ping);
+		std::size_t found = message.find("PUERTO:");
+		std::size_t found2 = message.find("HTTP");
+
+		if ((found != std::string::npos) && (found2 != std::string::npos))
+		{
+			std::string substring = message.substr(found + 7, found2 - 29);
+
+			std::cout << "\n\nPUERTO" + substring << "FIN" << std::endl << std::endl;
+			PUERTO = atoi(substring.c_str());
+		}
+
 	}
 
 
@@ -17,6 +29,7 @@ void GenEventGenerator::parseEvents(std::string message) {
 	else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
 	{
 		eventsQueue.push(networklayout);
+		LAYOUT = message; 
 	}
 
 	/**********
@@ -41,13 +54,16 @@ void GenEventGenerator::parseEvents(std::string message) {
 genericEvent* GenEventGenerator::getEvent(unsigned int estado)
 {
 	genericEvent* ret = nullptr;
+	int puerto; 
 	switch (getGENevent())
 	{
 	case::ping:
-		ret = new evPing();
+		puerto = PUERTO;
+		ret = new evPing(puerto);
 		break;
+
 	case::networklayout:
-		ret = new evNetworklayout();
+		ret = new evNetworklayout(LAYOUT);
 		break;
 	case::networkready:
 		ret = new evNetworkready();
@@ -78,7 +94,5 @@ GENevents GenEventGenerator::getGENevent()
 
 bool GenEventGenerator::anyEvent()
 {
-	if(!eventsQueue.empty())
-		cout << "EVENT" << to_string(eventsQueue.front()) << endl;
 	return !eventsQueue.empty();
 }

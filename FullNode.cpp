@@ -435,8 +435,7 @@ json FullNode::fullCallback(string message) {
 			{
 				if (this->GenFSM->getState() == states::waitinglayout) {
 					result["result"] = "NET_CREATED";
-					MeGuardoAMisVecinos(message);
-					this->GenFSM->setState(states::netcreated);
+				//	MeGuardoAMisVecinos(message);
 				}
 				else {
 					result["result"] = "false";
@@ -458,8 +457,7 @@ json FullNode::fullCallback(string message) {
 
 }
 
-
-void FullNode::MeGuardoAMisVecinos(std::string reply)
+/* void FullNode::MeGuardoAMisVecinos(std::string reply)
 {
 	auto it = reply.find("\r\n\r\n");
 	std::string crlf("\r\n\r\n");
@@ -496,6 +494,7 @@ void FullNode::MeGuardoAMisVecinos(std::string reply)
 		}
 	}
 }
+*/
 
 json FullNode::find_array(std::string blockID, int count) {
 
