@@ -35,7 +35,7 @@ private:
 
 		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{collecting,TR(collect_r_acc)} },
 
-		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{collecting,TR(collect_r_acc)}},
+		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(Noevent_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{collecting,TR(collect_r_acc)}},
 	};
 
 	void RutaDefault(genericEvent* ev);
