@@ -9,6 +9,13 @@ Block::Block() {
 Block::Block(const json & j)
 {
 	jsonBlock = j;
+	blockHeader = j; //Cargo el header del bloque
+	blockHeader.erase("tx");
+	//Parseo los unsigned int a strings (para poder hashearlo).
+	blockHeader["height"] = std::to_string(blockHeader["height"].get<unsigned int>());
+	blockHeader["nonce"] = std::to_string(blockHeader["nonce"].get<unsigned int>());
+	blockHeader["nTx"] = std::to_string(blockHeader["nTx"].get<unsigned int>());
+
 
 	/*Cargo los datos del bloque*/
 	height = j["height"].get<unsigned int>();
@@ -297,12 +304,17 @@ uint Block::getMerkleHeight(void)
 	return Tree.height;
 }
 
+json Block::getBlockHeader(void)
+{
+	return blockHeader;
+}
+
 uint Block::getNumLeaves(void)
 {
 	return Tree.numberOfLeaves;
 }
 
-static unsigned int generateID(unsigned char *str)
+unsigned int Block::generateID(unsigned char *str)
 {
 	unsigned int ID = 0;
 	int c;

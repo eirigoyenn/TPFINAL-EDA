@@ -8,6 +8,7 @@ SPVNode::SPVNode(boost::asio::io_context& io_context_,unsigned int ID_, std::str
 	ID = ID_;
 	IP = IP_;
 	port = port_;
+	publicKey = std::to_string(std::rand() % 99999999);
 	client = new NodeClient(IP, port);
 	server = new NodeServer(io_context_,IP,boost::bind(&SPVNode::SpvCallback,this,_1),port);
 }

@@ -3,6 +3,19 @@
 
 #define NOTFOUND -1
 
+struct UTXO
+{
+	std::string txid;
+	unsigned int outputIndex;
+	unsigned int amount;
+	std::string publicid;
+};
+
+struct usedID
+{
+	std::string txid;
+	unsigned int outputIndex;
+};
 
 
 class FullNode :
@@ -63,6 +76,12 @@ public:
 	void AddVecinosFromAlgoritmo(void);
 	void MeGuardoAMisVecinos(std::string reply);
 
+	//Funciones de verificación
+	bool validateTx(const json& Tx_);
+	bool validateBlock(const json& Block_);
+	void newUTXOs(const json& newTx);
+	bool compareWithUTXO(std::string txid_, unsigned int outputIndex_);
+
 
 protected:
 	std::vector<Neighbour> VecinosdeAlgoritmo;
@@ -73,5 +92,9 @@ protected:
 	unsigned long int RandomTime; 
 	std::queue<GenesisEvents> EventQueueGenesis;
 	int nodes2Add;
+	int UtxoIndex;
+	json transactions_;
+	std::vector <UTXO> UTXOS;
+
 };
 

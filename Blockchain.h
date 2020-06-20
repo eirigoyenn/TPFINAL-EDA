@@ -16,6 +16,7 @@ public:
 	int saveBlockInfo(std::string);
 	const string createMerkleRoot(const json& block);
 	void addBlock(const json& block_json);
+	std::string generateBlockId(const json& block);
 
 private:
 

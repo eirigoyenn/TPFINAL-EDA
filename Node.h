@@ -64,6 +64,7 @@ protected:
 
 	//void TxCallback(string respuesta);
 	std::string IP;
+	std::string publicKey;
 	unsigned int port;
 	unsigned int ID;
 	int sentMessage;
@@ -80,7 +81,6 @@ protected:
 	std::vector <std::string> FilterArray;
 	//std::vector <Transaction> TxVector;
 	//std::vector <MerkleBlock> MerkleBlockVector;
-	json transactions_;
 
 };
 

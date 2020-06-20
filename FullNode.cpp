@@ -5,6 +5,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::s
 {
 	ID = ID_;
 	IP = IP_;
+	publicKey= std::to_string(std::rand() % 99999999);
 	port = port_;
 	NodeBlockchain = bchain;
 	client = new NodeClient(IP, port +1, &subconjuntoNodosRED, ID_);
@@ -15,6 +16,7 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 {
 	ID = ID_;
 	IP = IP_;
+	publicKey = std::to_string(std::rand() % 99999999);
 	port = port_;
 	NodeBlockchain = bchain;
 	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED, ID_);
@@ -526,6 +528,181 @@ void FullNode::MeGuardoAMisVecinos(std::string reply)
 			addNeighbour(id_, IP, port_);		
 		}
 	}
+}
+
+bool FullNode::validateTx(const json & Tx_)
+{
+	bool res = true;
+	int i = 0;
+	int inCoins = 0;
+	int outCoins = 0;
+	std::vector <usedID> usedIDs; //txid y outputindex de cada vin para comparar con las UTXO
+
+	//Recupero los txid y los output index de cada transacción
+	for (const auto& vin_ : Tx_["vin"])
+	{
+		usedIDs[i].txid = vin_["txid"].get<std::string>();
+		usedIDs[i].outputIndex = vin_["outputIndex"].get<unsigned int>();
+		i++;
+	}
+
+	//Verifico que todas las transacciones correspodan a UTXOs distintos.
+	//Si se encuentra el UTXO a que corresponde se borra como disponible.
+	for (int j = 0; j < usedIDs.size(); j++)
+	{
+		if (compareWithUTXO(usedIDs[j].txid, usedIDs[j].outputIndex))
+		{
+			//Si se encuentra el txid en la lista de Utxos disponibles, se recupera la cantidad de monedas disponibles
+			//según indica el UTXO (inCoins) y se quita al UTXO como válido.
+			inCoins += UTXOS[UtxoIndex].amount;
+			UTXOS.erase(UTXOS.begin() + UtxoIndex);
+		}
+		else
+		{
+			res = false;
+			cout << "Tx has no input listed in UTXO." << endl;
+		}
+	}
+
+	//Verifico que coincidan la cantidad de monedas entrantes y salientes.
+
+	for (const auto& vout_ : Tx_["vout"]) {
+		outCoins += vout_["amount"].get<unsigned int>();
+	}
+
+	if (inCoins != outCoins) {
+		res = false;
+		cout << "Coins amount does not match up." << endl;
+	}
+
+	return res;
+
+}
+
+bool FullNode::validateBlock(const json & Block_)
+{
+	bool res = true;
+	bool checkedMinerTransaction = false;
+	unsigned int height = NodeBlockchain.getBlocksSize();
+
+	//Reviso que se trate del último bloque en la blockchain (que fue subido por el minero). La única excepción es
+	//cuando se trata del primer bloque (ie height==0).
+	if (height)
+	{
+		if (Block_["blockid"] != NodeBlockchain.getBlocksArr()[height - 1].getBlockID())
+		{
+			res = false;
+			cout << "Block height not valid." << endl;
+		}
+	}
+
+	//Verifico que el merkleroot sea correcto
+	if (Block_["merkleroot"] != NodeBlockchain.createMerkleRoot(Block_))
+	{
+		res = false;
+		cout << "merkleroot not valid." << endl;
+	}
+
+	//Verifico que el blockid corresponda con el que se obtiene por hasheo del bloque.
+	if (Block_["blockid"] != NodeBlockchain.generateBlockId(Block_))
+	{
+		res = false;
+		cout << "blockid does not match up with the hashed one." << endl;
+	}
+
+	//Verifico cada una de las transacciones (considerando que hay una única transacción sin vin que es la del minero).
+	for (auto& tx_ : Block_["tx"])
+	{
+		if (tx_["vin"].is_null() && checkedMinerTransaction==false)
+		{
+			checkedMinerTransaction = true;
+		}
+		else
+		{
+			if (!validateTx(tx_))
+			{
+				res = false;
+				cout << "transaction not valid." << endl;
+			}
+		}
+	}
+
+	return res;
+}
+
+void FullNode::newUTXOs(const json & newTx)
+{
+	std::vector <UTXO> newUTXOS;
+
+	newUTXOS.clear();
+	Transaction Tx;
+	auto nTxin_ = newTx["nTxin"].get<unsigned int>();
+	Tx.nTxin = nTxin_;
+	auto nTxout_ = newTx["nTxout"].get<unsigned int>();
+	Tx.nTxout = nTxout_;
+	auto txID_ = newTx["txid"].get<std::string>();
+	Tx.txID = txID_;
+	auto Vin_ = newTx["vin"];
+	for (auto& vin_ : Vin_)
+	{
+		VinS tempVin;
+
+		auto LilBlockId_ = vin_["blockid"].get<std::string>();
+		tempVin.LilblockID = LilBlockId_;
+		auto outputIndex_ = vin_["outputIndex"].get<int>();
+		tempVin.outputIndex = outputIndex_;
+		auto signature_ = vin_["signature"].get<std::string>();
+		tempVin.signature = signature_;
+		auto txid_ = vin_["txid"].get<std::string>();
+		tempVin.txID = txid_;
+
+		Tx.vIn.push_back(tempVin);
+	}
+	auto Vout_ = newTx["vout"];
+	for (auto& vout_ : Vout_)
+	{
+		VoutS tempVout;
+
+		auto amount_ = vout_["amount"].get<unsigned int>();
+		tempVout.amount = amount_;
+		auto publicID_ = vout_["publicid"].get<std::string>();
+		tempVout.publicID = publicID_;
+
+		Tx.vOut.push_back(tempVout);
+	}
+
+	for (int i = 0; i < Tx.nTxin; i++)
+	{
+		UTXO newUTXO;
+		newUTXO.txid = Tx.vIn[i].txID;
+		newUTXO.outputIndex = Tx.vIn[i].outputIndex;
+		newUTXOS.push_back(newUTXO);
+	}
+	
+	for (int j = 0; j < newUTXOS.size(); j++)
+	{
+		unsigned int outputIndex_ = newUTXOS[j].outputIndex;
+		newUTXOS[j].amount = Tx.vOut[outputIndex_+1].amount;
+		newUTXOS[j].publicid = Tx.vOut[outputIndex_ + 1].publicID;
+		UTXOS.push_back(newUTXOS[j]);
+	}
+
+}
+
+bool FullNode::compareWithUTXO(std::string txid_, unsigned int outputIndex_)
+{
+	bool result=false;
+
+	for (int i = 0; i < UTXOS.size(); i++)
+	{
+		if (UTXOS[i].txid == txid_ && UTXOS[i].outputIndex == outputIndex_)
+		{
+			UtxoIndex = i;
+			result = true;
+		}
+	}
+
+	return result;
 }
 
 json FullNode::find_array(std::string blockID, int count) {

@@ -15,6 +15,7 @@ public:
 	void minerPerformRequest(void);
 
 	void mineBlock(void);
+	json getMinerFee(void);
 
 private:
 };

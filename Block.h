@@ -15,7 +15,7 @@ using namespace std;
 
 using json = nlohmann::json;
 
-static unsigned int generateID(unsigned char *str);
+//static unsigned int generateID(unsigned char *str);
 
 struct VinS {
 
@@ -39,7 +39,6 @@ struct Transaction {
 	vector<VinS> vIn;
 	vector<VoutS> vOut;
 
-	
 };
 
 
@@ -86,6 +85,7 @@ public:
 	MerkleTree getMerkleTree(void);
 	vector<string> getNodos(void);
 	uint getMerkleHeight(void);
+	json getBlockHeader(void);
 	uint getNumLeaves(void);
 
 	void setBlockID(string blockID_);
@@ -109,6 +109,7 @@ public:
 	//Función para recuperar el Merkle Path (agregada en fase 2).
 	vector <string> getMerklePath(Transaction Tx_);
 	
+	static unsigned int generateID(unsigned char *str);
 
 private:
 
@@ -122,6 +123,7 @@ private:
 	vector<string> stringMerkleRoot; //String usado para llenar el árbol?
 	vector<Transaction> TxVector; 
 	Transaction tx; 
+	json blockHeader;
 	json jsonBlock;
 
 };

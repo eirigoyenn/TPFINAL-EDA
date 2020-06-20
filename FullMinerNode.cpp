@@ -13,6 +13,7 @@
 //	ID = ID_;
 //	IP = IP_;
 //	port = port_;
+//	publicKey= std::to_string(std::rand() % 99999999);
 //	client = new NodeClient(IP, port, 0);
 //	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
 //}
@@ -52,15 +53,10 @@
 //		int blockNumber = NodeBlockchain.getBlocksSize();
 //		std::string prevBlockId_ = NodeBlockchain.getBlocksArr()[blockNumber - 1].getBlockID();
 //		block["previousblockid"] = prevBlockId_;
-//		char buffer[9];
-//		sprintf_s(buffer, "%08X", stoi(prevBlockId_) + 1);
-//		blockID_=std::string(buffer);
-//		block["blockid"] = blockID_;
 //	}
 //	else
 //	{
 //		block["previousblockid"] = "00000000";
-//		block["blockid"] = "00000001";
 //	}
 //
 //	//Agrego transacciones
@@ -68,11 +64,20 @@
 //	{
 //		block["tx"].push_back(Tx_);
 //	}
-//	block["nTx"] = transactions_.size();
+//
+//	//Agrego transacción del Minero
+//	json minerTx_ = getMinerFee();
+//	block["tx"].push_back(minerTx_);
+//
+//	//Agrego total de transacciones
+//	block["nTx"] = transactions_.size()+1;
 //
 //	//Completo MerkleRoot
 //	std::string merkleRoot_ = NodeBlockchain.createMerkleRoot(block);
 //	block["merkleroot"] = merkleRoot_;
+//
+//	//Agrego BlockID
+//	block["blockid"] = NodeBlockchain.generateBlockId(block);
 //
 //	//Agrego el bloque a la blockchain y procedo al flooding
 //	NodeBlockchain.addBlock(block);
@@ -84,4 +89,9 @@
 //	//Limpio la lista de transacciones
 //	transactions_ = json();
 //
+//}
+//
+//json FullMinerNode::getMinerFee(void)
+//{
+//	return json();
 //}

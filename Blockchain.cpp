@@ -119,3 +119,22 @@ void Blockchain::addBlock(const json & block_json)
 	Block newblock(block_json);
 	BlocksArr.push_back(newblock);
 }
+
+std::string Blockchain::generateBlockId(const json & block)
+{
+	//Para generar el BlockID hago un hash del header (menos el blockid)
+	Block blck(block);
+	auto blockHeader = blck.getBlockHeader();
+	blockHeader.erase("blockid");
+	std::string unhashedId;
+	for (auto& header_ : blockHeader)
+	{
+		unhashedId.append(header_.get<std::string>());
+	}
+	unsigned int BlockId_ = blck.generateID((unsigned char*)unhashedId.c_str());
+	char tohex[9];
+	int n = sprintf_s(tohex, sizeof(tohex), "%08X", BlockId_);
+	std::string BlockID_(tohex);
+	return BlockID_;
+
+}
