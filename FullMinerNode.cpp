@@ -113,6 +113,7 @@
 //		newUTXO.amount = vout_["amount"].get<unsigned int>();
 //		newUTXO.outputIndex = 1;
 //		newUTXO.publicid = publicKey;
+//		UTXOS.push_back(newUTXO);
 //	}
 //
 //	return realTx_;
