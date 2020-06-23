@@ -22,10 +22,11 @@ class FullNode :
 	public Node
 {
 public:
-	FullNode();
+	//FullNode();
 	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_ ,unsigned int port_,Blockchain& bchain);
 	
 	FullNode(boost::asio::io_context& io_context_,unsigned int ID_, std::string IP_, unsigned int port_, Blockchain& bchain, unsigned int randomTime);
+	FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::string IP_, unsigned int port_, unsigned int randomTime_);
 
 	~FullNode();
 

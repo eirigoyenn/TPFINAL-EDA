@@ -24,6 +24,17 @@ FullNode::FullNode(boost::asio::io_context& io_context_, unsigned int ID_, std::
 	RandomTime = randomTime_;
 }
 
+FullNode::FullNode(boost::asio::io_context & io_context_, unsigned int ID_, std::string IP_, unsigned int port_, unsigned int randomTime_) : io_context(io_context_)
+{
+	ID = ID_;
+	IP = IP_;
+	publicKey = std::to_string(std::rand() % 99999999);
+	RandomTime = randomTime_;
+	port = port_;
+	client = new NodeClient(IP, port + 1, &subconjuntoNodosRED, ID_);
+	server = new NodeServer(io_context_, IP, boost::bind(&FullNode::fullCallback, this, _1), port);
+}
+
 
 FullNode::~FullNode()
 {
