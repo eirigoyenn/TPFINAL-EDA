@@ -15,7 +15,7 @@ public:
 	void minerPerformRequest(void);
 
 	void mineBlock(void);
-	json getMinerFee(void);
+	json getMinerFee(bool realTX_);
 
 private:
 };

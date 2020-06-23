@@ -91,7 +91,29 @@
 //
 //}
 //
-//json FullMinerNode::getMinerFee(void)
+//json FullMinerNode::getMinerFee(bool realTx_)
 //{
-//	return json();
+//	json newTx_;
+//	newTx_["nTxin"] = 0;
+//	newTx_["nTxout"] = 1;
+//	json vout_;
+//	//La transacción del minero tiene vin vacío
+//	newTx_["vin"];
+//	//Completo el output de la transacción (que es el mismo minero).
+//	vout_["publicid"] = publicKey;
+//	vout_["amount"] = 10;
+//	newTx_["vout"].push_back(vout_);
+//	newTx_["txid"] = generateID(to_string(rand()));
+//
+//	//si la transacción es verdadera, la guardo en la lista de UTXOs, sino no hago nada.
+//	if (realTx_)
+//	{
+//		UTXO newUTXO;
+//		newUTXO.txid = newTx_["txid"].get<std::string>();
+//		newUTXO.amount = vout_["amount"].get<unsigned int>();
+//		newUTXO.outputIndex = 1;
+//		newUTXO.publicid = publicKey;
+//	}
+//
+//	return realTx_;
 //}
