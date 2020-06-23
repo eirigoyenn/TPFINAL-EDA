@@ -293,6 +293,7 @@ void NodeClient::particularAlgorithm(void)
 						
 
 						layout["edges"] += edge;
+						std::cout << std::endl << layout << std::endl;
 
 						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
 						(*Subconjunto)[nextNode_index].connections.push_back(i);

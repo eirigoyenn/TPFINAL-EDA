@@ -184,27 +184,35 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
 	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1)) && (client->Subconjunto->size() != 0))
 	{
-		if (*statePTR == FREE)
+		if (this->client->Subconjunto->size() > 2)
 		{
-			std::cout << std::endl << std::endl << "\nsendlayout_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
+			if (*statePTR == FREE)
+			{
+				std::cout << std::endl << std::endl << "\nsendlayout_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
 
-			*statePTR = CLIENT;
-			json Layout;
-			Layout = client->LAYOUT2SEND;
-			int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
+				*statePTR = CLIENT;
+				json Layout;
+				Layout = client->LAYOUT2SEND;
+				int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
 
-			client->setPort(port_);
-			client->setIP("localhost");
-			client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
-			client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-			NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
+				client->setPort(port_);
+				client->setIP("localhost");
+				client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
+				client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+				NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
 
-			/* Ademas me lo guardo como vecino*/
-			Neighbour tempNei;
-			tempNei.port = port_;
-			tempNei.IP = "localhost";
-			neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei);
+				/* Ademas me lo guardo como vecino*/
+				Neighbour tempNei;
+				tempNei.port = port_;
+				tempNei.IP = "localhost";
+				neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei);
+			}
 		}
+		else
+		{
+			this->state = states::collecting;
+		}
+
 	}
 	else
 	{
