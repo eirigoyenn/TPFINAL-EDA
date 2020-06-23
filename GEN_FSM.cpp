@@ -21,7 +21,7 @@ void GEN_FSM::RutaDefault(genericEvent* ev)
 
 void GEN_FSM::Noevent_r_acc(genericEvent* ev)
 {
-	RandomTime > 5 ? RandomTime - 5 : 0;
+//	RandomTime > 5 ? RandomTime - 5 : 0;
 	if (RandomTime)
 		RandomTime--;
 
@@ -148,7 +148,7 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
-	if (client->Subconjunto->size() != (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1))
+	if ((client->Subconjunto->size() != NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1) || (client->Subconjunto->size() == 0))
 	{
 		*statePTR = CLIENT;
 		json Layout;
@@ -162,7 +162,9 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 		NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
 	}
 	else
+	{
 		this->state = states::netcreated;
+	}
 }
 
 void GEN_FSM::setCollecting(void) {

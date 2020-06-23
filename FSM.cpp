@@ -462,7 +462,7 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 
 unsigned int FSM::makeRandomTime(void)
 {
-	return ((rand() % 10000) + 10);
+	return ((rand() % 1000) + 10);
 }
 
 void FSM::RutaDefaultInitState(genericEvent* ev)
@@ -492,10 +492,9 @@ void FSM::finish_r_acc(genericEvent* ev)
 			if (it->getGENFSM()->getState() == netcreated) {
 				count++;
 			}
-			if (it->getGENFSM()->getState() == sendinglayout) {
+			if (it->getGENFSM()->getState() == collecting) {
 				count++;
 			}
-
 		}
 		if (count == fullArray.size()) {
 			this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 

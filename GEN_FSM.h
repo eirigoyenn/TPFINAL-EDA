@@ -31,11 +31,11 @@ private:
 
 		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(Noevent_r_acc)},		{waitinglayout,TR(RutaDefault)},		{netcreated,TR(tengo_layout_r_acc)} },
 
-		/*COLLECTING NET MEMBERS*/		{{collecting,TR(collect_r_acc)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
+		/*COLLECTING NET MEMBERS*/		{{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
 
-		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{collecting,TR(collect_r_acc)} },
+		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
 
-		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{collecting,TR(RutaDefault)}},
+		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{sendinglayout,TR(RutaDefault)}},
 	};
 
 	void RutaDefault(genericEvent* ev);
