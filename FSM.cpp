@@ -492,7 +492,7 @@ void FSM::finish_r_acc(genericEvent* ev)
 			if (it->getGENFSM()->getState() == netcreated) {
 				count++;
 			}
-			if (it->getGENFSM()->getState() == collecting) {
+			if (it->getGENFSM()->getState() == sendinglayout) {
 				count++;
 			}
 		}

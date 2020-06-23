@@ -29,9 +29,9 @@ private:
 		/*estados*/
 		/*IDLE*/						{{waitinglayout,TR(firstping_r_acc)},	{idle,TR(RutaDefault)},				{idle,TR(RutaDefault)},					{idle,TR(RutaDefault)},				{idle,TR(Noevent_r_acc)},				{collecting,TR(collect_r_acc)} ,		{idle,TR(RutaDefault)} },
 
-		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(Noevent_r_acc)},		{waitinglayout,TR(RutaDefault)},		{netcreated,TR(tengo_layout_r_acc)} },
+		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},		{netcreated,TR(tengo_layout_r_acc)} },
 
-		/*COLLECTING NET MEMBERS*/		{{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
+		/*COLLECTING NET MEMBERS*/		{{collecting,TR(RutaDefault)},			{collecting,TR(collect_r_acc)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
 
 		/*NET CREATED*/					{{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
 
