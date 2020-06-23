@@ -23,7 +23,6 @@ void GenEventGenerator::parseEvents(std::string message) {
 
 	}
 
-
 	/**********
 	si me llega el network layout
 	***********/
