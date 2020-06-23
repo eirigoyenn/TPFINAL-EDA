@@ -209,7 +209,7 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
-	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout + 1)) && (client->Subconjunto->size() != 0))
+	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1)) && (client->Subconjunto->size() != 0))
 	{
 		if (this->client->Subconjunto->size() >= 2)
 		{

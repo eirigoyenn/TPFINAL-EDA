@@ -225,6 +225,7 @@ void Block::generateMerkleRoot(vector<string>& stringMerkleRoot)
 			string newIDstr(tohex);
 
 			temp.push_back(newIDstr);
+			Tree.EntireTree.push_back(newIDstr);
 		}
 		stringMerkleRoot = temp;
 		generateMerkleRoot(stringMerkleRoot);
