@@ -245,6 +245,7 @@ void NodeClient::particularAlgorithm(void)
 	json layout; //Layout de la red
 	json nodes; //Nodos de la red
 	json edges;	//Aristas de la red
+	json edge;
 
 	if ((*Subconjunto).size())	//Cargo los nodos con ID:puerto (no se me ocurre otra forma).
 	{
@@ -284,17 +285,21 @@ void NodeClient::particularAlgorithm(void)
 					if (index != NOTFOUND ) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
 
 						//Agregar JSONS
-						edges.clear();
+						edge.clear();
 						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
 						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
-						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
-						layout["edges"] += edges;
+						//edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+						edge["target1"] = Node1Info;
+						edge["target2"] = Node2Info;
+						
+						//edges.push_back(edge);
+
+						layout["edges"] += edge;
 
 						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
 						(*Subconjunto)[nextNode_index].connections.push_back(i);
 						(*Subconjunto)[i].numberofConnections++;
-						(*Subconjunto)[nextNode_index
-						 ].numberofConnections++;
+						(*Subconjunto)[nextNode_index].numberofConnections++;
 					}
 				}
 			}
@@ -304,8 +309,12 @@ void NodeClient::particularAlgorithm(void)
 	{
 		std::string Node1Info = (*Subconjunto)[0].TEMP_ID + ":" + std::to_string((*Subconjunto)[0].TEMP_PUERTO);
 		std::string Node2Info = (*Subconjunto)[1].TEMP_ID + ":" + std::to_string((*Subconjunto)[1].TEMP_PUERTO);
-		edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
-		layout["edges"] = edges;
+		edge["target1"] = Node1Info;
+		edge["target2"] = Node2Info;
+
+		//edges.push_back(edge);
+		//edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
+		layout["edges"] = edge;
 	}
 
 	std::cout << layout << std::endl;

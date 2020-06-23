@@ -455,7 +455,6 @@ void FSM::Start_genesis_r_acc(genericEvent* ev)
 	}			
 }
 
-
 unsigned int FSM::makeRandomTime(void)
 {
 	return ((rand() % 1000) + 10);

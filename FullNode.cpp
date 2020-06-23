@@ -322,19 +322,12 @@ json FullNode::fullCallback(string message) {
 			}
 			else if (this->GenFSM->getState() == states::waitinglayout)
 			{
-			result["result"] = "NETWORK_READY";
-
-				//////////////////////////////////
-				//////////////////////////
-				//ACA GUARDAR AL NODO Q ENVIO EL MENSAJE Y AGREGARLO COMO VECINO
-				//////////////////////////////
-				////////////////////////////////
+				result["result"] = "NETWORK_READY";
 			}
 			else if ((message.find("NETWORK_LAYOUT") != std::string::npos))
 			{
 				if (this->GenFSM->getState() == states::waitinglayout) {
 					result["result"] = "NET_CREATED";
-				//	MeGuardoAMisVecinos(message);
 				}
 				else {
 					result["result"] = "false";
