@@ -288,11 +288,9 @@ void NodeClient::particularAlgorithm(void)
 						edge.clear();
 						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
 						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
-						//edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 						edge["target1"] = Node1Info;
 						edge["target2"] = Node2Info;
 						
-						//edges.push_back(edge);
 
 						layout["edges"] += edge;
 
@@ -312,8 +310,6 @@ void NodeClient::particularAlgorithm(void)
 		edge["target1"] = Node1Info;
 		edge["target2"] = Node2Info;
 
-		//edges.push_back(edge);
-		//edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
 		layout["edges"] = edge;
 	}
 
