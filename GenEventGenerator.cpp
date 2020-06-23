@@ -40,6 +40,15 @@ void GenEventGenerator::parseEvents(std::string message) {
 	{
 		eventsQueue.push(networkready);
 	}
+
+	/**********
+	si me llega el network ready 2
+	***********/
+	else if ((message.find("NETWORK_READY_2") != std::string::npos))
+	{
+		eventsQueue.push(networkready);
+	}
+
 	/**********
 	si me llega el network not ready
 	***********/

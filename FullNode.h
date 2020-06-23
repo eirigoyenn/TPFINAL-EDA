@@ -35,13 +35,7 @@ public:
 
 	std::vector<NodoSubconjunto> subconjuntoNodosRED;		//Vector de los INDICES de los nodos full que logro unir a su red
 
-	//MENSAJES de genesis
-//	bool POSTPing(int neighbourPORT);
-	//bool POSTNetworkLayout(int neighbourPORT);
-	//bool POSTNetwork_NotReady(unsigned int neighbourID);
-	//bool POSTNetwork_Ready(unsigned int neighbourID);
-
-	void MeGuardoAMisVecinos(std::string reply);
+	void MeGuardoAMisVecinosDelGenesis(void);
 
 //Funciones para generar los JSON de los mensajes
 	json createJSONBlock(std::string BlockId);
@@ -78,7 +72,9 @@ public:
 	{
 		GenFSM->setCollecting();
 	}
-	
+
+	vector <Neighbour> NeighboursResultantesDelGenesis;
+
 private:
 	boost::asio::io_context& io_context;
 	Blockchain NodeBlockchain;
@@ -87,6 +83,6 @@ private:
 	mainEventGenerator eventGen;	//agarra los gen de eventos (hago el general aca pq tiene las funciones de )
 	GEN_FSM* GenFSM=nullptr;
 	GenEventGenerator genEvents;
-
 };
+
 

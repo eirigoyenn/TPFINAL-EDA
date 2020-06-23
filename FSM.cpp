@@ -1,10 +1,6 @@
 
 #include "FSM.h"
 
-
-
-
-
 FSM::~FSM()
 {
 	for (auto& node : spvArray) {
@@ -473,8 +469,6 @@ void FSM::RutaDefaultInitState(genericEvent* ev)
 	}
 }
 
-
-
 void FSM::Start_app_r_acc(genericEvent* ev)
 {
 	if (static_cast<evMostrarNodos*>(ev)->getType() == MostrarNodos)			
@@ -483,11 +477,9 @@ void FSM::Start_app_r_acc(genericEvent* ev)
 	}
 }
 
-
-
 void FSM::finish_r_acc(genericEvent* ev)
 {
-	int count = 0;
+	int i, count = 0;
 	for (auto it : fullArray) 
 	{
 		std::cout << "ESTADO:" << it->getGENFSM()->getState() << std::endl;
@@ -498,11 +490,21 @@ void FSM::finish_r_acc(genericEvent* ev)
 			count++;
 		}
 	}
-	std::cout << "\n\n\n" << std::endl;
+	std::cout << "\n\n" << std::endl;
 
 	if (count == fullArray.size()) {
 		this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 
 		this->state = ShwDashboard;
+
+		for (auto it : fullArray)
+		{
+			for (i = 0; i < it->NeighboursResultantesDelGenesis.size(); i++)
+			{
+				unsigned int IDDD = getneighbourIDfromPort(it->NeighboursResultantesDelGenesis[i].port, FULL);
+				it->NeighboursResultantesDelGenesis[i].ID = IDDD;
+			}
+			it->MeGuardoAMisVecinosDelGenesis();
+		}
 	}
 }
 

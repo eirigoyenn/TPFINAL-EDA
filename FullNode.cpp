@@ -505,6 +505,7 @@ void FullNode::my_cycle(void)
 void FullNode::setGENFSM(GEN_FSM* gen_fsm_)
 {
 	GenFSM = gen_fsm_;
+	GenFSM->neighbourtsPARAelNodoFullDespsDelGenesisPTR = &(this->NeighboursResultantesDelGenesis);
 }
 
 
@@ -512,6 +513,15 @@ bool FullNode::isnetworkcreated(void)
 {
 // qverga me tengo q fijar
 	return true;
+}
+
+void FullNode::MeGuardoAMisVecinosDelGenesis(void)
+{
+	int i;
+	for (i = 0; i < NeighboursResultantesDelGenesis.size(); i++)
+	{
+		addNeighbour(NeighboursResultantesDelGenesis[i].ID, NeighboursResultantesDelGenesis[i].IP, NeighboursResultantesDelGenesis[i].port);
+	}
 }
 
 

@@ -102,6 +102,8 @@ bool NodeClient::performRequest(void)
 					nodo2add.numberofConnections = 0;
 					nodo2add.checked = false;
 					(*Subconjunto).push_back(nodo2add);
+
+
 				}
 				else if (reply.find("NETWORK_READY") != std::string::npos)
 				{
@@ -286,7 +288,7 @@ void NodeClient::particularAlgorithm(void)
 						std::string Node1Info = (*Subconjunto)[i].TEMP_ID + ":" + std::to_string((*Subconjunto)[i].TEMP_PUERTO);
 						std::string Node2Info = (*Subconjunto)[nextNode_index].TEMP_ID + ":" + std::to_string((*Subconjunto)[nextNode_index].TEMP_PUERTO);
 						edges.push_back({ { "target1", Node1Info }, { "target2", Node2Info } });
-						layout["edges"] = edges;
+						layout["edges"] += edges;
 
 						(*Subconjunto)[i].connections.push_back(nextNode); //Los agrego como conectados
 						(*Subconjunto)[nextNode_index].connections.push_back(i);

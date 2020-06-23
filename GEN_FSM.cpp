@@ -40,13 +40,32 @@ void GEN_FSM::idle_r_acc(genericEvent* ev)
 	return;
 }
 
+void GEN_FSM::thirdping_r_acc(genericEvent* ev)
+{
+	//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+	*statePTR = CLIENT;
+	json Info;
+	Info.clear();
+	Info["PORT"] = this->client->getPort();
+	client->setPort(static_cast<evPing*>(ev)->puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting);
+	client->setIP("localhost");
+	client->usePOSTmethod("/eda_coin/NETWORK_READY_2", Info);
+	client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+}
+
 void GEN_FSM::firstping_r_acc(genericEvent* ev)
 {
 	if (static_cast<evPing*>(ev)->getType() == ping)			
 	{
 		if (!RandomTime && (*statePTR == FREE)) {
 			std::cout << std::endl << std::endl << "firstoing_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
-
+			/* Guardo al nodo que me envio el ping como futuro vecino al terminar el genesis */
+			//Neighbour tempNei;
+			//tempNei.port = static_cast<evPing*>(ev)->puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting;
+			//tempNei.IP = "localhost";
+			//neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei); 
+	
 			//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 			*statePTR = CLIENT;
 			json Info;
@@ -100,8 +119,8 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 		json LAYOUT = json::parse(response);
 
 		std::cout << std::endl << std::endl << "Tengo_layout_r_acc \nLAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
-
-		std::string soyyo = std::to_string(this->myid) + ":" + std::to_string((this->client->getPort()) - 1);
+		int MIPUERTO = (this->client->getOwnPort()) - 1;
+		std::string soyyo = std::to_string(MIPUERTO);
 
 		for (auto& edge : LAYOUT["edges"]) {
 			std::string target1 = edge["target1"];
@@ -116,13 +135,20 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 			if (target.length()) {
 				int pos1 = target.find_first_of(':');
 				std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
-				std::string id = target.substr(0, pos1);
-				int id_ = std::stoi(id);
 				int pos2 = temp.find_first_of(':');
 				int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
 
-				//VER COMO AGREGAR UN VECINO AL NODO 
-				//addNeighbour(id_, IP, port_);
+				std::cout << std::endl << std::endl << std::endl << "PORT" << port_ <<std::endl << std::endl;
+
+				//Agrego al nodo como vecino
+				if (port_ > 0)
+				{
+					Neighbour tempNei;
+					tempNei.port = port_;
+					tempNei.IP = "localhost";
+					neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei);
+
+				}
 			}
 		}
 
@@ -152,6 +178,8 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 	return;
 }
 
+
+
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
 	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1)) && (client->Subconjunto->size() != 0))
@@ -170,6 +198,12 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 			client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
 			client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
 			NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
+
+			/* Ademas me lo guardo como vecino*/
+			Neighbour tempNei;
+			tempNei.port = port_;
+			tempNei.IP = "localhost";
+			neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei);
 		}
 	}
 	else

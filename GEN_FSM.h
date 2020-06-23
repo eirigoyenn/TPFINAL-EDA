@@ -4,7 +4,7 @@
 #include "GenericFSM.h"
 #include "GenEventGenerator.h"
 #include "Node.h"
-
+#include "Structs.h"
 
 #define TR(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&GEN_FSM::x)) 
 
@@ -25,6 +25,8 @@ public:
 	void setportArray(std::vector<unsigned int>* portsArray_) { portsArray = portsArray_; };
 	void setState(states estadonuevo);
 
+	std::vector<Neighbour>* neighbourtsPARAelNodoFullDespsDelGenesisPTR;
+
 private:
 	const fsmCell fsmTable[5][7] = {
 		//     EVENTOS					PING								    NETWORK NOT READY					NETWORK READY							NETWORK CREATED						NOEVENT										TIMER									LAYOUT
@@ -35,7 +37,7 @@ private:
 
 		/*COLLECTING NET MEMBERS*/		{{collecting,TR(RutaDefault)},			{collecting,TR(RutaDefault)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
 
-		/*NET CREATED*/					{{netcreated,TR(secping_r_acc)},		{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
+		/*NET CREATED*/					{{netcreated,TR(thirdping_r_acc)},		{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
 
 		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{sendinglayout,TR(RutaDefault)}},
 	};
@@ -48,6 +50,8 @@ private:
 	void sendlayout_r_acc(genericEvent* ev);
 	void idle_r_acc(genericEvent* ev);
 	void tengo_layout_r_acc(genericEvent* ev);
+	void thirdping_r_acc(genericEvent* ev);
+//	void guardar_como_vecino(genericEvent* ev);
 
 	unsigned long int RandomTime;
 	NodeClient* client=nullptr;
@@ -56,5 +60,5 @@ private:
 	state_n* statePTR;
 	int NodoDelSubconjuntoQueLeVoyAEnviarElLayout;
 	int myid;
-	
+
 };
