@@ -46,6 +46,8 @@ void GEN_FSM::firstping_r_acc(genericEvent* ev)
 	if (static_cast<evPing*>(ev)->getType() == ping)			
 	{
 		if (!RandomTime && (*statePTR == FREE)) {
+			std::cout << std::endl << std::endl << "firstoing_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
+
 			//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 			*statePTR = CLIENT;
 			json Info;
@@ -66,6 +68,8 @@ void GEN_FSM::secping_r_acc(genericEvent* ev)
 	{
 		if (*statePTR == FREE)
 		{
+			std::cout << std::endl << std::endl << "secping_r_acc \nLAYOUT:"<< std::endl << std::endl << std::endl;
+
 			//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 			*statePTR = CLIENT;
 			json response;
@@ -86,6 +90,7 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 {
 	if (static_cast<evNetworklayout*>(ev)->getType() == networklayout)
 	{
+
 		string reply = static_cast<evNetworklayout*>(ev)->layouttt;
 
 		auto it = reply.find("\r\n\r\n");
@@ -95,7 +100,7 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 
 		json LAYOUT = json::parse(response);
 
-		std::cout << std::endl << std::endl << "LAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
+		std::cout << std::endl << std::endl << "Tengo_layout_r_acc \nLAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
 
 		std::string soyyo = std::to_string(this->myid) + ":" + std::to_string((this->client->getPort()) - 1);
 
@@ -129,6 +134,8 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 {
 	if (*statePTR == FREE)
 	{
+		std::cout << std::endl << std::endl << "collect_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
+
 		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 		*statePTR = CLIENT;
 		json response;
@@ -150,16 +157,21 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
 	if ((client->Subconjunto->size() != NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1) && (client->Subconjunto->size() != 0))
 	{
-		*statePTR = CLIENT;
-		json Layout;
-		Layout = client->LAYOUT2SEND;
-		int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
+		if (*statePTR == FREE)
+		{
+			std::cout << std::endl << std::endl << "\nsendlayout_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
 
-		client->setPort(port_);
-		client->setIP("localhost");
-		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-		NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
+			*statePTR = CLIENT;
+			json Layout;
+			Layout = client->LAYOUT2SEND;
+			int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
+
+			client->setPort(port_);
+			client->setIP("localhost");
+			client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
+			client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+			NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
+		}
 	}
 	else
 	{

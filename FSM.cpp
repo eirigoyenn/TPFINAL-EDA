@@ -487,19 +487,21 @@ void FSM::Start_app_r_acc(genericEvent* ev)
 
 void FSM::finish_r_acc(genericEvent* ev)
 {
-		int count = 0;
-		for (auto it : fullArray) {
-			if (it->getGENFSM()->getState() == netcreated) {
-				count++;
-			}
-			if (it->getGENFSM()->getState() == sendinglayout) {
-				count++;
-			}
+	int count = 0;
+	for (auto it : fullArray) 
+	{
+		std::cout << std::endl<< it->getGENFSM()->getState() << std::endl << std::endl;
+		if (it->getGENFSM()->getState() == states::netcreated) {
+			count++;
 		}
-		if (count == fullArray.size()) {
-			this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 
-			this->state = ShwDashboard;
+		if (it->getGENFSM()->getState() == states::sendinglayout) {
+			count++;
 		}
+	}
+	if (count == fullArray.size()) {
+		this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 
+		this->state = ShwDashboard;
+	}
 }
 
 void FSM::cycle_each_r_acc(genericEvent* ev)

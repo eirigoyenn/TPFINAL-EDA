@@ -8,7 +8,8 @@ void GenEventGenerator::parseEvents(std::string message) {
 	SI LLEGA PING
 	************/
 	if ((message.find("PING") != std::string::npos)) {
-		this->eventsQueue.push(GENevents::ping);
+		eventsQueue.push(GENevents::ping);
+		
 		std::size_t found = message.find("PUERTO:");
 		std::size_t found2 = message.find("HTTP");
 
@@ -16,7 +17,7 @@ void GenEventGenerator::parseEvents(std::string message) {
 		{
 			std::string substring = message.substr(found + 7, found2 - 29);
 
-			std::cout << "\n\nPUERTO" + substring << "FIN" << std::endl << std::endl;
+			std::cout << "\n\n|| PUERTO:" + substring << "|| " << std::endl << std::endl;
 			PUERTO = atoi(substring.c_str());
 		}
 
