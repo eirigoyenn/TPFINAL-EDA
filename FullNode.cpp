@@ -127,105 +127,6 @@ bool FullNode::GETBlocks(unsigned int neighbourID, std::string blockID_, unsigne
 	else return false;
 }
 
-//bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
-//{
-//	if (neighbours.find(neighbourID) != neighbours.end())
-//	{
-//		if (state == FREE)
-//		{
-//			json jsonTx;
-//
-//			jsonTx["nTxin"] = 0;
-//			jsonTx["nTxout"] = 1;
-//			jsonTx["txid"] = "7E46A3BC";
-//			jsonTx["vin"] = json();
-//			json vout_;
-//			vout_["amount"] = amount;
-//			vout_["publicid"] = wallet;
-//			jsonTx["vout"] = vout_;
-//
-//			state = CLIENT;
-//			unsigned int port_ = neighbours[neighbourID].port;
-//			client->setPort(port_);
-//			client->setIP(IP);
-//			//client->setIP(neighbours[neighbourID].IP);
-//			//client->setPort(neighbours[neighbourID].port);
-//			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
-//			client->performRequest();
-//
-//			return true;
-//		}
-//		else {
-//			errorType = BUSY_NODE;
-//			errorMessage = "Node is not available to perform as client";
-//			return false;
-//		}
-//	}
-//	else {
-//		errorType = NOT_NEIGHBOUR;
-//		errorMessage = "Requested server is not a Neighbour of current Node";
-//		return false;
-//	}
-//}
-
-/*********************************************************
-*             	MENSAJES PARA EL GENSIS
-*********************************************************/
-/*
-bool FullNode::POSTPing(int neighbourPORT)
-{
-	if (state == FREE)
-	{
-
-		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
-		state = CLIENT;
-		json noInfo;
-		noInfo["NO INFO"] = "NO INFO";		//NO LE MANDO INFORMACION?
-		unsigned int port_ = neighbourPORT;
-		client->setPort(port_);
-		client->setIP(IP);
-		client->usePOSTmethod("/eda_coin/PING", noInfo);
-
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-
-		return true;
-	}
-	else {
-		errorType = BUSY_NODE;
-		errorMessage = "Node is not available to perform as client";
-		return false;
-	}
-}
-
-bool FullNode::POSTNetworkLayout(int neighbourPORT)
-{
-	if (state == FREE)
-	{
-		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
-	
-		state = CLIENT;
-		json jsonLayout;
-		
-		jsonLayout["CAMPO"] = "0";
-
-		unsigned int port_ = neighbours[neighbourPORT].port;
-		client->setPort(port_);
-		client->setIP(IP);
-		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
-
-		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
-
-		return true;
-	}
-	else {
-		errorType = BUSY_NODE;
-		errorMessage = "Node is not available to perform as client";
-		return false;
-	}
-
-}
-*/
-
 /************************************************************************************************
 *					               GENERADORES DE JSON											*
 *																								*
@@ -457,44 +358,6 @@ json FullNode::fullCallback(string message) {
 
 }
 
-/* void FullNode::MeGuardoAMisVecinos(std::string reply)
-{
-	auto it = reply.find("\r\n\r\n");
-	std::string crlf("\r\n\r\n");
-	std::string response;
-	response = reply.substr(it + crlf.size(), reply.size() - (it + crlf.size()));
-
-	json LAYOUT = json::parse(response);
-
-	std::cout << std::endl << std::endl << "LAYOUT:" << LAYOUT << std::endl << std::endl << std::endl;
-
-	std::string soyyo = std::to_string(this->ID) + ":" + std::to_string(this->port - 1);
-
-	for (auto& edge : LAYOUT["edges"]) {
-		std::string target1 = edge["target1"];
-		std::string target2 = edge["target2"];
-		std::string target;
-
-		cout << "SOY YO" << soyyo << endl << "TARGET 1" << target1 << endl << "TARGET2" << target2 << endl;
-
-		if (target1 == soyyo)
-			target = target2;
-		else if (target2 == soyyo)
-			target = target1;
-
-		if (target.length()) {
-			int pos1 = target.find_first_of(':');
-			std::string temp = target.substr(pos1 + 1, target.length() - pos1 - 1);
-			std::string id = target.substr(0, pos1);
-			int id_ = std::stoi(id);
-			int pos2 = temp.find_first_of(':');
-			int port_ = std::stoi(temp.substr(pos2 + 1, temp.length() - pos2 - 1));
-
-			addNeighbour(id_, IP, port_);
-		}
-	}
-}
-*/
 
 json FullNode::find_array(std::string blockID, int count) {
 
@@ -652,3 +515,104 @@ bool FullNode::isnetworkcreated(void)
 // qverga me tengo q fijar
 	return true;
 }
+
+
+
+//bool FullNode::makeTransaction(unsigned int neighbourID, std::string & wallet, unsigned int amount)
+//{
+//	if (neighbours.find(neighbourID) != neighbours.end())
+//	{
+//		if (state == FREE)
+//		{
+//			json jsonTx;
+//
+//			jsonTx["nTxin"] = 0;
+//			jsonTx["nTxout"] = 1;
+//			jsonTx["txid"] = "7E46A3BC";
+//			jsonTx["vin"] = json();
+//			json vout_;
+//			vout_["amount"] = amount;
+//			vout_["publicid"] = wallet;
+//			jsonTx["vout"] = vout_;
+//
+//			state = CLIENT;
+//			unsigned int port_ = neighbours[neighbourID].port;
+//			client->setPort(port_);
+//			client->setIP(IP);
+//			//client->setIP(neighbours[neighbourID].IP);
+//			//client->setPort(neighbours[neighbourID].port);
+//			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
+//			client->performRequest();
+//
+//			return true;
+//		}
+//		else {
+//			errorType = BUSY_NODE;
+//			errorMessage = "Node is not available to perform as client";
+//			return false;
+//		}
+//	}
+//	else {
+//		errorType = NOT_NEIGHBOUR;
+//		errorMessage = "Requested server is not a Neighbour of current Node";
+//		return false;
+//	}
+//}
+
+/*********************************************************
+*             	MENSAJES PARA EL GENSIS
+*********************************************************/
+/*
+bool FullNode::POSTPing(int neighbourPORT)
+{
+	if (state == FREE)
+	{
+
+		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+		state = CLIENT;
+		json noInfo;
+		noInfo["NO INFO"] = "NO INFO";		//NO LE MANDO INFORMACION?
+		unsigned int port_ = neighbourPORT;
+		client->setPort(port_);
+		client->setIP(IP);
+		client->usePOSTmethod("/eda_coin/PING", noInfo);
+
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+		return true;
+	}
+	else {
+		errorType = BUSY_NODE;
+		errorMessage = "Node is not available to perform as client";
+		return false;
+	}
+}
+
+bool FullNode::POSTNetworkLayout(int neighbourPORT)
+{
+	if (state == FREE)
+	{
+		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+
+		state = CLIENT;
+		json jsonLayout;
+
+		jsonLayout["CAMPO"] = "0";
+
+		unsigned int port_ = neighbours[neighbourPORT].port;
+		client->setPort(port_);
+		client->setIP(IP);
+		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", jsonLayout);
+
+		client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+		return true;
+	}
+	else {
+		errorType = BUSY_NODE;
+		errorMessage = "Node is not available to perform as client";
+		return false;
+	}
+
+}
+*/

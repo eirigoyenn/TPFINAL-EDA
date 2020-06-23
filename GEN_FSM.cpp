@@ -24,14 +24,18 @@ void GEN_FSM::Noevent_r_acc(genericEvent* ev)
 	RandomTime > 5 ? RandomTime - 5 : 0;
 	if (RandomTime)
 		RandomTime--;
+
 	if (!RandomTime)
+	{
+		this->state = states::collecting;
 		collect_r_acc(NULL);
-		/// Largar un evento de time out
+	}
 	return;
 }
 void GEN_FSM::idle_r_acc(genericEvent* ev)
 {
-	if (!RandomTime) {
+	if (!RandomTime) 
+	{
 
 	}
 	return;
@@ -100,8 +104,6 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 			std::string target2 = edge["target2"];
 			std::string target;
 
-			cout << "SOY YO" << soyyo << endl << "TARGET 1" << target1 << endl << "TARGET2" << target2 << endl;
-
 			if (target1 == soyyo)
 				target = target2;
 			else if (target2 == soyyo)
@@ -136,7 +138,6 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 		int PUERTOO = (int) this->client->getOwnPort() - 1;  
 		//Mandamos puerto para que nodo en estado IDLE O WAITING LAYOUT le responda
 		std::string mensajeDeCollecting = "/eda_coin/PING/PUERTO:" + to_string(PUERTOO) + "/" ;
-		std::cout << "\n\n MENSAJE DE COLLECTING" + mensajeDeCollecting << std::endl << std::endl;
 
 		unsigned int port_ = selectRandomNode();
 		client->setPort(port_);
@@ -156,8 +157,6 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 		Layout = client->LAYOUT2SEND;
 		int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
 
-		cout << port_ << endl;
-
 		client->setPort(port_);
 		client->setIP("localhost");
 		client->usePOSTmethod("/eda_coin/NETWORK_LAYOUT", Layout);
@@ -165,24 +164,21 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 		NodoDelSubconjuntoQueLeVoyAEnviarElLayout++;
 	}
 	else
-		this->state = netcreated;
+		this->state = states::netcreated;
 
 }
 
 void GEN_FSM::setCollecting(void) {
 
-	this->RandomTime = 0;
+	this->state = states::collecting;
 }
 
 unsigned int GEN_FSM::selectRandomNode(void) {
 	unsigned int randPort;
 	randPort = (*portsArray)[rand() % (portsArray->size())];
-
 	//Asi no nos auto mandamos un ping 
 	for (; randPort == this->client->getPort() ; )
 		randPort = (*portsArray)[rand() % (portsArray->size())];
-
-//	cout << "PORT" << randPort << endl; 
 	return randPort;
 }
 

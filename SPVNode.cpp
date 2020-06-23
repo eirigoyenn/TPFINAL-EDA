@@ -53,10 +53,6 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
 			client->setIP(IP);
-			/*client->setIP(neighbours[neighbourID].IP);
-			client->setPort(neighbours[neighbourID].port);*/
-			//client->setIP(neighbours.find(neighbourID)->second.IP);
-			//client->setPort(neighbours.find(neighbourID)->second.port);
 			client->usePOSTmethod("/eda_coin/send_filter", jsonFilter);
 			return true;
 		}
@@ -72,7 +68,6 @@ bool SPVNode::GETBlockHeader(unsigned int neighbourID, std::string  blockID_, un
 	{
 		if (state == FREE)
 		{
-			//client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
@@ -91,7 +86,6 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 	{
 		if (state == FREE)
 		{
-			//client = new NodeClient(IP, port+1);
 			json jsonTx;
 
 			jsonTx["nTxin"] = 0;
@@ -107,8 +101,6 @@ bool SPVNode::makeTransaction(unsigned int neighbourID, std::string & wallet, un
 			unsigned int port_ = neighbours[neighbourID].port;
 			client->setPort(port_);
 			client->setIP(IP);
-			//client->setIP(neighbours[neighbourID].IP);
-			//client->setPort(neighbours[neighbourID].port);
 			client->usePOSTmethod("/eda_coin/send_tx", jsonTx);
 			return true;
 		}

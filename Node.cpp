@@ -21,10 +21,6 @@ bool Node::performRequest(void)
 			if (!(client->performRequest()))
 			{
 				state = FREE;
-				/*if (client) {
-					delete client;
-					client = nullptr;
-				}*/
 				return true;
 			}
 			else

@@ -8,7 +8,7 @@ void GenEventGenerator::parseEvents(std::string message) {
 	SI LLEGA PING
 	************/
 	if ((message.find("PING") != std::string::npos)) {
-		this->eventsQueue.push(ping);
+		this->eventsQueue.push(GENevents::ping);
 		std::size_t found = message.find("PUERTO:");
 		std::size_t found2 = message.find("HTTP");
 
