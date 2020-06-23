@@ -45,7 +45,19 @@ void GenEventGenerator::parseEvents(std::string message) {
 	***********/
 	else if ((message.find("NETWORK_READY_2") != std::string::npos))
 	{
-		eventsQueue.push(networkready);
+		eventsQueue.push(GENevents::ping);
+
+		std::size_t found = message.find("PUERTO:");
+		std::size_t found2 = message.find("HTTP");
+
+		if ((found != std::string::npos) && (found2 != std::string::npos))
+		{
+			std::string substring = message.substr(found + 7, found2 - 29);
+
+			std::cout << "\n\n|| PUERTO:" + substring << "|| " << std::endl << std::endl;
+			PUERTO = atoi(substring.c_str());
+		}
+
 	}
 
 	/**********

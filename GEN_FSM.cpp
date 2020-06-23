@@ -42,16 +42,43 @@ void GEN_FSM::idle_r_acc(genericEvent* ev)
 
 void GEN_FSM::thirdping_r_acc(genericEvent* ev)
 {
-	//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
-	*statePTR = CLIENT;
-	json Info;
-	Info.clear();
-	Info["PORT"] = this->client->getPort();
-	client->setPort(static_cast<evPing*>(ev)->puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting);
-	client->setIP("localhost");
-	client->usePOSTmethod("/eda_coin/NETWORK_READY_2", Info);
-	client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+	if (static_cast<evPing*>(ev)->getType() == ping)
+	{
+		if (*statePTR == FREE)
+		{
+			//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
+			*statePTR = CLIENT;
+			json response;
+			response.clear();
+			int PUERTOO = (int)this->client->getOwnPort() - 1;
+			//Mandamos puerto para que nodo en estado IDLE O WAITING LAYOUT le responda
+			std::string mensajeDeCollecting = "/eda_coin/NETWORK_READY_2/PUERTO:" + to_string(PUERTOO) + "/";
 
+			unsigned int port_ = selectRandomNode();
+			client->setPort(port_);
+			client->setIP("localhost");
+			client->usePOSTmethod(mensajeDeCollecting.c_str(), response);
+			client->performRequest(); //Sólo ejecuta una vuelta de multiHandle. Para continuar usándolo se debe llamar a la función performRequest
+
+		}
+	}
+}
+
+void GEN_FSM::guardar_r_acc(genericEvent* ev)
+{
+	if (static_cast<evPing*>(ev)->getType() == ping)
+	{
+		if (this->client->Subconjunto->size() == 0)
+		{
+			std::cout << std::endl << std::endl << "ya estan todos conectados me conecto a uno para no quedar solito\n" << std::endl << std::endl << std::endl;
+			/* Guardo al nodo que me envio el ping como futuro vecino al terminar el genesis */
+
+			Neighbour tempNei;
+			tempNei.port = static_cast<evPing*>(ev)->puertoAlQueLeEnviareRespuestaSiNoSoyElCollecting;
+			tempNei.IP = "localhost";
+			neighbourtsPARAelNodoFullDespsDelGenesisPTR->push_back(tempNei);
+		}
+	}
 }
 
 void GEN_FSM::firstping_r_acc(genericEvent* ev)
@@ -159,7 +186,7 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 {
 	if (*statePTR == FREE)
 	{
-		std::cout << std::endl << std::endl << "collect_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
+		std::cout << std::endl << std::endl << "collect_r_acc \n" << std::endl << std::endl << std::endl;
 
 		//IMPORTANTE le mandamos al cliente un puntero a nuestro vector de nodos en el subconjunto para que pueda añadir nuevos
 		*statePTR = CLIENT;
@@ -182,17 +209,18 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
-	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1)) && (client->Subconjunto->size() != 0))
+	if ((client->Subconjunto->size() >= (NodoDelSubconjuntoQueLeVoyAEnviarElLayout + 1)) && (client->Subconjunto->size() != 0))
 	{
-		if (this->client->Subconjunto->size() > 2)
+		if (this->client->Subconjunto->size() >= 2)
 		{
 			if (*statePTR == FREE)
 			{
-				std::cout << std::endl << std::endl << "\nsendlayout_r_acc \nLAYOUT:" << std::endl << std::endl << std::endl;
 
 				*statePTR = CLIENT;
 				json Layout;
 				Layout = client->LAYOUT2SEND;
+				std::cout << std::endl << std::endl << "\nsendlayout_r_acc: NODO DEL SUBCONJUNTO Q LE MANDO LAYOUT ES: \n" << NodoDelSubconjuntoQueLeVoyAEnviarElLayout << std::endl << std::endl << std::endl;
+
 				int port_ = (*client->Subconjunto)[NodoDelSubconjuntoQueLeVoyAEnviarElLayout].TEMP_PUERTO;
 
 				client->setPort(port_);
@@ -212,7 +240,6 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 		{
 			this->state = states::collecting;
 		}
-
 	}
 	else
 	{
@@ -229,7 +256,8 @@ unsigned int GEN_FSM::selectRandomNode(void) {
 	unsigned int randPort;
 	randPort = (*portsArray)[rand() % (portsArray->size())];
 	//Asi no nos auto mandamos un ping 
-	for (; randPort == this->client->getPort() ; )
+
+	for (; randPort == this->client->getOwnPort() ; )
 		randPort = (*portsArray)[rand() % (portsArray->size())];
 	return randPort;
 }

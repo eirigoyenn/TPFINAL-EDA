@@ -35,7 +35,7 @@ private:
 
 		/*WAITING LAYOUT*/				{{waitinglayout,TR(secping_r_acc)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},	{waitinglayout,TR(RutaDefault)},		{waitinglayout,TR(RutaDefault)},		{netcreated,TR(tengo_layout_r_acc)} },
 
-		/*COLLECTING NET MEMBERS*/		{{collecting,TR(RutaDefault)},			{collecting,TR(RutaDefault)},		{sendinglayout,TR(sendlayout_r_acc)},	{collecting,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
+		/*COLLECTING NET MEMBERS*/		{{sendinglayout,TR(guardar_r_acc)},		{collecting,TR(RutaDefault)},		{sendinglayout,TR(sendlayout_r_acc)},	{netcreated,TR(RutaDefault)},		{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)},			{collecting,TR(collect_r_acc)} },
 
 		/*NET CREATED*/					{{netcreated,TR(thirdping_r_acc)},		{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
 
@@ -51,7 +51,7 @@ private:
 	void idle_r_acc(genericEvent* ev);
 	void tengo_layout_r_acc(genericEvent* ev);
 	void thirdping_r_acc(genericEvent* ev);
-//	void guardar_como_vecino(genericEvent* ev);
+	void guardar_r_acc(genericEvent* ev);
 
 	unsigned long int RandomTime;
 	NodeClient* client=nullptr;
