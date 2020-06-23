@@ -282,7 +282,8 @@ void NodeClient::particularAlgorithm(void)
 						}
 					}
 
-					if (index != NOTFOUND ) {		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
+					if ((index != NOTFOUND)  && ((*Subconjunto)[i].TEMP_PUERTO != (*Subconjunto)[nextNode_index].TEMP_PUERTO) ) 
+					{		//Si se logró conectar con otro o toco aleatorio el mismo nodo, busca otro.
 
 						//Agregar JSONS
 						edge.clear();
