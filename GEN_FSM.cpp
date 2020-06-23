@@ -1,6 +1,6 @@
 #include "GEN_FSM.h"
 
-GEN_FSM::GEN_FSM(state_n* ptr, int myid_): genericFSM(&fsmTable[0][0], 4, 6, idle), statePTR(ptr)
+GEN_FSM::GEN_FSM(state_n* ptr, int myid_): genericFSM(&fsmTable[0][0], 5, 7, idle), statePTR(ptr)
 {
 	NodoDelSubconjuntoQueLeVoyAEnviarElLayout = 0;
 	myid = myid_;
@@ -123,8 +123,6 @@ void GEN_FSM::tengo_layout_r_acc(genericEvent* ev)
 		}
 
 	}
-
-
 }
 
 void GEN_FSM::collect_r_acc(genericEvent* ev)
@@ -150,7 +148,7 @@ void GEN_FSM::collect_r_acc(genericEvent* ev)
 
 void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 {
-	if (client->Subconjunto->size() != NodoDelSubconjuntoQueLeVoyAEnviarElLayout)
+	if (client->Subconjunto->size() != (NodoDelSubconjuntoQueLeVoyAEnviarElLayout+1))
 	{
 		*statePTR = CLIENT;
 		json Layout;
@@ -165,7 +163,6 @@ void GEN_FSM::sendlayout_r_acc(genericEvent* ev)
 	}
 	else
 		this->state = states::netcreated;
-
 }
 
 void GEN_FSM::setCollecting(void) {

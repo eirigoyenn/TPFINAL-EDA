@@ -15,7 +15,7 @@ using namespace std;
 class FSM : public genericFSM
 {
 public:
-	FSM() : genericFSM(&fsmTable[0][0], 8, 11, InitState), state4Graphic(INITSTATE_G) {};
+	FSM() : genericFSM(&fsmTable[0][0], 8, 10, InitState), state4Graphic(INITSTATE_G) {};
 	~FSM();
 
 	unsigned int state4Graphic;
@@ -24,11 +24,11 @@ public:
 	Blockchain& getBchain(void);
 
 private:
-	const fsmCell fsmTable[8][11] = {
+	const fsmCell fsmTable[8][10] = {
 
 				//EVENTOS:		          Crear Nodo							 Crear Conexion									Mostrar Nodos						Buscar Vecinos								EnviarMsj									Error										    Back2Dashboard											No event								BlockSelected										FINISHED GENESIS NETWORK               
 		//ESTADOS																										/*Start app mode en init state*/		/*Start genesis mode en init state*/
-		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	  {SHwGENESIS,TX(Start_genesis_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {InitState,TX(RutaDefault)}  },
+		/* Init State */		{{InitState,TX(RutaDefault)},			{InitState,TX(CrearConexion_r_acc)},			{ShwDashboard,TX(Start_app_r_acc)},	  {SHwGENESIS,TX(Start_genesis_r_acc)},			{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{InitState,TX(RutaDefaultInitState)} ,	{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {InitState,TX(RutaDefault)}  },
 
 		/*Shw Dashboard*/		{{ShwDashboard,TX(CrearNodo_r_acc)},     {ShwDashboard,TX(CrearConexion_r_acc)},		{ShwNodos,TX(ShwNodos_r_acc)},			{Look4Veci,TX(BuscarVecinos_r_acc)},		{ShwDashboard,TX(RutaDefault)},				{ShwError,TX(ErrorEncontrado_r_acc)} ,				{ShwDashboard,TX(VolverADashboard_r_acc)} ,			{ShwDashboard,TX(MultiiPerform)} ,		{ShwSelBlock,TX(BlockSelected_r_acc)}     ,       {ShwDashboard,TX(RutaDefault)}    },
 
@@ -43,8 +43,6 @@ private:
 		/* SHwGENESIS */		{{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},					{SHwGENESIS,TX(RutaDefault)},			{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},				{SHwGENESIS,TX(RutaDefault)},						{SHwGENESIS,TX(RutaDefault)} , 						{SHwGENESIS,TX(cycle_each_r_acc)} ,		{SHwGENESIS,TX(RutaDefault)}          ,			  {ShwDashboard,TX(finish_r_acc)}  },
 			
 		/* SHwGENESIS */		{{Multi,TX(RutaDefault)},				{Multi,TX(RutaDefault)},						{Multi,TX(RutaDefault)},				{Multi,TX(RutaDefault)},					{Multi,TX(RutaDefault)},					{Multi,TX(RutaDefault)},							{Multi,TX(RutaDefault)} , 							{Multi,TX(cycle_each_r_acc)} ,			{Multi,TX(RutaDefault)}          ,				 {Multi,TX(finish_r_acc)}  }
-
-
 	};
 
 	//The action routines for the FSM

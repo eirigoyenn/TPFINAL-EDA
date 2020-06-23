@@ -47,7 +47,6 @@ bool SPVNode::POSTFilter(unsigned int neighbourID, std::string key)
 	{
 		if (state == FREE)
 		{
-			//client = new NodeClient(IP, port+1);
 			state = CLIENT;
 			json jsonFilter = createJSONFilter(key);
 			unsigned int port_ = neighbours[neighbourID].port;

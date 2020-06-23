@@ -492,6 +492,10 @@ void FSM::finish_r_acc(genericEvent* ev)
 			if (it->getGENFSM()->getState() == netcreated) {
 				count++;
 			}
+			if (it->getGENFSM()->getState() == sendinglayout) {
+				count++;
+			}
+
 		}
 		if (count == fullArray.size()) {
 			this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 

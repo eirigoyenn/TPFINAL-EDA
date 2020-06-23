@@ -25,7 +25,7 @@ public:
 
 private:
 	const fsmCell fsmTable[5][7] = {
-		//     EVENTOS					PING								    NETWORK NOT READY					NETWORK READY						NETWORK CREATED						NOEVENT										TIMER									LAYOUT
+		//     EVENTOS					PING								    NETWORK NOT READY					NETWORK READY							NETWORK CREATED						NOEVENT										TIMER									LAYOUT
 		/*estados*/
 		/*IDLE*/						{{waitinglayout,TR(firstping_r_acc)},	{idle,TR(RutaDefault)},				{idle,TR(RutaDefault)},					{idle,TR(RutaDefault)},				{idle,TR(Noevent_r_acc)},				{collecting,TR(collect_r_acc)} ,		{idle,TR(RutaDefault)} },
 
