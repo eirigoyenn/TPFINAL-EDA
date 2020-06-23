@@ -5,8 +5,10 @@
 #include "GenEventGenerator.h"
 #include "Node.h"
 
+
 #define TR(x) (static_cast<void (genericFSM::* )(genericEvent *)>(&GEN_FSM::x)) 
 
+/*                        0      1             2           3           4        */
 enum states:stateTypes {idle,waitinglayout,collecting,netcreated, sendinglayout };
 
 class GEN_FSM : public genericFSM
@@ -35,7 +37,7 @@ private:
 
 		/*NET CREATED*/					{{netcreated,TR(secping_r_acc)},		{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},		{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)},			{netcreated,TR(RutaDefault)} },
 
-		/*SENDING LAYOUT*/				{{netcreated,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{sendinglayout,TR(RutaDefault)}},
+		/*SENDING LAYOUT*/				{{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(RutaDefault)},		{sendinglayout,TR(RutaDefault)},	{sendinglayout,TR(sendlayout_r_acc)},	{sendinglayout,TR(sendlayout_r_acc)} ,	{sendinglayout,TR(RutaDefault)}},
 	};
 
 	void RutaDefault(genericEvent* ev);

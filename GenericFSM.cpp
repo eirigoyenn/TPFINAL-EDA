@@ -18,8 +18,8 @@ cycle(genericEvent* ev)
 		fsmCell temp = FSMTable[static_cast<unsigned int>(state) * columnCount + static_cast<unsigned int>(ev->getType())];
 		auto f = bind(temp.action, this, ev);
 
-		f();
 		state = temp.nextState;
+		f();
 	}
 	return;
 }

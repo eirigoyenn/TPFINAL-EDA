@@ -740,7 +740,7 @@ void GraphicF3::print_Nodos()
 	*****************************************/
 	ImGui::SetNextWindowPos(ImVec2(20, 10));
 	ImGui::SetNextWindowSize(ImVec2(600, 600));
-	ImGui::Begin(">> NODOS CREADOS EN LA RED <<", 0, window_flags);
+	ImGui::Begin(">> NODOS EN LA RED <<", 0, window_flags);
 	static bool h_borders = true;
 	static bool v_borders = true;
 
@@ -749,11 +749,19 @@ void GraphicF3::print_Nodos()
 	ImGui::SetNextItemWidth(ImGui::GetFontSize() * 8);
 
 	ImGui::Columns(columns_count, NULL, v_borders);
-	for (int i = 0; i < NodosArray.size(); i++)
+	for (int i = 0; i < FULLArrayPTR->size(); i++)
 	{
 		if (h_borders && ImGui::GetColumnIndex() == 0)
 			ImGui::Separator();
-		ImGui::Text("ID: %i \nIP: %s\n", NodosArray[i].ID, NodosArray[i].IP.c_str());
+		ImGui::Text("PORT: %i \nIP: %s\n", (*FULLArrayPTR)[i]->getPort(), (*FULLArrayPTR)[i]->getIP().c_str());
+		ImGui::NextColumn();
+
+	}
+	for (int i = 0; i < SPVArrayPTR->size(); i++)
+	{
+		if (h_borders && ImGui::GetColumnIndex() == 0)
+			ImGui::Separator();
+		ImGui::Text("PORT: %i \nIP: %s\n", (*SPVArrayPTR)[i]->getPort(), (*SPVArrayPTR)[i]->getIP().c_str());
 		ImGui::NextColumn();
 	}
 	

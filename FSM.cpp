@@ -490,7 +490,7 @@ void FSM::finish_r_acc(genericEvent* ev)
 	int count = 0;
 	for (auto it : fullArray) 
 	{
-		std::cout << std::endl<< it->getGENFSM()->getState() << std::endl << std::endl;
+		std::cout << "ESTADO:" << it->getGENFSM()->getState() << std::endl;
 		if (it->getGENFSM()->getState() == states::netcreated) {
 			count++;
 		}
@@ -498,6 +498,8 @@ void FSM::finish_r_acc(genericEvent* ev)
 			count++;
 		}
 	}
+	std::cout << "\n\n\n" << std::endl;
+
 	if (count == fullArray.size()) {
 		this->state4Graphic = DASHBOARD_G;//cambiar estado a dashboard again 
 		this->state = ShwDashboard;
